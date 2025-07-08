@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+all mock data is in data/ folder. We will use json-server and api will be written in api.ts.
+all source code is in src/ and we use app router of Next.
+You can use context7 mcp to check for latest documentation before generating code.
+Use the exact library in the techstack.
+All UI components will be in components/. 
+All common components like button, typography is in components/ui.
+Component for one page (route) will be in src/components/{route}.tsx
+Interface, datatypes in src/types in component names (such as types/report.ts).
+You need to add 'use client' in the head of every UI component file.

@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+---
+This project is a frontend project use:
+- Next 15 
+- TailwindCss v4 with Postcss
+- Pnpm for package management
+- Typescript + eslint
+- Clerk for authentication
+- Recharts for drawing charts
+- json-server for mocking the server

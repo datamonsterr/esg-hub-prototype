@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+We are building a web app prototype so we will mock the server.
+This web app aims for managing carbon footprint data for businesses. User can authenticate, import and manage data, suggest action to improve. 

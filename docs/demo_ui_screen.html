@@ -1,0 +1,560 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest' };</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+    <script>tailwind.config = {
+            "theme": {
+                "extend": {
+                    "colors": {
+                        "primary": "#328E6E",
+                        "secondary": "#E1EEBC",
+                        "accent": "#FFB823",
+                        "error": "#DF3F40",
+                        "border": "#E3E6EA"
+                    },
+                    "fontFamily": {
+                        "arial": [
+                            "Arial",
+                            "sans-serif"
+                        ],
+                        "sans": [
+                            "Inter",
+                            "sans-serif"
+                        ]
+                    }
+                }
+            }
+        };</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* Preserve Font Awesome icons */
+        .fa,
+        .fas,
+        .far,
+        .fal,
+        .fab {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+        }
+    </style>
+    <style>
+        .highlighted-section {
+            outline: 2px solid #3F20FB;
+            background-color: rgba(63, 32, 251, 0.1);
+        }
+
+        .edit-button {
+            position: absolute;
+            z-index: 1000;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        html,
+        body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-arial text-base">
+
+    <!-- Navigation Bar -->
+    <div class="max-w-7xl mx-auto px-5" id="header">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex items-center space-x-8">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-sm"></i>
+                    </div>
+                    <span class="ml-2 text-xl font-medium text-gray-900">ESG Hub</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integrations</span>
+                    <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer">ESG
+                        Actions</span>
+                    <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                    <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Reports</span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-bell text-lg"></i>
+                </button>
+                <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
+                    class="w-8 h-8 rounded-full">
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+
+        <!-- Header Section -->
+        <div class="flex items-center justify-between" id="page-header">
+            <div>
+                <h1 class="text-3xl font-medium text-gray-900 mb-2">Carbon Footprint Report Preview</h1>
+                <p class="text-gray-600">Preview and export your standardized carbon footprint report</p>
+            </div>
+            <div class="flex space-x-3">
+                <button id="back-btn"
+                    class="flex items-center text-gray-600 hover:text-primary px-4 py-2 border border-gray-300 rounded-md">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    <span>Back to Data Integration</span>
+                </button>
+                <button id="save-draft-btn"
+                    class="px-6 py-2 border border-primary text-primary rounded-md hover:bg-primary/5 font-medium">
+                    <i class="fas fa-save mr-2"></i>Save as Draft
+                </button>
+                <button id="export-btn"
+                    class="px-6 py-2 bg-accent text-white rounded-md hover:bg-accent/90 font-medium">
+                    <i class="fas fa-download mr-2"></i>Export PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Report Preview Container -->
+        <div id="report-preview-container" class="bg-white rounded-lg border border-border shadow-sm">
+
+            <!-- PDF Header -->
+            <div id="pdf-header" class="bg-primary text-white p-8 rounded-t-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-medium mb-2">Carbon Footprint Report 2024</h2>
+                        <p class="text-primary-100">Annual Environmental Impact Assessment</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center mb-2">
+                            <i class="fas fa-leaf text-2xl"></i>
+                        </div>
+                        <p class="text-sm">Generated: Dec 2024</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Report Content -->
+            <div id="report-content" class="p-8">
+
+                <!-- Executive Summary -->
+                <section id="executive-summary" class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-gray-900 border-b border-border pb-2">Executive Summary</h3>
+                        <button
+                            class="px-3 py-1 text-sm text-primary border border-primary rounded-md hover:bg-primary/5">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Key Findings</h4>
+                            <div class="space-y-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm text-gray-600">Total CO2 Emissions</span>
+                                        <span class="text-lg font-medium text-gray-900">2,847 tCO2e</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-primary h-2 rounded-full" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="text-sm text-gray-600">YoY Change</span>
+                                        <span class="text-lg font-medium text-green-600">-12.3%</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Emissions Breakdown</h4>
+                            <div id="emissions-chart" class="h-64"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Scope 1 Emissions -->
+                <section id="scope1-section" class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-gray-900 border-b border-border pb-2">Scope 1 Emissions</h3>
+                        <button
+                            class="px-3 py-1 text-sm text-primary border border-primary rounded-md hover:bg-primary/5">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-red-50 p-6 rounded-lg text-center">
+                            <i class="fas fa-gas-pump text-2xl text-red-600 mb-3"></i>
+                            <h4 class="font-medium text-gray-900 mb-2">Fuel Combustion</h4>
+                            <p class="text-2xl font-medium text-red-600">1,245 tCO2e</p>
+                            <p class="text-sm text-gray-600 mt-1">43.7% of total</p>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-lg text-center">
+                            <i class="fas fa-car text-2xl text-orange-600 mb-3"></i>
+                            <h4 class="font-medium text-gray-900 mb-2">Fleet Vehicles</h4>
+                            <p class="text-2xl font-medium text-orange-600">567 tCO2e</p>
+                            <p class="text-sm text-gray-600 mt-1">19.9% of total</p>
+                        </div>
+                        <div class="bg-yellow-50 p-6 rounded-lg text-center">
+                            <i class="fas fa-industry text-2xl text-yellow-600 mb-3"></i>
+                            <h4 class="font-medium text-gray-900 mb-2">Process Emissions</h4>
+                            <p class="text-2xl font-medium text-yellow-600">234 tCO2e</p>
+                            <p class="text-sm text-gray-600 mt-1">8.2% of total</p>
+                        </div>
+                    </div>
+                    <div id="scope1-chart" class="h-80"></div>
+                </section>
+
+                <!-- Scope 2 Emissions -->
+                <section id="scope2-section" class="mb-12 relative">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-gray-900 border-b border-border pb-2">Scope 2 Emissions</h3>
+                        <div class="relative">
+                            <button id="edit-scope2-toggle"
+                                class="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90">
+                                <i class="fas fa-edit mr-1"></i>Editing
+                            </button>
+                            <!-- Editing Popup -->
+                            <div id="scope2-edit-popup"
+                                class="absolute right-0 top-full mt-2 w-80 bg-white border border-border rounded-lg shadow-lg z-10">
+                                <div class="p-4">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h4 class="font-medium text-gray-900">Data Sources</h4>
+                                        <button class="text-gray-400 hover:text-gray-600">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Data Sources List -->
+                                    <div class="space-y-3 mb-4">
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <i class="fas fa-bolt text-primary"></i>
+                                                <div>
+                                                    <span class="font-medium text-gray-900">Grid Electricity</span>
+                                                    <p class="text-sm text-gray-600">Main facility consumption</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="text-accent hover:text-accent/80">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </button>
+                                                <button class="text-error hover:text-error/80">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <i class="fas fa-fire text-orange-500"></i>
+                                                <div>
+                                                    <span class="font-medium text-gray-900">Steam Purchase</span>
+                                                    <p class="text-sm text-gray-600">External steam supplier</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="text-accent hover:text-accent/80">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </button>
+                                                <button class="text-error hover:text-error/80">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                            <div class="flex items-center space-x-3">
+                                                <i class="fas fa-snowflake text-blue-500"></i>
+                                                <div>
+                                                    <span class="font-medium text-gray-900">Cooling Systems</span>
+                                                    <p class="text-sm text-gray-600">District cooling</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="text-accent hover:text-accent/80">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                </button>
+                                                <button class="text-error hover:text-error/80">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex space-x-2 mb-4">
+                                        <button
+                                            class="flex-1 px-3 py-2 text-sm border border-primary text-primary rounded-md hover:bg-primary/5">
+                                            <i class="fas fa-plus mr-1"></i>Add Source
+                                        </button>
+                                        <button
+                                            class="flex-1 px-3 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary/90">
+                                            <i class="fas fa-sync mr-1"></i>Regenerate
+                                        </button>
+                                    </div>
+
+                                    <!-- Save Changes -->
+                                    <button
+                                        class="w-full px-3 py-2 text-sm bg-accent text-white rounded-md hover:bg-accent/90">
+                                        Save Changes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-green-50 p-6 rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-medium text-gray-900">Grid Electricity</h4>
+                                <i class="fas fa-bolt text-green-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-medium text-green-600 mb-2">523 tCO2e</p>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>Main Facility</span>
+                                    <span>423 tCO2e</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Warehouse</span>
+                                    <span>100 tCO2e</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-medium text-gray-900">Purchased Energy</h4>
+                                <i class="fas fa-fire text-blue-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-medium text-blue-600 mb-2">178 tCO2e</p>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>Steam</span>
+                                    <span>123 tCO2e</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Cooling</span>
+                                    <span>55 tCO2e</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="scope2-chart" class="h-80"></div>
+                </section>
+
+                <!-- Scope 3 Emissions -->
+                <section id="scope3-section" class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-gray-900 border-b border-border pb-2">Scope 3 Emissions</h3>
+                        <button
+                            class="px-3 py-1 text-sm text-primary border border-primary rounded-md hover:bg-primary/5">
+                            <i class="fas fa-edit mr-1"></i>Edit
+                        </button>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-purple-50 p-6 rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-medium text-gray-900">Business Travel</h4>
+                                <i class="fas fa-plane text-purple-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-medium text-purple-600 mb-2">178 tCO2e</p>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>Air Travel</span>
+                                    <span>145 tCO2e</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Ground Transport</span>
+                                    <span>33 tCO2e</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-indigo-50 p-6 rounded-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-medium text-gray-900">Supply Chain</h4>
+                                <i class="fas fa-truck text-indigo-600 text-xl"></i>
+                            </div>
+                            <p class="text-2xl font-medium text-indigo-600 mb-2">Est. 1,200 tCO2e</p>
+                            <div class="space-y-2 text-sm text-gray-600">
+                                <div class="flex justify-between">
+                                    <span>Purchased Goods</span>
+                                    <span>850 tCO2e</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Transportation</span>
+                                    <span>350 tCO2e</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reduction Targets -->
+                <section id="targets-section" class="mb-12">
+                    <h3 class="text-xl font-medium text-gray-900 mb-6 border-b border-border pb-2">Reduction Targets
+                        &amp; Action Plan</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-4">2030 Targets</h4>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-green-50 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-gray-900">50% Reduction</span>
+                                        <span class="text-sm bg-green-100 text-green-700 px-2 py-1 rounded">On
+                                            Track</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 35%"></div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Current: 12.3% reduction achieved</p>
+                                </div>
+                                <div class="p-4 bg-blue-50 rounded-lg">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="font-medium text-gray-900">Net Zero by 2050</span>
+                                        <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">Planned</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Comprehensive decarbonization strategy</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-900 mb-4">Key Initiatives</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-solar-panel text-primary"></i>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Renewable Energy</span>
+                                        <p class="text-sm text-gray-600">100% renewable by 2026</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-car-battery text-primary"></i>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Fleet Electrification</span>
+                                        <p class="text-sm text-gray-600">80% electric vehicles by 2028</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <i class="fas fa-building text-primary"></i>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Energy Efficiency</span>
+                                        <p class="text-sm text-gray-600">25% reduction in consumption</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <section id="report-footer" class="pt-8 border-t border-border">
+                    <div class="flex items-center justify-between text-sm text-gray-600">
+                        <div>
+                            <p>Report generated on December 15, 2024</p>
+                            <p>Data period: January 1, 2024 - November 30, 2024</p>
+                        </div>
+                        <div class="text-right">
+                            <p>ESG Hub Carbon Reporting Platform</p>
+                            <p>Certified by GHG Protocol Standards</p>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Emissions Pie Chart
+        Highcharts.chart('emissions-chart', {
+            chart: { type: 'pie', height: 250 },
+            title: { text: null },
+            tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: { enabled: false },
+                    showInLegend: true
+                }
+            },
+            colors: ['#DF3F40', '#FFB823', '#328E6E'],
+            series: [{
+                name: 'Emissions',
+                data: [
+                    { name: 'Scope 1', y: 71.5 },
+                    { name: 'Scope 2', y: 21.9 },
+                    { name: 'Scope 3', y: 6.6 }
+                ]
+            }]
+        });
+
+        // Scope 1 Monthly Trend
+        Highcharts.chart('scope1-chart', {
+            chart: { type: 'column' },
+            title: { text: 'Monthly Scope 1 Emissions' },
+            xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] },
+            yAxis: { title: { text: 'tCO2e' } },
+            colors: ['#DF3F40', '#FFB823', '#FF6B35'],
+            series: [{
+                name: 'Fuel Combustion',
+                data: [145, 132, 128, 115, 108, 95, 102, 118, 125, 138, 142]
+            }, {
+                name: 'Fleet Vehicles',
+                data: [65, 58, 52, 48, 45, 38, 42, 48, 52, 58, 62]
+            }, {
+                name: 'Process Emissions',
+                data: [28, 25, 22, 20, 18, 15, 18, 22, 25, 28, 30]
+            }]
+        });
+
+        // Scope 2 Line Chart
+        Highcharts.chart('scope2-chart', {
+            chart: { type: 'line' },
+            title: { text: null },
+            xAxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] },
+            yAxis: { title: { text: 'tCO2e' } },
+            colors: ['#328E6E'],
+            series: [{
+                name: 'Grid Electricity',
+                data: [68, 62, 58, 52, 48, 45, 48, 52, 55, 62, 65]
+            }]
+        });
+
+        // Button Actions
+        document.getElementById('save-draft-btn').addEventListener('click', function () {
+            alert('Report saved as draft successfully!');
+        });
+
+        document.getElementById('export-btn').addEventListener('click', function () {
+            alert('PDF export initiated. Download will begin shortly.');
+        });
+    </script>
+
+
+</body>
+
+</html>

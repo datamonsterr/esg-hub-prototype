@@ -1,6 +1,12 @@
-import "./globals.css";
-import { ClerkProvider } from '@clerk/nextjs'
-import { Navbar } from '@/components/Navbar';
+"use client"
+
+import "./globals.css"
+import { Navbar } from "../components/navbar"
+
+// Client wrapper for breadcrumb
+import dynamic from "next/dynamic"
+
+const GlobalBreadcrumb = dynamic(() => import("./_GlobalBreadcrumb"), { ssr: false })
 
 export default function RootLayout({
   children,
@@ -8,13 +14,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`antialiased bg-background font-arial`}>
-          <Navbar />
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>
+        <Navbar />
+        <GlobalBreadcrumb />
+        <div className="max-w-[1200px] mx-auto px-4">{children}</div>
+      </body>
+    </html>
   )
 }

@@ -3,7 +3,7 @@ alwaysApply: true
 ---
 This project is a frontend project use:
 - Next 15 
-- TailwindCss v4 with Postcss
+- TailwindCss v3 with Postcss
 - Pnpm for package management
 - Typescript + eslint
 - Clerk for authentication

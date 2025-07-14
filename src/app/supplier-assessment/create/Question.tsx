@@ -1,9 +1,10 @@
 'use client';
 
 import { useFieldArray, useWatch } from 'react-hook-form';
-import { Trash, Plus, X } from 'lucide-react';
+import { Trash, Plus } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import AnswerComponent from './Answer';
+import { Button } from '@/src/components/ui/button';
 
 export default function QuestionComponent({ sectionIndex, questionIndex, control, register, removeQuestion, errors }: any) {
     const { fields: answerFields, append: appendAnswer, remove: removeAnswer } = useFieldArray({
@@ -25,9 +26,14 @@ export default function QuestionComponent({ sectionIndex, questionIndex, control
                     className="text-gray-900 bg-transparent border-b-2 flex-1 p-1"
                     rows={2}
                 />
-                <button type="button" onClick={() => removeQuestion(questionIndex)} className="text-gray-400 hover:text-error ml-4">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => removeQuestion(questionIndex)}
+                    className="text-gray-400 hover:text-error ml-4"
+                >
                     <Trash size={20} />
-                </button>
+                </Button>
             </div>
             {errors.sections?.[sectionIndex]?.questions?.[questionIndex]?.text && <p className="text-red-500 text-sm mt-1">{errors.sections[sectionIndex].questions[questionIndex].text.message}</p>}
 
@@ -58,10 +64,16 @@ export default function QuestionComponent({ sectionIndex, questionIndex, control
                             removeAnswer={removeAnswer}
                         />
                     ))}
-                    <button type="button" onClick={() => appendAnswer({ id: uuidv4(), text: '' })} className="text-primary hover:underline flex items-center space-x-2 mt-2 text-sm">
+                    <Button
+                        type="button"
+                        variant="link"
+                        size="sm"
+                        onClick={() => appendAnswer({ id: uuidv4(), text: '' })}
+                        className="mt-2"
+                    >
                         <Plus size={16} />
                         <span>Add Answer</span>
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>

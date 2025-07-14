@@ -10,6 +10,7 @@ import { Badge } from "@/src/components/ui/badge"
 import { useDataIntegrations } from '@/src/api/data-integration';
 import { GlobalLoading } from '@/src/components/global-loading';
 import { IntegrationMethod, PopularIntegration, RecentActivity } from '@/src/types/data-integration';
+import { ErrorComponent } from '@/src/components/ui/error';
 
 interface DataIntegrationsProps {
   onNavigateToUpload: () => void
@@ -25,7 +26,7 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
   }
 
   if (isError) {
-    return <div>Error loading data</div>;
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the data integrations. Please try again later." />;
   }
 
   if (!dataIntegrations) {

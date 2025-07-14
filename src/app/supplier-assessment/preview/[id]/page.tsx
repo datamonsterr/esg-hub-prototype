@@ -3,27 +3,16 @@
 import { Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGetAssessment } from '@/src/api/supplier-assessment';
-import { ArrowLeft, Edit, Send } from 'lucide-react';
-import { LoadingProgress } from '@/src/components/ui/loading-progress';
+import { ArrowLeft, Download } from 'lucide-react';
+import { Button } from '@/src/components/ui/button';
+import { GlobalLoading } from '@/src/components/global-loading';
+import { ErrorComponent } from '@/src/components/ui/error';
 
 export default function PreviewAssessmentPage() {
     return (
-        <Suspense fallback={<LoadingState />}>
+        <Suspense fallback={<GlobalLoading />}>
             <PreviewAssessment />
         </Suspense>
-    );
-}
-
-function LoadingState() {
-    return (
-        <div className="bg-gray-50 min-h-screen">
-            <main className="max-w-4xl mx-auto px-5 py-8">
-                <div className="flex flex-col items-center justify-center h-[600px] gap-4">
-                    <p className="text-gray-500">Loading assessment preview...</p>
-                    <LoadingProgress />
-                </div>
-            </main>
-        </div>
     );
 }
 
@@ -33,27 +22,21 @@ function PreviewAssessment() {
     const { assessment, isLoading, isError } = useGetAssessment(id as string);
 
     if (isLoading) {
-        return <LoadingState />;
+        return <GlobalLoading />;
     }
 
     if (isError || !assessment) {
         return (
-            <div className="bg-gray-50 min-h-screen">
-                <main className="max-w-4xl mx-auto px-5 py-8 text-center">
-                    <h1 className="text-2xl font-bold text-red-600">Failed to load assessment</h1>
-                    <p className="text-gray-600 mt-2">Could not retrieve the assessment details. It might have been deleted or the link is incorrect.</p>
-                    <button onClick={() => router.back()} className="mt-4 flex items-center mx-auto space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90">
-                        <ArrowLeft size={20} />
-                        <span>Go Back</span>
-                    </button>
-                </main>
-            </div>
+            <ErrorComponent
+                title="Failed to Load Assessment"
+                description="Could not retrieve the assessment details. It might have been deleted, or the link is incorrect."
+            />
         );
     }
 
     return (
         <div className="bg-gray-50 min-h-screen font-arial">
-            <main className="max-w-4xl mx-auto px-5 py-8">
+            <main className="px-5 py-8">
                 <PageHeader title={assessment.title} />
                 <div className="bg-white rounded-lg border border-border p-8">
                     <AssessmentDetails description={assessment.description} />
@@ -61,7 +44,6 @@ function PreviewAssessment() {
                         <Section key={section.id} title={section.title} questions={section.questions} />
                     ))}
                 </div>
-                <ActionButtons />
             </main>
         </div>
     );
@@ -75,10 +57,16 @@ function PageHeader({ title }: { title: string }) {
                 <h1 className="text-3xl font-medium text-gray-900">{title}</h1>
                 <p className="text-gray-600">Assessment Preview</p>
             </div>
-            <button onClick={() => router.back()} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
-                <ArrowLeft size={20} />
-                <span>Back</span>
-            </button>
+            <div className="flex items-center space-x-4">
+                <Button onClick={() => router.back()} variant="ghost">
+                    <ArrowLeft size={20} />
+                    <span>Back</span>
+                </Button>
+                <Button>
+                    <Download size={20} />
+                    <span>Export</span>
+                </Button>
+            </div>
         </div>
     );
 }
@@ -142,18 +130,3 @@ function Question({ question }: { question: any }) {
         </div>
     );
 }
-
-function ActionButtons() {
-    return (
-        <div className="mt-8 flex justify-end space-x-4">
-            <button className="flex items-center space-x-2 bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300">
-                <Edit size={20} />
-                <span>Edit</span>
-            </button>
-            <button className="flex items-center space-x-2 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90">
-                <Send size={20} />
-                <span>Submit Assessment</span>
-            </button>
-        </div>
-    );
-} 

@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { LoadingProgress } from '@/src/components/ui/loading-progress';
 import SectionComponent from './Section';
 import { TagInput } from '@/src/components/ui/TagInput';
+import { Button } from '@/src/components/ui/button';
+import { useToast } from '@/src/hooks/use-toast';
 
 export default function CreateAssessmentPage() {
   return (
@@ -32,6 +34,7 @@ function CreateAssessmentForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const templateId = searchParams.get('templateId');
+  const { showSuccessToast, showErrorToast } = useToast();
 
   const { template, isLoading: isTemplateLoading } = useGetTemplate(templateId || 'blank');
 
@@ -64,10 +67,10 @@ function CreateAssessmentForm() {
   const onSubmit: SubmitHandler<AssessmentTemplate> = async (data) => {
     try {
       await useCreateAssessment(data);
-      alert('Assessment created successfully!');
+      showSuccessToast('Assessment created successfully!');
       router.push('/supplier-assessment');
     } catch (error) {
-      alert('Failed to create assessment.');
+      showErrorToast('Failed to create assessment.');
       console.error(error);
     }
   };
@@ -106,14 +109,15 @@ function CreateAssessmentForm() {
               />
             ))}
 
-            <button
+            <Button
               type="button"
+              variant="link"
               onClick={() => appendSection({ id: uuidv4(), title: '', questions: [] })}
-              className="text-primary hover:underline flex items-center space-x-2 mt-6"
+              className="mt-6"
             >
               <Plus size={20} />
               <span>Add Section</span>
-            </button>
+            </Button>
           </div>
           <RightSidebar isSubmitting={isSubmitting} />
         </form>
@@ -134,10 +138,10 @@ function PageHeader() {
           Build a comprehensive sustainability assessment.
         </p>
       </div>
-      <button onClick={() => router.back()} className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+      <Button onClick={() => router.back()} variant="ghost">
         <ArrowLeft size={20} />
         <span>Back</span>
-      </button>
+      </Button>
     </div>
   );
 }
@@ -190,10 +194,10 @@ function ActionButtons({ isSubmitting }: { isSubmitting: boolean }) {
       <div id="action-buttons" className="bg-white rounded-lg border border-border p-4 mb-4">
         <h2 className="text-lg font-medium text-gray-900 mb-4">Actions</h2>
         <div className="space-y-3">
-          <button type="submit" disabled={isSubmitting} className="w-full flex items-center justify-center space-x-2 bg-primary text-white py-2.5 rounded-lg hover:bg-primary/90 disabled:bg-primary/50">
+          <Button type="submit" disabled={isSubmitting} className="w-full">
             <Save size={20} />
             <span>{isSubmitting ? 'Saving...' : 'Save Assessment'}</span>
-          </button>
+          </Button>
         </div>
       </div>
     );

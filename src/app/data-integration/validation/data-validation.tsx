@@ -9,6 +9,7 @@ import { Progress } from "@/src/components/ui/progress"
 import { useDataValidation } from '@/src/api/data-integration';
 import { GlobalLoading } from '@/src/components/global-loading';
 import { KeyHighlight, Actor, Action } from "@/src/types/data-validation"
+import { ErrorComponent } from '@/src/components/ui/error';
 
 interface DataValidationProps {
   onNavigateBack: () => void
@@ -23,7 +24,7 @@ export function DataValidation({ onNavigateBack }: DataValidationProps) {
   }
 
   if (isError) {
-    return <div>Error loading data</div>;
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the data validation. Please try again later." />;
   }
 
   if (!dataValidation) {

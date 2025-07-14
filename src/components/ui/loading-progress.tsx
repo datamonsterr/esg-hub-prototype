@@ -8,7 +8,7 @@ import { cn } from '@/src/lib/utils';
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
->(({ className, value, ...props }, ref) => (
+>(({ className, ...props }, ref) => (
   <ProgressPrimitive.Root
     ref={ref}
     className={cn(
@@ -18,8 +18,7 @@ const Progress = React.forwardRef<
     {...props}
   >
     <ProgressPrimitive.Indicator
-      className="h-full w-full flex-1 bg-primary transition-all"
-      style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      className="h-full w-full flex-1 bg-primary transition-all origin-left-right animate-indeterminate-progress"
     />
   </ProgressPrimitive.Root>
 ));
@@ -28,12 +27,5 @@ Progress.displayName = ProgressPrimitive.Root.displayName;
 export { Progress };
 
 export function LoadingProgress() {
-    const [progress, setProgress] = React.useState(13)
-   
-    React.useEffect(() => {
-      const timer = setTimeout(() => setProgress(66), 500)
-      return () => clearTimeout(timer)
-    }, [])
-   
-    return <Progress value={progress} className="w-1/3" />
+    return <Progress className="w-1/3" />
   } 

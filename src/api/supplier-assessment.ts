@@ -2,6 +2,8 @@ import useSWR from 'swr';
 import axiosInstance, { apiEndpoints } from './axios';
 import { Assessment, AssessmentTemplate, SupplierAssessmentPageData } from '../types/supplier-assessment';
 import { v4 as uuidv4 } from 'uuid';
+import { useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 const fetcher = (url: string) => axiosInstance.get(url).then(res => res.data);
 
@@ -10,6 +12,48 @@ export function useSupplierAssessments() {
 
   return {
     assessments: data,
+    isLoading,
+    isError: error,
+  };
+}
+
+export function useSearchAssessments() {
+  const searchParams = useSearchParams();
+  const title = searchParams.get('title');
+  const pageStr = searchParams.get('page');
+  const limitStr = searchParams.get('limit');
+
+  const page = pageStr && /^\d+$/.test(pageStr) ? parseInt(pageStr, 10) : 1;
+  const limit = limitStr && /^\d+$/.test(limitStr) ? parseInt(limitStr, 10) : 9;
+  
+  const { data: allAssessments, error, isLoading } = useSWR<Assessment[]>(apiEndpoints.supplierAssessments, fetcher);
+
+  const searchResult = useMemo(() => {
+    if (!allAssessments) {
+      return {
+        assessments: [],
+        totalAssessments: 0,
+        totalPages: 0,
+      };
+    }
+
+    const filtered = allAssessments.filter(assessment =>
+      title ? assessment.title.toLowerCase().includes(title.toLowerCase()) : true
+    );
+
+    const totalAssessments = filtered.length;
+    const totalPages = Math.ceil(totalAssessments / limit);
+    const paginated = filtered.slice((page - 1) * limit, page * limit);
+
+    return {
+      assessments: paginated,
+      totalAssessments,
+      totalPages,
+    };
+  }, [allAssessments, title, page, limit]);
+
+  return {
+    ...searchResult,
     isLoading,
     isError: error,
   };

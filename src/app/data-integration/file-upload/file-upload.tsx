@@ -19,6 +19,8 @@ import { Alert, AlertDescription } from "@/src/components/ui/alert"
 import { useFileUpload } from '@/src/api/data-integration';
 import { GlobalLoading } from '@/src/components/global-loading';
 import { FileType } from '@/src/types/file-upload';
+import { ErrorComponent } from '@/src/components/ui/error';
+import { useToast } from '@/src/hooks/use-toast';
 
 interface FileUploadProps {
   onNavigateBack: () => void
@@ -31,6 +33,7 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { fileUpload, isLoading, isError } = useFileUpload();
+  const { showErrorToast } = useToast();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -61,69 +64,12 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
   }
 
   if (isError) {
-    return <div>Error loading data</div>;
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the file upload data. Please try again later." />;
   }
 
   if (!fileUpload) {
     return null;
   }
-
-  const fileTypes = [
-    {
-      id: "excel",
-      title: "Excel Files",
-      description: "Upload .xlsx or .xls spreadsheets with structured ESG data",
-      icon: faFileExcel,
-      iconColor: "text-green-600",
-      badge: "Recommended",
-      badgeColor: "bg-green-100 text-green-800",
-    },
-    {
-      id: "csv",
-      title: "CSV Files",
-      description: "Comma-separated value files for tabular data import",
-      icon: faFileCsv,
-      iconColor: "text-blue-600",
-      badge: "Fast Processing",
-      badgeColor: "bg-blue-100 text-blue-800",
-    },
-    {
-      id: "pdf",
-      title: "PDF Documents",
-      description: "Reports, certificates, and other PDF documents",
-      icon: faFilePdf,
-      iconColor: "text-red-600",
-      badge: "AI Powered",
-      badgeColor: "bg-red-100 text-red-800",
-    },
-    {
-      id: "word",
-      title: "Word Documents",
-      description: "Text documents with ESG policies and procedures",
-      icon: faFileWord,
-      iconColor: "text-purple-600",
-      badge: "Text Extraction",
-      badgeColor: "bg-purple-100 text-purple-800",
-    },
-    {
-      id: "images",
-      title: "Images",
-      description: "Photos of certificates, charts, or document scans",
-      icon: faFileImage,
-      iconColor: "text-yellow-600",
-      badge: "OCR Ready",
-      badgeColor: "bg-yellow-100 text-yellow-800",
-    },
-    {
-      id: "multiple",
-      title: "Multiple Files",
-      description: "Upload multiple files of different types at once",
-      icon: faFile,
-      iconColor: "text-gray-600",
-      badge: "Batch Upload",
-      badgeColor: "bg-gray-100 text-gray-800",
-    },
-  ]
 
   const handleFileTypeSelect = (typeId: string) => {
     setSelectedFileTypes((prev) => (prev.includes(typeId) ? prev.filter((id) => id !== typeId) : [...prev, typeId]));
@@ -138,7 +84,7 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
 
   const handleStartUpload = () => {
     if (uploadedFiles.length === 0) {
-      alert("Please select files to upload first.")
+      showErrorToast("Please select files to upload first.")
       return
     }
     onNavigateToValidation()

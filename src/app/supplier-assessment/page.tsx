@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSupplierAssessments, useSupplierAssessmentPage } from '@/src/api/supplier-assessment';
+import { useSearchAssessments, useSupplierAssessmentPage } from '@/src/api/supplier-assessment';
 import { Assessment, Template } from '@/src/types/supplier-assessment';
 import {
   Search,
@@ -21,10 +21,13 @@ import {
 import { Button } from '@/src/components/ui/button';
 import { GlobalLoading } from '@/src/components/global-loading';
 import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
+import { ErrorComponent } from '@/src/components/ui/error';
+import { useRouter } from 'next/navigation';
+import debounce from 'lodash.debounce';
 
 export default function SupplierAssessmentPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { assessments, isLoading: isLoadingAssessments, isError: isErrorAssessments } = useSupplierAssessments();
+  const { assessments, totalPages, isLoading, isError } = useSearchAssessments();
   const { pageData, isLoading: isLoadingPageData, isError: isErrorPageData } = useSupplierAssessmentPage();
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
 
@@ -34,12 +37,12 @@ export default function SupplierAssessmentPage() {
     }
   }, [pageData]);
 
-  if (isLoadingAssessments || isLoadingPageData) {
+  if (isLoading || isLoadingPageData) {
     return <GlobalLoading />;
   }
 
-  if (isErrorAssessments || isErrorPageData) {
-    return <div>Error loading data</div>;
+  if (isError || isErrorPageData) {
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the supplier assessment data. Please try again later." />;
   }
   
   return (
@@ -48,7 +51,7 @@ export default function SupplierAssessmentPage() {
         <PageHeader onOpenModal={() => setIsModalOpen(true)} />
         {pageData && <SearchAndFilter filters={pageData.FILTERS} />}
         <AssessmentGrid assessments={assessments || []} />
-        <Pagination />
+        <Pagination totalPages={totalPages} />
       </main>
       {pageData && selectedTemplate && (
         <CreateAssessmentModal
@@ -89,6 +92,19 @@ function PageHeader({ onOpenModal }: { onOpenModal: () => void }) {
 }
 
 function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: string[] } }) {
+  const router = useRouter();
+
+  const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const params = new URLSearchParams(window.location.search);
+    if (e.target.value) {
+      params.set('title', e.target.value);
+    } else {
+      params.delete('title');
+    }
+    params.set('page', '1');
+    router.push(`?${params.toString()}`);
+  }, 300);
+
   return (
     <section id="search-filter" className="mb-8">
       <div className="bg-white rounded-lg border border-border p-6">
@@ -99,6 +115,7 @@ function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: s
               <input
                 type="text"
                 placeholder="Search assessments..."
+                onChange={handleSearch}
                 className="w-full pl-10 pr-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
@@ -114,10 +131,10 @@ function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: s
                 ))}
               </select>
             ))}
-            <button className="px-6 py-3 border border-border rounded-md hover:bg-gray-50 flex items-center space-x-2">
+            <Button variant="outline">
               <Filter className="w-5 h-5" />
               <span>Filters</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -187,9 +204,9 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-gray-400 hover:text-gray-600">
+              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <MoreHorizontal />
-              </button>
+              </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>Edit</DropdownMenuItem>
@@ -249,18 +266,41 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
   }
   
 
-function Pagination() {
+function Pagination({ totalPages }: { totalPages: number }) {
+  const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    const params = new URLSearchParams(window.location.search);
+    params.set('page', newPage.toString());
+    router.push(`?${params.toString()}`);
+  }
+
   return (
-    <section id="pagination" className="flex items-center justify-between">
-      <p className="text-sm text-gray-500">Showing 1-6 of 24 assessments</p>
-      <div className="flex items-center space-x-4">
-        <button className="text-gray-500 hover:text-gray-700">
-          <ChevronLeft />
-        </button>
-        <button className="text-gray-500 hover:text-gray-700">
-          <ChevronRight />
-        </button>
-      </div>
+    <section id="pagination" className="flex justify-end items-center space-x-4">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="h-8 w-8"
+      >
+        <ChevronLeft />
+      </Button>
+      <span className="text-sm">
+        Page {currentPage} of {totalPages}
+      </span>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="h-8 w-8"
+      >
+        <ChevronRight />
+      </Button>
     </section>
   );
 }

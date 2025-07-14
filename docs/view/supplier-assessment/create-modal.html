@@ -1,0 +1,1246 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+
+      body {
+
+        font-family: 'Inter', sans-serif !important;
+
+      }
+
+      
+
+      /* Preserve Font Awesome icons */
+
+      .fa, .fas, .far, .fal, .fab {
+
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+
+      }
+
+    </style><style>
+
+  .highlighted-section {
+
+    outline: 2px solid #3F20FB;
+
+    background-color: rgba(63, 32, 251, 0.1);
+
+  }
+
+
+
+  .edit-button {
+
+    position: absolute;
+
+    z-index: 1000;
+
+  }
+
+
+
+  ::-webkit-scrollbar {
+
+    display: none;
+
+  }
+
+
+
+  html, body {
+
+    -ms-overflow-style: none;
+
+    scrollbar-width: none;
+
+  }
+
+  </style></head>
+
+<body class="bg-gray-50 font-arial text-base">
+
+
+
+    <!-- Main Content (Dimmed) -->
+
+    <div class="opacity-30 pointer-events-none">
+
+        <!-- Navigation Bar -->
+
+        <nav id="header" class="bg-white border-b border-border">
+
+            <div class="max-w-7xl mx-auto px-5">
+
+                <div class="flex items-center justify-between h-16">
+
+                    <div class="flex items-center space-x-8">
+
+                        <div class="flex items-center">
+
+                            <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+
+                                <i class="fas fa-leaf text-white text-sm"></i>
+
+                            </div>
+
+                            <span class="ml-2 text-xl font-medium text-gray-900">ESG Hub</span>
+
+                        </div>
+
+                        <div class="hidden md:flex space-x-6">
+
+                            <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Suppliers</span>
+
+                            <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer">Supplier Assessment</span>
+
+                            <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Traceability</span>
+
+                            <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integration</span>
+
+                            <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+
+                        <button class="text-gray-500 hover:text-gray-700">
+
+                            <i class="fas fa-bell text-lg"></i>
+
+                        </button>
+
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+
+        <main class="max-w-7xl mx-auto px-5 py-8">
+
+            
+
+            <!-- Header Section -->
+
+            <section id="page-header" class="mb-8">
+
+                <div class="flex items-center justify-between">
+
+                    <div>
+
+                        <h1 class="text-3xl font-medium text-gray-900 mb-2">Supplier Assessment</h1>
+
+                        <p class="text-gray-600">Evaluate supplier risks, material origins, and tariff implications for strategic sourcing decisions</p>
+
+                    </div>
+
+                    <button id="create-assessment-btn" class="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90 flex items-center space-x-2">
+
+                        <i class="fas fa-plus"></i>
+
+                        <span>Create New Assessment</span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Search and Filter -->
+
+            <section id="search-filter" class="mb-8">
+
+                <div class="bg-white rounded-lg border border-border p-6">
+
+                    <div class="flex flex-col md:flex-row gap-4">
+
+                        <div class="flex-1">
+
+                            <div class="relative">
+
+                                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+
+                                <input type="text" placeholder="Search assessments..." class="w-full pl-10 pr-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+
+                            </div>
+
+                        </div>
+
+                        <div class="flex gap-4">
+
+                            <select class="px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+
+                                <option>All Topics</option>
+
+                                <option>Environmental</option>
+
+                                <option>Social</option>
+
+                                <option>Governance</option>
+
+                            </select>
+
+                            <select class="px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+
+                                <option>All Creators</option>
+
+                                <option>John Smith</option>
+
+                                <option>Sarah Johnson</option>
+
+                                <option>Mike Chen</option>
+
+                            </select>
+
+                            <button class="px-6 py-3 border border-border rounded-md hover:bg-gray-50 flex items-center space-x-2">
+
+                                <i class="fas fa-filter"></i>
+
+                                <span>Filters</span>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Assessment Grid -->
+
+            <section id="assessment-grid" class="mb-8">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                    
+
+                    <!-- Assessment Card 1 -->
+
+                    <div id="assessment-card-1" class="bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow cursor-pointer">
+
+                        <div class="flex items-start justify-between mb-4">
+
+                            <div class="flex items-center space-x-2">
+
+                                <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-globe-americas text-red-600 text-sm"></i>
+
+                                </div>
+
+                                <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Tariff Risk</span>
+
+                            </div>
+
+                            <button class="text-gray-400 hover:text-gray-600">
+
+                                <i class="fas fa-ellipsis-h"></i>
+
+                            </button>
+
+                        </div>
+
+                        
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">China Supplier Tariff Impact 2024</h3>
+
+                        <p class="text-gray-600 text-sm mb-4">Assessment of potential tariff increases on Chinese textile suppliers and cost implications</p>
+
+                        
+
+                        <div class="space-y-2 mb-4">
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Created:</span>
+
+                                <span class="text-gray-900">Nov 15, 2024</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Creator:</span>
+
+                                <span class="text-gray-900">Sarah Johnson</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Last Updated:</span>
+
+                                <span class="text-gray-900">Nov 20, 2024</span>
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <div class="flex flex-wrap gap-1 mb-4">
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">China</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Textiles</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Cost Analysis</span>
+
+                        </div>
+
+                        
+
+                        <div class="flex items-center justify-between">
+
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Complete</span>
+
+                            <button class="text-primary text-sm font-medium hover:underline">View Details →</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Assessment Card 2 -->
+
+                    <div id="assessment-card-2" class="bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow cursor-pointer">
+
+                        <div class="flex items-start justify-between mb-4">
+
+                            <div class="flex items-center space-x-2">
+
+                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-map-marked-alt text-blue-600 text-sm"></i>
+
+                                </div>
+
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Origin Mapping</span>
+
+                            </div>
+
+                            <button class="text-gray-400 hover:text-gray-600">
+
+                                <i class="fas fa-ellipsis-h"></i>
+
+                            </button>
+
+                        </div>
+
+                        
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Cotton Material Origin Analysis</h3>
+
+                        <p class="text-gray-600 text-sm mb-4">Tracing cotton material sources and evaluating geopolitical supply chain risks</p>
+
+                        
+
+                        <div class="space-y-2 mb-4">
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Created:</span>
+
+                                <span class="text-gray-900">Nov 10, 2024</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Creator:</span>
+
+                                <span class="text-gray-900">John Smith</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Last Updated:</span>
+
+                                <span class="text-gray-900">Nov 18, 2024</span>
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <div class="flex flex-wrap gap-1 mb-4">
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Cotton</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Origin Tracking</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Supply Chain</span>
+
+                        </div>
+
+                        
+
+                        <div class="flex items-center justify-between">
+
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Draft</span>
+
+                            <button class="text-primary text-sm font-medium hover:underline">View Details →</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Assessment Card 3 -->
+
+                    <div id="assessment-card-3" class="bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow cursor-pointer">
+
+                        <div class="flex items-start justify-between mb-4">
+
+                            <div class="flex items-center space-x-2">
+
+                                <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-exchange-alt text-orange-600 text-sm"></i>
+
+                                </div>
+
+                                <span class="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded">Diversification</span>
+
+                            </div>
+
+                            <button class="text-gray-400 hover:text-gray-600">
+
+                                <i class="fas fa-ellipsis-h"></i>
+
+                            </button>
+
+                        </div>
+
+                        
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Alternative Supplier Evaluation</h3>
+
+                        <p class="text-gray-600 text-sm mb-4">Assessment of Vietnam and Bangladesh suppliers as China alternatives</p>
+
+                        
+
+                        <div class="space-y-2 mb-4">
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Created:</span>
+
+                                <span class="text-gray-900">Nov 5, 2024</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Creator:</span>
+
+                                <span class="text-gray-900">Mike Chen</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Last Updated:</span>
+
+                                <span class="text-gray-900">Nov 12, 2024</span>
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <div class="flex flex-wrap gap-1 mb-4">
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Vietnam</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Bangladesh</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Risk Mitigation</span>
+
+                        </div>
+
+                        
+
+                        <div class="flex items-center justify-between">
+
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Draft</span>
+
+                            <button class="text-primary text-sm font-medium hover:underline">View Details →</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Assessment Card 4 -->
+
+                    <div id="assessment-card-4" class="bg-white rounded-lg border border-border p-6 hover:shadow-lg transition-shadow cursor-pointer">
+
+                        <div class="flex items-start justify-between mb-4">
+
+                            <div class="flex items-center space-x-2">
+
+                                <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-chart-line text-yellow-600 text-sm"></i>
+
+                                </div>
+
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded">Risk Mitigation</span>
+
+                            </div>
+
+                            <button class="text-gray-400 hover:text-gray-600">
+
+                                <i class="fas fa-ellipsis-h"></i>
+
+                            </button>
+
+                        </div>
+
+                        
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Supplier Risk Assessment</h3>
+
+                        <p class="text-gray-600 text-sm mb-4">Assessment of supplier risk factors including labor practices, environmental impact, and compliance measures</p>
+
+                        
+
+                        <div class="space-y-2 mb-4">
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Created:</span>
+
+                                <span class="text-gray-900">Nov 1, 2024</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Creator:</span>
+
+                                <span class="text-gray-900">Sarah Johnson</span>
+
+                            </div>
+
+                            <div class="flex justify-between text-sm">
+
+                                <span class="text-gray-500">Last Updated:</span>
+
+                                <span class="text-gray-900">Nov 15, 2024</span>
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <div class="flex flex-wrap gap-1 mb-4">
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Labor Practices</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Environmental Impact</span>
+
+                            <span class="px-2 py-1 bg-secondary/50 text-primary text-xs rounded">Compliance Measures</span>
+
+                        </div>
+
+                        
+
+                        <div class="flex items-center justify-between">
+
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Complete</span>
+
+                            <button class="text-primary text-sm font-medium hover:underline">View Details →</button>
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+
+            </section>
+
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- Modal Overlay -->
+
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+
+        
+
+        <!-- Create New Assessment Modal -->
+
+        <div id="create-assessment-modal" class="bg-white rounded-lg shadow-xl max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+
+            
+
+            <!-- Modal Header -->
+
+            <div class="flex items-center justify-between p-6 border-b border-border">
+
+                <h2 class="text-xl font-medium text-gray-900">Create New Assessment</h2>
+
+                <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+
+                    <i class="fas fa-times text-xl"></i>
+
+                </button>
+
+            </div>
+
+            
+
+            <!-- Modal Content -->
+
+            <div class="flex h-[600px]">
+
+                
+
+                <!-- Left Side - Template List -->
+
+                <div class="w-1/2 p-6 border-r border-border">
+
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Select Template</h3>
+
+                    <div class="space-y-3 overflow-y-auto max-h-[500px] pr-2" style="scrollbar-width: thin; scrollbar-color: #E3E6EA transparent;">
+
+                        
+
+                        <!-- Blank Template (Pinned) -->
+
+                        <div id="blank-template" class="border-2 border-primary bg-primary/5 rounded-lg p-4 cursor-pointer transition-colors">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-secondary/50 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-plus text-primary text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Create Blank Assessment</h4>
+
+                                    <p class="text-sm text-gray-600">Start from scratch</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-primary font-medium">
+
+                                <i class="fas fa-star mr-1"></i>Recommended
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <!-- Template 1 -->
+
+                        <div class="template-item border border-border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-template="template1">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-certificate text-primary text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Certificate of Origin Assessment</h4>
+
+                                    <p class="text-sm text-gray-600">Traceability • Created by Sarah Johnson</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-gray-500">
+
+                                Last used: Mar 15, 2024
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <!-- Template 2 -->
+
+                        <div class="template-item border border-border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-template="template2">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-file-invoice text-blue-600 text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Materials Invoice Verification</h4>
+
+                                    <p class="text-sm text-gray-600">Traceability • Created by John Smith</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-gray-500">
+
+                                Last used: Mar 10, 2024
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <!-- Template 3 -->
+
+                        <div class="template-item border border-border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-template="template3">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-list-alt text-purple-600 text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Bill of Materials Tracking</h4>
+
+                                    <p class="text-sm text-gray-600">Traceability • Created by Mike Chen</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-gray-500">
+
+                                Last used: Mar 5, 2024
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <!-- Template 4 -->
+
+                        <div class="template-item border border-border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-template="template4">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-route text-green-600 text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Supply Chain Journey Mapping</h4>
+
+                                    <p class="text-sm text-gray-600">Traceability • Created by Lisa Wong</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-gray-500">
+
+                                Last used: Feb 28, 2024
+
+                            </div>
+
+                        </div>
+
+                        
+
+                        <!-- Template 5 -->
+
+                        <div class="template-item border border-border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-template="template5">
+
+                            <div class="flex items-center space-x-3">
+
+                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+
+                                    <i class="fas fa-barcode text-orange-600 text-lg"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <h4 class="font-medium text-gray-900">Product Batch Tracking</h4>
+
+                                    <p class="text-sm text-gray-600">Traceability • Created by David Kim</p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mt-2 text-xs text-gray-500">
+
+                                Last used: Feb 20, 2024
+
+                            </div>
+
+                        </div>
+
+                        
+
+                    </div>
+
+                </div>
+
+                
+
+                <!-- Right Side - Preview -->
+
+                <div class="w-1/2 p-6 bg-gray-50">
+
+                    
+
+                    <!-- Blank Preview -->
+
+                    <div id="blank-preview" class="preview-content">
+
+                        <div class="text-center py-12">
+
+                            <div class="w-16 h-16 bg-secondary/50 rounded-lg flex items-center justify-center mx-auto mb-4">
+
+                                <i class="fas fa-plus text-primary text-2xl"></i>
+
+                            </div>
+
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Create Blank Assessment</h3>
+
+                            <p class="text-gray-600 mb-6">Start from scratch and build your assessment from the ground up with complete customization.</p>
+
+                            
+
+                            <div class="bg-white rounded-lg p-4 mb-6">
+
+                                <h4 class="font-medium text-gray-900 mb-3">What you'll get:</h4>
+
+                                <ul class="text-sm text-gray-600 space-y-2 text-left">
+
+                                    <li class="flex items-center"><i class="fas fa-check text-primary mr-2"></i>Empty assessment template</li>
+
+                                    <li class="flex items-center"><i class="fas fa-check text-primary mr-2"></i>Full customization options</li>
+
+                                    <li class="flex items-center"><i class="fas fa-check text-primary mr-2"></i>All question types available</li>
+
+                                    <li class="flex items-center"><i class="fas fa-check text-primary mr-2"></i>Custom scoring system</li>
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- Template Previews -->
+
+                    <div id="template1-preview" class="preview-content hidden">
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Certificate of Origin Assessment</h3>
+
+                        <div class="bg-white rounded-lg p-4 mb-4">
+
+                            <div class="flex items-center space-x-2 mb-3">
+
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Traceability</span>
+
+                                <span class="text-sm text-gray-500">38 Questions</span>
+
+                            </div>
+
+                            <p class="text-sm text-gray-600 mb-4">Comprehensive verification of product origin documentation including country of origin, manufacturing location, and certification compliance.</p>
+
+                            <div class="space-y-2">
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Sections:</span>
+
+                                    <span class="text-gray-900">5</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Estimated time:</span>
+
+                                    <span class="text-gray-900">1.5-2 hours</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Completion rate:</span>
+
+                                    <span class="text-gray-900">89%</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4">
+
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Questions:</h4>
+
+                            <ul class="text-sm text-gray-600 space-y-1">
+
+                                <li>• Are certificates of origin properly documented?</li>
+
+                                <li>• Do you verify manufacturing country claims?</li>
+
+                                <li>• Are trade compliance requirements met?</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div id="template2-preview" class="preview-content hidden">
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Materials Invoice Verification</h3>
+
+                        <div class="bg-white rounded-lg p-4 mb-4">
+
+                            <div class="flex items-center space-x-2 mb-3">
+
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Traceability</span>
+
+                                <span class="text-sm text-gray-500">42 Questions</span>
+
+                            </div>
+
+                            <p class="text-sm text-gray-600 mb-4">Assessment of materials invoice accuracy and traceability including supplier verification, pricing validation, and documentation completeness.</p>
+
+                            <div class="space-y-2">
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Sections:</span>
+
+                                    <span class="text-gray-900">6</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Estimated time:</span>
+
+                                    <span class="text-gray-900">2-2.5 hours</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Completion rate:</span>
+
+                                    <span class="text-gray-900">84%</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4">
+
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Questions:</h4>
+
+                            <ul class="text-sm text-gray-600 space-y-1">
+
+                                <li>• Are material invoices properly itemized?</li>
+
+                                <li>• Do you verify supplier credentials?</li>
+
+                                <li>• Are pricing discrepancies investigated?</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div id="template3-preview" class="preview-content hidden">
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Bill of Materials Tracking</h3>
+
+                        <div class="bg-white rounded-lg p-4 mb-4">
+
+                            <div class="flex items-center space-x-2 mb-3">
+
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Traceability</span>
+
+                                <span class="text-sm text-gray-500">35 Questions</span>
+
+                            </div>
+
+                            <p class="text-sm text-gray-600 mb-4">Comprehensive tracking of bill of materials including component sourcing, material specifications, and supply chain transparency.</p>
+
+                            <div class="space-y-2">
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Sections:</span>
+
+                                    <span class="text-gray-900">4</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Estimated time:</span>
+
+                                    <span class="text-gray-900">1.5-2 hours</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Completion rate:</span>
+
+                                    <span class="text-gray-900">91%</span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4">
+
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Questions:</h4>
+
+                            <ul class="text-sm text-gray-600 space-y-1">
+
+                                <li>• Are all components properly documented?</li>
+
+                                <li>• Do you track material composition percentages?</li>
+
+                                <li>• Are alternative materials identified?</li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div id="template4-preview" class="preview-content hidden">
+
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Supply Chain Journey Mapping</h3>
+
+                        <div class="bg-white rounded-lg p-4 mb-4">
+
+                            <div class="flex items-center space-x-2 mb-3">
+
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Traceability</span>
+
+                                <span class="text-sm text-gray-500">48 Questions</span>
+
+                            </div>
+
+                            <p class="text-sm text-gray-600 mb-4">Detailed mapping of supply chain journey from raw materials to finished products including transportation, processing, and handling stages.</p>
+
+                            <div class="space-y-2">
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Sections:</span>
+
+                                    <span class="text-gray-900">7</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+
+                                    <span class="text-gray-500">Estimated time:</span>
+
+                                    <span class="text-gray-900">2.5-3 hours</span>
+
+                                </div>
+
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Completion rate:</span>
+                                    <span class="text-gray-900">76%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Questions:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Are all supply chain stages documented?</li>
+                                <li>• Do you track transportation methods?</li>
+                                <li>• Are processing facilities verified?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="template5-preview" class="preview-content hidden">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Product Batch Tracking</h3>
+                        <div class="bg-white rounded-lg p-4 mb-4">
+                            <div class="flex items-center space-x-2 mb-3">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">Traceability</span>
+                                <span class="text-sm text-gray-500">40 Questions</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">Assessment of product batch tracking systems including lot numbers, production dates, quality control records, and recall procedures.</p>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Sections:</span>
+                                    <span class="text-gray-900">5</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Estimated time:</span>
+                                    <span class="text-gray-900">2-2.5 hours</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-500">Completion rate:</span>
+                                    <span class="text-gray-900">88%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Sample Questions:</h4>
+                            <ul class="text-sm text-gray-600 space-y-1">
+                                <li>• Are batch numbers properly assigned?</li>
+                                <li>• Do you maintain production date records?</li>
+                                <li>• Are recall procedures documented?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end space-x-3 p-6 border-t border-border">
+                <button id="cancel-btn" class="px-6 py-2 text-gray-700 border border-border rounded-md hover:bg-gray-50">
+                    Cancel
+                </button>
+                <button id="create-btn" class="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
+                    Create Assessment
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const templateOption = document.getElementById('template-option');
+        const blankOption = document.getElementById('blank-option');
+        const templateSelection = document.getElementById('template-selection');
+        const assessmentForm = document.getElementById('assessment-form');
+        const createBtn = document.getElementById('create-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const closeModal = document.getElementById('close-modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        templateOption.addEventListener('click', () => {
+
+            templateOption.classList.add('border-primary', 'bg-primary/5');
+
+            blankOption.classList.remove('border-primary', 'bg-primary/5');
+            templateSelection.classList.remove('hidden');
+            assessmentForm.classList.add('hidden');
+            createBtn.textContent = 'Duplicate Template';
+        });
+        blankOption.addEventListener('click', () => {
+            blankOption.classList.add('border-primary', 'bg-primary/5');
+            templateOption.classList.remove('border-primary', 'bg-primary/5');
+            templateSelection.classList.add('hidden');
+            assessmentForm.classList.remove('hidden');
+            createBtn.textContent = 'Create Assessment';
+        });
+        document.querySelectorAll('input[name="template"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                assessmentForm.classList.remove('hidden');
+            });
+        });
+        function closeModalFunc() {
+            modalOverlay.classList.add('hidden');
+        }
+        closeModal.addEventListener('click', closeModalFunc);
+        cancelBtn.addEventListener('click', closeModalFunc);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModalFunc();
+            }
+        });
+    </script>
+</body></html>

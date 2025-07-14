@@ -1,31 +1,45 @@
-"use client"
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
+import { ModalProvider } from '@/src/context/modal/modal-provider';
+import { Navbar } from '@/src/components/navbar';
+import GlobalBreadcrumb from '@/src/app/_GlobalBreadcrumb';
 
-import "./globals.css"
-import { ClerkProvider } from "@clerk/nextjs"
-import { Navbar } from "../components/navbar"
-import { ModalProvider } from "@/src/context/modal/modal-provider"
+const inter = Inter({ subsets: ['latin'] });
 
-// Client wrapper for breadcrumb
-import dynamic from "next/dynamic"
-
-const GlobalBreadcrumb = dynamic(() => import("./_GlobalBreadcrumb"), { ssr: false })
+export const metadata: Metadata = {
+  title: 'ESG Hub',
+  description: 'ESG Hub Prototype',
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <head>
+          <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+          />
+        </head>
+        <body className={inter.className}>
           <ModalProvider>
             <Navbar />
             <GlobalBreadcrumb />
-            <div className="max-w-[1200px] mx-auto px-4">{children}</div>
+            <main className="h-full max-w-[1200px] mx-auto px-4">
+              {children}
+            </main>
           </ModalProvider>
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

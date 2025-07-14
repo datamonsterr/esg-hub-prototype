@@ -10,7 +10,13 @@ const labelMap: Record<string, string> = {
   "data-management": "Data Management",
   "traceability-request": "Traceability Request",
   "reports": "Reports",
+  "supplier-assessment": "Supplier Assessment",
 }
+
+const isDynamicId = (segment: string) => {
+  // Checks if the segment is a number or a long alphanumeric string (like a CUID or UUID)
+  return /^\d+$/.test(segment) || (segment.length > 10 && /[a-zA-Z]/.test(segment) && /\d/.test(segment));
+};
 
 export default function GlobalBreadcrumb() {
   const pathname = usePathname()
@@ -21,12 +27,18 @@ export default function GlobalBreadcrumb() {
   const items: { label: string; href?: string }[] = [{ label: "Home", href: "/" }]
 
   let cumulativePath = ""
-  segments.forEach((segment, index) => {
+  segments.forEach((segment) => {
     cumulativePath += `/${segment}`
-    const isLast = index === segments.length - 1
+    if (isDynamicId(segment)) return; // Skip dynamic IDs
+
     const label = labelMap[segment] || segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-    items.push({ label, href: isLast ? undefined : cumulativePath })
+    items.push({ label, href: cumulativePath })
   })
+
+  // Set the last item's href to undefined
+  if (items.length > 1) {
+    items[items.length - 1].href = undefined;
+  }
 
   // Hide breadcrumb on root path
   if (items.length <= 1) return null

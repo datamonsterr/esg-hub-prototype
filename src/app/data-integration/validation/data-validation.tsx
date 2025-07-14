@@ -6,152 +6,32 @@ import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
 import { Progress } from "@/src/components/ui/progress"
+import { useDataValidation } from '@/src/api/data-integration';
+import { GlobalLoading } from '@/src/components/global-loading';
+import { KeyHighlight, Actor, Action } from "@/src/types/data-validation"
 
 interface DataValidationProps {
   onNavigateBack: () => void
 }
 
 export function DataValidation({ onNavigateBack }: DataValidationProps) {
-  const [actors] = useState([
-    {
-      id: 1,
-      title: "Supplier",
-      description: "GreenTech Materials",
-      color: "bg-blue-50 text-blue-900",
-      dotColor: "bg-blue-500",
-    },
-    {
-      id: 2,
-      title: "Brand",
-      description: "EcoSustain Corp",
-      color: "bg-green-50 text-green-900",
-      dotColor: "bg-green-500",
-    },
-  ])
-
-  const [actions, setActions] = useState([
-    {
-      id: 1,
-      title: "Manufacturing",
-      code: "MFG-2024-001",
-      type: "manufacturing",
-      color: "bg-green-100 text-green-800",
-    },
-    {
-      id: 2,
-      title: "Transportation",
-      code: "TRN-2024-002",
-      type: "transportation",
-      color: "bg-yellow-100 text-yellow-800",
-    },
-    {
-      id: 3,
-      title: "Certification",
-      code: "CERT-2024-003",
-      type: "certification",
-      color: "bg-purple-100 text-purple-800",
-    },
-  ])
-
-  const [artifacts] = useState([
-    { id: 1, name: "Materials", code: "Carbon-ORG001", type: "materials", color: "bg-orange-100 text-orange-800" },
-    { id: 2, name: "Polyester-REC001", type: "substances", color: "bg-purple-100 text-purple-800" },
-    { id: 3, name: "Dye-NAT001", type: "products", color: "bg-blue-100 text-blue-800" },
-  ])
-
+  const { dataValidation, isLoading, isError } = useDataValidation();
   const [showHighlightPrompt, setShowHighlightPrompt] = useState(false)
 
-  const materialsData = [
-    {
-      id: "MAT-001",
-      name: "Organic Cotton",
-      origin: "India - Gujarat",
-      supplier: "GreenTech Materials",
-      certification: "GOTS Certified",
-      status: "verified",
-    },
-    {
-      id: "MAT-002",
-      name: "Recycled Polyester",
-      origin: "Japan - Osaka",
-      supplier: "EcoFiber Corp",
-      certification: "GRS Certified",
-      status: "verified",
-    },
-    {
-      id: "MAT-003",
-      name: "Natural Dyes",
-      origin: "Peru - Lima",
-      supplier: "Natural Colors Ltd",
-      certification: "OEKO-TEX",
-      status: "pending",
-    },
-  ]
+  if (isLoading) {
+    return <GlobalLoading />;
+  }
 
-  const suppliersData = [
-    {
-      id: "SUP-001",
-      company: "GreenTech Materials",
-      location: "Mumbai, India",
-      contact: "contact@greentech.in",
-      compliance: 98,
-      status: "verified",
-    },
-    {
-      id: "SUP-002",
-      company: "EcoFiber Corp",
-      location: "Osaka, Japan",
-      contact: "info@ecofiber.jp",
-      compliance: 95,
-      status: "verified",
-    },
-  ]
+  if (isError) {
+    return <div>Error loading data</div>;
+  }
 
-  const certificationsData = [
-    {
-      id: "CERT-001",
-      type: "GOTS",
-      issuingBody: "Global Organic Textile Standard",
-      issueDate: "2023-01-15",
-      expiryDate: "2025-01-15",
-      status: "valid",
-    },
-    {
-      id: "CERT-002",
-      type: "GRS",
-      issuingBody: "Global Recycled Standard",
-      issueDate: "2023-03-20",
-      expiryDate: "2025-03-20",
-      status: "valid",
-    },
-  ]
-
-  const keyHighlights = [
-    {
-      title: "100% of raw materials traced to certified sustainable sources",
-      percentage: 100,
-      status: "success",
-      suggestion: "Edit Prompt",
-      detail: "Change certification percentage to 98%",
-    },
-    {
-      title: "All supplier certificates validated and up-to-date with 95% compliance",
-      percentage: 95,
-      status: "info",
-      suggestion: "Suggested Prompts",
-      detail: "Delete this sentence",
-    },
-    {
-      title: "Complete traceability chain established for 87% of materials",
-      percentage: 87,
-      status: "warning",
-      suggestion: "Edit",
-      detail: "Change certification percentage to 90%",
-    },
-  ]
+  if (!dataValidation) {
+    return null;
+  }
 
   const removeAction = (id: number) => {
-    setActions(actions.filter((action) => action.id !== id))
+    // This will be implemented later
   }
 
   const getStatusIcon = (status: string) => {
@@ -292,7 +172,7 @@ export function DataValidation({ onNavigateBack }: DataValidationProps) {
             </div>
           )}
           <CardContent className="space-y-4">
-            {keyHighlights.map((highlight, index) => (
+            {dataValidation.keyHighlights.map((highlight: KeyHighlight, index: number) => (
               <div key={index} className={`border border-border-light rounded-brand p-4 ${getHighlightBackground(highlight.status)}`}>
                 <div className="flex items-start space-x-2 mb-2">
                   {getStatusIcon(highlight.status)}
@@ -312,173 +192,29 @@ export function DataValidation({ onNavigateBack }: DataValidationProps) {
           </CardContent>
         </Card>
 
-        {/* Extracted Data Tables */}
-        <div className="space-y-6">
-          {/* Materials Table */}
-          <Card className="border-border-light rounded-brand">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-medium">Materials</CardTitle>
-                <CardDescription>Data extracted from Materials sheet</CardDescription>
-              </div>
-              <Button variant="outline" size="sm" className="border-border-light rounded-brand bg-transparent">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Table
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Material ID</TableHead>
-                    <TableHead>Material Name</TableHead>
-                    <TableHead>Origin</TableHead>
-                    <TableHead>Supplier</TableHead>
-                    <TableHead>Certification</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {materialsData.map((material) => (
-                    <TableRow key={material.id}>
-                      <TableCell className="font-medium">{material.id}</TableCell>
-                      <TableCell>{material.name}</TableCell>
-                      <TableCell>{material.origin}</TableCell>
-                      <TableCell>{material.supplier}</TableCell>
-                      <TableCell>
-                        <span className={getStatusColor(material.status)}>{material.certification}</span>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" className="text-red-500">
-                          🗑️
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          {/* Suppliers Table */}
-          <Card className="border-border-light rounded-brand">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-medium">Suppliers</CardTitle>
-                <CardDescription>Data extracted from Suppliers sheet</CardDescription>
-              </div>
-              <Button variant="outline" size="sm" className="border-border-light rounded-brand bg-transparent">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Table
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Supplier ID</TableHead>
-                    <TableHead>Company Name</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Compliance Score</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {suppliersData.map((supplier) => (
-                    <TableRow key={supplier.id}>
-                      <TableCell className="font-medium">{supplier.id}</TableCell>
-                      <TableCell>{supplier.company}</TableCell>
-                      <TableCell>{supplier.location}</TableCell>
-                      <TableCell>{supplier.contact}</TableCell>
-                      <TableCell>
-                        <span className="text-green-600">{supplier.compliance}%</span>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" className="text-red-500">
-                          🗑️
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          {/* Certifications Table */}
-          <Card className="border-border-light rounded-brand">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-medium">Certifications</CardTitle>
-                <CardDescription>Data extracted from Certifications sheet</CardDescription>
-              </div>
-              <Button variant="outline" size="sm" className="border-border-light rounded-brand bg-transparent">
-                <Edit className="h-4 w-4 mr-2" />
-                Edit Table
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Certificate ID</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Issuing Body</TableHead>
-                    <TableHead>Issue Date</TableHead>
-                    <TableHead>Expiry Date</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {certificationsData.map((cert) => (
-                    <TableRow key={cert.id}>
-                      <TableCell className="font-medium">{cert.id}</TableCell>
-                      <TableCell>{cert.type}</TableCell>
-                      <TableCell>{cert.issuingBody}</TableCell>
-                      <TableCell>{cert.issueDate}</TableCell>
-                      <TableCell>{cert.expiryDate}</TableCell>
-                      <TableCell>
-                        <span className={getStatusColor(cert.status)}>{cert.status}</span>
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" className="text-red-500">
-                          🗑️
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
+        {/* Data Tables */}
+        <div className="space-y-8">
+          <DataTable title="Materials" data={dataValidation.materialsData} columns={["ID", "Name", "Origin", "Supplier", "Certification", "Status"]} />
+          <DataTable title="Suppliers" data={dataValidation.suppliersData} columns={["ID", "Company", "Location", "Contact", "Compliance", "Status"]} />
+          <DataTable title="Certifications" data={dataValidation.certificationsData} columns={["ID", "Type", "Issuing Body", "Issue Date", "Expiry Date", "Status"]} />
         </div>
       </div>
 
-      {/* Actions Sidebar - 1/3 width */}
-      <div className="space-y-6">
+      {/* Sidebar - 1/3 width */}
+      <div className="col-span-1 space-y-8">
         {/* Actors */}
         <Card className="border-border-light rounded-brand">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle className="text-lg font-medium">Actors</CardTitle>
-            <Button size="sm" className="bg-brand-primary hover:bg-brand-primary/90 rounded-full w-8 h-8 p-0">
-              <Plus className="h-4 w-4" />
-            </Button>
           </CardHeader>
           <CardContent className="space-y-3">
-            {actors.map((actor) => (
-              <div key={actor.id} className={`flex items-center justify-between p-3 rounded-brand ${actor.color}`}>
+            {dataValidation.actors.map((actor: Actor, index: number) => (
+              <div key={index} className={`p-3 rounded-brand ${actor.color}`}>
                 <div className="flex items-center space-x-2">
-                  <div className={`w-3 h-3 rounded-full ${actor.dotColor}`}></div>
-                  <div>
-                    <div className="font-medium text-sm">{actor.title}</div>
-                    <div className="text-xs text-gray-600">{actor.description}</div>
-                  </div>
+                  <div className={`w-2 h-2 rounded-full ${actor.dotColor}`}></div>
+                  <span className="font-medium text-sm">{actor.title}</span>
                 </div>
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-500">
-                  <X className="h-4 w-4" />
-                </Button>
+                <p className="text-xs ml-4">{actor.description}</p>
               </div>
             ))}
           </CardContent>
@@ -486,81 +222,49 @@ export function DataValidation({ onNavigateBack }: DataValidationProps) {
 
         {/* Actions */}
         <Card className="border-border-light rounded-brand">
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader>
             <CardTitle className="text-lg font-medium">Actions</CardTitle>
-            <Button size="sm" className="bg-brand-primary hover:bg-brand-primary/90 rounded-full w-8 h-8 p-0">
-              <Plus className="h-4 w-4" />
-            </Button>
           </CardHeader>
           <CardContent className="space-y-3">
-            {actions.map((action) => (
-              <div key={action.id} className={`flex items-center justify-between p-3 rounded-brand ${action.color}`}>
-                <div>
+            {dataValidation.actions.map((action: Action, index: number) => (
+              <div key={index} className={`p-3 rounded-brand ${action.color}`}>
                   <div className="font-medium text-sm">{action.title}</div>
-                  <div className="text-xs text-gray-600">{action.code}</div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeAction(action.id)}
-                  className="text-gray-400 hover:text-red-500"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <div className="text-xs">{action.code}</div>
               </div>
             ))}
-          </CardContent>
-        </Card>
-
-        {/* Artifacts */}
-        <Card className="border-border-light rounded-brand">
-          <CardHeader>
-            <CardTitle className="text-lg font-medium">Artifacts</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {['materials', 'substances', 'products'].map((category) => (
-              <div key={category} className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium capitalize">{category}</span>
-                  <Button size="sm" variant="ghost" className="text-brand-primary">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-                {artifacts.filter((a) => a.type === category).map((artifact) => (
-                  <div
-                    key={artifact.id}
-                    className={`flex items-center justify-between p-3 rounded-brand ${artifact.color}`}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                      <div>
-                        <div className="font-medium text-sm">{artifact.name}</div>
-                        {artifact.code && <div className="text-xs text-gray-600">{artifact.code}</div>}
-                      </div>
-                    </div>
-                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-red-500">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Final Actions */}
-        <Card className="border-border-light rounded-brand">
-          <CardHeader>
-            <CardTitle className="text-lg font-medium">Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="p-3 bg-green-50 rounded-brand">
-              <div className="font-medium text-sm text-green-800">Manufacturing</div>
-              <div className="text-xs text-green-600">MFG-2024-001</div>
-            </div>
           </CardContent>
         </Card>
       </div>
     </div>
+  )
+}
+
+function DataTable({ title, data, columns }: { title: string, data: any[], columns: string[] }) {
+  return (
+        <Card className="border-border-light rounded-brand">
+          <CardHeader>
+        <CardTitle className="text-lg font-medium">{title}</CardTitle>
+          </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {columns.map((col: string) => (
+                <TableHead key={col}>{col}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((row: any, rowIndex: number) => (
+              <TableRow key={rowIndex}>
+                {columns.map((col: string) => (
+                  <TableCell key={col}>{row[col.toLowerCase()]}</TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+          </CardContent>
+        </Card>
   )
 }

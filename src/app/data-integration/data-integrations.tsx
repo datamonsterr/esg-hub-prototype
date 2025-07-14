@@ -7,6 +7,9 @@ import { Input } from "@/src/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
+import { useDataIntegrations } from '@/src/api/data-integration';
+import { GlobalLoading } from '@/src/components/global-loading';
+import { IntegrationMethod, PopularIntegration, RecentActivity } from '@/src/types/data-integration';
 
 interface DataIntegrationsProps {
   onNavigateToUpload: () => void
@@ -15,56 +18,32 @@ interface DataIntegrationsProps {
 export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const { dataIntegrations, isLoading, isError } = useDataIntegrations();
 
-  const integrationMethods = [
-    {
-      icon: Database,
-      title: "Database Connection",
-      description: "Connect directly to your existing databases for real-time data sync",
-      tags: ["MySQL", "PostgreSQL", "MongoDB"],
-      action: "Set up connection",
-    },
-    {
-      icon: Upload,
-      title: "File Upload",
-      description: "Upload CSV, Excel files, or images with ESG data",
-      tags: ["CSV", "Excel", "PDF", "Images"],
-      action: "Upload files",
-      onClick: onNavigateToUpload,
-    },
-    {
-      icon: Webhook,
-      title: "API & Webhooks",
-      description: "Integrate via REST APIs or set up webhooks for automated data flow",
-      tags: ["REST API", "Webhooks", "GraphQL"],
-      action: "Configure API",
-    },
-  ]
+  if (isLoading) {
+    return <GlobalLoading />;
+  }
 
-  const popularIntegrations = [
-    { name: "Microsoft Excel", description: "Spreadsheet files", icon: "📊", color: "bg-green-50" },
-    { name: "Salesforce", description: "CRM data", icon: "☁️", color: "bg-blue-50" },
-    { name: "Power BI", description: "Analytics platform", icon: "📈", color: "bg-purple-50" },
-    { name: "Google Sheets", description: "Cloud spreadsheets", icon: "📋", color: "bg-red-50" },
-  ]
+  if (isError) {
+    return <div>Error loading data</div>;
+  }
 
-  const recentActivities = [
-    {
-      title: "Cotton material origin traceability data sync completed",
-      subtitle: "From supplier database • 2 hours ago",
-      status: "success",
-    },
-    {
-      title: "Product origin compliance report upload in progress",
-      subtitle: "CSV file upload • 40% complete",
-      status: "processing",
-    },
-    {
-      title: "Material share of origins tracking established",
-      subtitle: "Blockchain integration • Yesterday",
-      status: "completed",
-    },
-  ]
+  if (!dataIntegrations) {
+    return null;
+  }
+
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Database':
+        return Database;
+      case 'Upload':
+        return Upload;
+      case 'Webhook':
+        return Webhook;
+      default:
+        return null;
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -122,39 +101,42 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
       <div>
         <h2 className="text-xl font-medium mb-6">Choose Your Integration Method</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {integrationMethods.map((method, index) => (
-            <Card
-              key={index}
-              className="border-border-light rounded-brand hover:shadow-md transition-shadow cursor-pointer"
-            >
-              <CardHeader className="pb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-brand-primary/10 rounded-brand">
-                    <method.icon className="h-6 w-6 text-brand-primary" />
+          {dataIntegrations.integrationMethods.map((method: IntegrationMethod, index: number) => {
+            const Icon = getIcon(method.icon);
+            return (
+              <Card
+                key={index}
+                className="border-border-light rounded-brand hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2 bg-brand-primary/10 rounded-brand">
+                      {Icon && <Icon className="h-6 w-6 text-brand-primary" />}
+                    </div>
+                    <CardTitle className="text-lg font-medium">{method.title}</CardTitle>
                   </div>
-                  <CardTitle className="text-lg font-medium">{method.title}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <CardDescription className="text-gray-600">{method.description}</CardDescription>
-                <div className="flex flex-wrap gap-2">
-                  {method.tags.map((tag, tagIndex) => (
-                    <Badge key={tagIndex} variant="secondary" className="bg-brand-secondary/50 text-gray-700">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="pt-0">
-                <Button
-                  className="w-full bg-brand-primary hover:bg-brand-primary/90 rounded-brand"
-                  onClick={method.onClick}
-                >
-                  {method.action} →
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <CardDescription className="text-gray-600">{method.description}</CardDescription>
+                  <div className="flex flex-wrap gap-2">
+                    {method.tags.map((tag: string, tagIndex: number) => (
+                      <Badge key={tagIndex} variant="secondary" className="bg-brand-secondary/50 text-gray-700">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="pt-0">
+                  <Button
+                    className="w-full bg-brand-primary hover:bg-brand-primary/90 rounded-brand"
+                    onClick={method.onClick === 'onNavigateToUpload' ? onNavigateToUpload : undefined}
+                  >
+                    {method.action} →
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
         </div>
       </div>
 
@@ -162,7 +144,7 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
       <div>
         <h2 className="text-xl font-medium mb-6">Popular Integrations</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {popularIntegrations.map((integration, index) => (
+          {dataIntegrations.popularIntegrations.map((integration: PopularIntegration, index: number) => (
             <Card
               key={index}
               className="border-border-light rounded-brand hover:shadow-md transition-shadow cursor-pointer"
@@ -194,7 +176,7 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
-          {recentActivities.map((activity, index) => (
+          {dataIntegrations.recentActivities.map((activity: RecentActivity, index: number) => (
             <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-brand">
               {getStatusIcon(activity.status)}
               <div className="flex-1">

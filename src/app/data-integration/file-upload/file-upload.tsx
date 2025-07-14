@@ -16,6 +16,9 @@ import {
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Alert, AlertDescription } from "@/src/components/ui/alert"
+import { useFileUpload } from '@/src/api/data-integration';
+import { GlobalLoading } from '@/src/components/global-loading';
+import { FileType } from '@/src/types/file-upload';
 
 interface FileUploadProps {
   onNavigateBack: () => void
@@ -23,10 +26,47 @@ interface FileUploadProps {
 }
 
 export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploadProps) {
-  const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([])
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
-  const [dragActive, setDragActive] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { fileUpload, isLoading, isError } = useFileUpload();
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setDragActive(false);
+
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const files = Array.from(e.dataTransfer.files);
+        setUploadedFiles((prev) => [...prev, ...files]);
+      }
+    },
+    []
+  );
+
+  if (isLoading) {
+    return <GlobalLoading />;
+  }
+
+  if (isError) {
+    return <div>Error loading data</div>;
+  }
+
+  if (!fileUpload) {
+    return null;
+  }
 
   const fileTypes = [
     {
@@ -86,36 +126,15 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
   ]
 
   const handleFileTypeSelect = (typeId: string) => {
-    setSelectedFileTypes((prev) => (prev.includes(typeId) ? prev.filter((id) => id !== typeId) : [...prev, typeId]))
-  }
-
-  const handleDrag = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
-    }
-  }, [])
-
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const files = Array.from(e.dataTransfer.files)
-      setUploadedFiles((prev) => [...prev, ...files])
-    }
-  }, [])
+    setSelectedFileTypes((prev) => (prev.includes(typeId) ? prev.filter((id) => id !== typeId) : [...prev, typeId]));
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const files = Array.from(e.target.files)
-      setUploadedFiles((prev) => [...prev, ...files])
+      const files = Array.from(e.target.files);
+      setUploadedFiles((prev) => [...prev, ...files]);
     }
-  }
+  };
 
   const handleStartUpload = () => {
     if (uploadedFiles.length === 0) {
@@ -127,13 +146,32 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
 
   // Helper to choose icon for each uploaded file in the list
   const getIconForFile = (file: File) => {
-    if (file.type.startsWith("image")) return faFileImage
-    if (file.name.endsWith(".pdf")) return faFilePdf
-    if (file.name.endsWith(".csv")) return faFileCsv
-    if (/[.]xls[x]?$/i.test(file.name)) return faFileExcel
-    if (/[.]docx?$/i.test(file.name)) return faFileWord
-    return faFile
-  }
+    if (file.type.startsWith('image')) return faFileImage;
+    if (file.name.endsWith('.pdf')) return faFilePdf;
+    if (file.name.endsWith('.csv')) return faFileCsv;
+    if (/[.]xls[x]?$/i.test(file.name)) return faFileExcel;
+    if (/[.]docx?$/i.test(file.name)) return faFileWord;
+    return faFile;
+  };
+
+  const getIconFromFileType = (icon: string) => {
+    switch (icon) {
+      case 'faFileExcel':
+        return faFileExcel;
+      case 'faFileCsv':
+        return faFileCsv;
+      case 'faFilePdf':
+        return faFilePdf;
+      case 'faFileWord':
+        return faFileWord;
+      case 'faFileImage':
+        return faFileImage;
+      case 'faFile':
+        return faFile;
+      default:
+        return faFile;
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -155,7 +193,7 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
       <div>
         <h2 className="text-xl font-medium mb-6">Choose File Type</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {fileTypes.map((type) => (
+          {fileUpload.fileTypes.map((type: FileType) => (
             <Card
               key={type.id}
               className={`cursor-pointer transition-all rounded-brand ${
@@ -169,7 +207,7 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
               }}
             >
               <CardContent className="p-6 text-center">
-                <FontAwesomeIcon icon={type.icon} className={`text-3xl mb-3 ${type.iconColor}`} />
+                <FontAwesomeIcon icon={getIconFromFileType(type.icon)} className={`text-3xl mb-3 ${type.iconColor}`} />
                 <h3 className="font-medium mb-2">{type.title}</h3>
                 <p className="text-sm text-gray-600 mb-3">{type.description}</p>
                 <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${type.badgeColor}`}>

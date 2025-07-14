@@ -1,0 +1,746 @@
+{
+  "supplier-assessments": [
+    {
+      "id": "1",
+      "title": "China Supplier Tariff Impact 2024",
+      "description": "Assessment of potential tariff increases on Chinese textile suppliers and cost implications",
+      "topic": "Tariff Risk",
+      "creator": "Sarah Johnson",
+      "createdAt": "Nov 15, 2024",
+      "updatedAt": "Nov 20, 2024",
+      "status": "Complete",
+      "tags": [
+        "China",
+        "Textiles",
+        "Cost Analysis"
+      ],
+      "icon": "fa-earth-americas",
+      "topicColor": "red"
+    },
+    {
+      "id": "2",
+      "title": "Cotton Material Origin Analysis",
+      "description": "Tracing cotton material sources and evaluating geopolitical supply chain risks",
+      "topic": "Origin Mapping",
+      "creator": "John Smith",
+      "createdAt": "Nov 10, 2024",
+      "updatedAt": "Nov 18, 2024",
+      "status": "Draft",
+      "tags": [
+        "Cotton",
+        "Origin Tracking",
+        "Supply Chain"
+      ],
+      "icon": "fa-map-location-dot",
+      "topicColor": "blue"
+    },
+    {
+      "id": "3",
+      "title": "Alternative Supplier Evaluation",
+      "description": "Assessment of Vietnam and Bangladesh suppliers as China alternatives",
+      "topic": "Diversification",
+      "creator": "Mike Chen",
+      "createdAt": "Nov 5, 2024",
+      "updatedAt": "Nov 12, 2024",
+      "status": "Draft",
+      "tags": [
+        "Vietnam",
+        "Bangladesh",
+        "Risk Mitigation"
+      ],
+      "icon": "fa-right-left",
+      "topicColor": "orange"
+    },
+    {
+      "id": "4",
+      "title": "Tariff Cost Modeling Analysis",
+      "description": "Financial impact assessment of proposed 60% tariffs on Chinese imports",
+      "topic": "Cost Impact",
+      "creator": "Sarah Johnson",
+      "createdAt": "Oct 28, 2024",
+      "updatedAt": "Nov 8, 2024",
+      "status": "Complete",
+      "tags": [
+        "Financial Impact",
+        "Cost Modeling"
+      ],
+      "icon": "fa-dollar-sign",
+      "topicColor": "yellow"
+    },
+    {
+      "id": "5",
+      "title": "Trade Compliance Assessment",
+      "description": "Evaluation of supplier compliance with new trade regulations and documentation requirements",
+      "topic": "Compliance",
+      "creator": "John Smith",
+      "createdAt": "Oct 20, 2024",
+      "updatedAt": "Oct 25, 2024",
+      "status": "Draft",
+      "tags": [
+        "Trade",
+        "Regulations",
+        "Documentation"
+      ],
+      "icon": "fa-certificate",
+      "topicColor": "purple"
+    },
+    {
+      "id": "6",
+      "title": "Data Privacy & Security Review",
+      "description": "Assessment of data protection measures and cybersecurity protocols",
+      "topic": "Governance",
+      "creator": "Mike Chen",
+      "createdAt": "Feb 15, 2024",
+      "updatedAt": "Feb 22, 2024",
+      "status": "Complete",
+      "tags": [
+        "Privacy",
+        "Security",
+        "GDPR"
+      ],
+      "icon": "fa-shield-halved",
+      "topicColor": "purple"
+    },
+    {
+      "id": "dd61b19c-bf95-4d4f-a55e-9331189ebca7",
+      "title": "ABC",
+      "description": "Start a new assessment from scratch.fsfd",
+      "sections": [
+        {
+          "id": "5a679ff0-2919-4296-bb7f-3910b124ba24",
+          "title": "Hello",
+          "questions": [
+            {
+              "id": "12852cfc-8f8f-4f2d-b41f-208ce66a29d6",
+              "text": "Test form",
+              "type": "multiple-choice",
+              "answers": [
+                {
+                  "id": "623cbd39-d503-4231-b532-06e3fe436e7a",
+                  "text": "ABc"
+                },
+                {
+                  "id": "c571ce99-4c29-4fb3-84e8-882975151144",
+                  "text": "DÈ"
+                },
+                {
+                  "id": "ef022739-0a3c-4273-be4a-4798f84e8274",
+                  "text": "sdfsd"
+                }
+              ],
+              "allowMultipleAnswers": false
+            }
+          ]
+        }
+      ],
+      "creator": "Current User",
+      "createdAt": "2025-07-14T09:29:39.523Z",
+      "updatedAt": "2025-07-14T09:29:39.523Z",
+      "status": "Draft",
+      "topic": "TBD",
+      "tags": [],
+      "icon": "fa-file-alt",
+      "topicColor": "gray"
+    },
+    {
+      "id": "social-compliance-audit-01",
+      "title": "Factory Audit for Social Compliance",
+      "description": "An audit to ensure our suppliers adhere to international labor standards and provide safe working conditions.",
+      "creator": "Jane Doe",
+      "createdAt": "2025-06-20T10:00:00.000Z",
+      "updatedAt": "2025-06-28T11:30:00.000Z",
+      "status": "In Progress",
+      "topic": "Social Compliance",
+      "tags": ["Audit", "Labor", "Safety"],
+      "icon": "fa-users",
+      "topicColor": "blue",
+      "sections": [
+        {
+          "id": "sec-work-hours",
+          "title": "Working Hours",
+          "questions": [
+            {
+              "id": "q-wh-1",
+              "text": "Are all workers provided with at least one rest day per seven-day period?",
+              "type": "boolean"
+            },
+            {
+              "id": "q-wh-2",
+              "text": "What is the maximum number of overtime hours permitted per week?",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "id": "sec-health-safety",
+          "title": "Health & Safety",
+          "questions": [
+            {
+              "id": "q-hs-1",
+              "text": "How often are fire safety drills conducted?",
+              "type": "multiple-choice",
+              "allowMultipleAnswers": false,
+              "answers": [
+                { "id": "ans-hs-1-1", "text": "Annually" },
+                { "id": "ans-hs-1-2", "text": "Semi-annually" },
+                { "id": "ans-hs-1-3", "text": "Quarterly" }
+              ]
+            },
+            {
+              "id": "q-hs-2",
+              "text": "Is Personal Protective Equipment (PPE) provided free of charge to all relevant workers?",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enviro-impact-report-01",
+      "title": "Annual Environmental Impact Report",
+      "description": "Collects data on energy consumption, water usage, and waste management to assess the environmental footprint of our suppliers.",
+      "creator": "Admin",
+      "createdAt": "2025-07-01T09:00:00.000Z",
+      "updatedAt": "2025-07-05T14:00:00.000Z",
+      "status": "Draft",
+      "topic": "Environmental",
+      "tags": ["Environment", "Reporting", "Energy"],
+      "icon": "fa-leaf",
+      "topicColor": "green",
+      "sections": [
+        {
+          "id": "sec-energy",
+          "title": "Energy Consumption",
+          "questions": [
+            {
+              "id": "q-en-1",
+              "text": "What was the total electricity consumption in kWh for the last calendar year?",
+              "type": "text"
+            },
+            {
+              "id": "q-en-2",
+              "text": "Have you implemented any energy-saving initiatives in the past year?",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "id": "sec-waste",
+          "title": "Waste Management",
+          "questions": [
+            {
+              "id": "q-wm-1",
+              "text": "Which of the following waste materials are recycled? (Select all that apply)",
+              "type": "multiple-choice",
+              "allowMultipleAnswers": true,
+              "answers": [
+                { "id": "ans-wm-1-1", "text": "Paper/Cardboard" },
+                { "id": "ans-wm-1-2", "text": "Plastics" },
+                { "id": "ans-wm-1-3", "text": "Metal" },
+                { "id": "ans-wm-1-4", "text": "Glass" },
+                { "id": "ans-wm-1-5", "text": "Electronic Waste" }
+              ]
+            },
+            {
+              "id": "q-wm-2",
+              "text": "Describe your process for handling hazardous waste.",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "data-validation": {
+    "actors": [
+      {
+        "id": 1,
+        "title": "Supplier",
+        "description": "GreenTech Materials",
+        "color": "bg-blue-50 text-blue-900",
+        "dotColor": "bg-blue-500"
+      },
+      {
+        "id": 2,
+        "title": "Brand",
+        "description": "EcoSustain Corp",
+        "color": "bg-green-50 text-green-900",
+        "dotColor": "bg-green-500"
+      }
+    ],
+    "actions": [
+      {
+        "id": 1,
+        "title": "Manufacturing",
+        "code": "MFG-2024-001",
+        "type": "manufacturing",
+        "color": "bg-green-100 text-green-800"
+      },
+      {
+        "id": 2,
+        "title": "Transportation",
+        "code": "TRN-2024-002",
+        "type": "transportation",
+        "color": "bg-yellow-100 text-yellow-800"
+      },
+      {
+        "id": 3,
+        "title": "Certification",
+        "code": "CERT-2024-003",
+        "type": "certification",
+        "color": "bg-purple-100 text-purple-800"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 1,
+        "name": "Materials",
+        "code": "Carbon-ORG001",
+        "type": "materials",
+        "color": "bg-orange-100 text-orange-800"
+      },
+      {
+        "id": 2,
+        "name": "Polyester-REC001",
+        "type": "substances",
+        "color": "bg-purple-100 text-purple-800"
+      },
+      {
+        "id": 3,
+        "name": "Dye-NAT001",
+        "type": "products",
+        "color": "bg-blue-100 text-blue-800"
+      }
+    ],
+    "materialsData": [
+      {
+        "id": "MAT-001",
+        "name": "Organic Cotton",
+        "origin": "India - Gujarat",
+        "supplier": "GreenTech Materials",
+        "certification": "GOTS Certified",
+        "status": "verified"
+      },
+      {
+        "id": "MAT-002",
+        "name": "Recycled Polyester",
+        "origin": "Japan - Osaka",
+        "supplier": "EcoFiber Corp",
+        "certification": "GRS Certified",
+        "status": "verified"
+      },
+      {
+        "id": "MAT-003",
+        "name": "Natural Dyes",
+        "origin": "Peru - Lima",
+        "supplier": "Natural Colors Ltd",
+        "certification": "OEKO-TEX",
+        "status": "pending"
+      }
+    ],
+    "suppliersData": [
+      {
+        "id": "SUP-001",
+        "company": "GreenTech Materials",
+        "location": "Mumbai, India",
+        "contact": "contact@greentech.in",
+        "compliance": 98,
+        "status": "verified"
+      },
+      {
+        "id": "SUP-002",
+        "company": "EcoFiber Corp",
+        "location": "Osaka, Japan",
+        "contact": "info@ecofiber.jp",
+        "compliance": 95,
+        "status": "verified"
+      }
+    ],
+    "certificationsData": [
+      {
+        "id": "CERT-001",
+        "type": "GOTS",
+        "issuingBody": "Global Organic Textile Standard",
+        "issueDate": "2023-01-15",
+        "expiryDate": "2025-01-15",
+        "status": "valid"
+      },
+      {
+        "id": "CERT-002",
+        "type": "GRS",
+        "issuingBody": "Global Recycled Standard",
+        "issueDate": "2023-03-20",
+        "expiryDate": "2025-03-20",
+        "status": "valid"
+      }
+    ],
+    "keyHighlights": [
+      {
+        "title": "100% of raw materials traced to certified sustainable sources",
+        "percentage": 100,
+        "status": "success",
+        "suggestion": "Edit Prompt",
+        "detail": "Change certification percentage to 98%"
+      },
+      {
+        "title": "All supplier certificates validated and up-to-date with 95% compliance",
+        "percentage": 95,
+        "status": "info",
+        "suggestion": "Suggested Prompts",
+        "detail": "Delete this sentence"
+      },
+      {
+        "title": "Complete traceability chain established for 87% of materials",
+        "percentage": 87,
+        "status": "warning",
+        "suggestion": "Edit",
+        "detail": "Change certification percentage to 90%"
+      }
+    ]
+  },
+  "data-integrations": {
+    "integrationMethods": [
+      {
+        "icon": "Database",
+        "title": "Database Connection",
+        "description": "Connect directly to your existing databases for real-time data sync",
+        "tags": [
+          "MySQL",
+          "PostgreSQL",
+          "MongoDB"
+        ],
+        "action": "Set up connection"
+      },
+      {
+        "icon": "Upload",
+        "title": "File Upload",
+        "description": "Upload CSV, Excel files, or images with ESG data",
+        "tags": [
+          "CSV",
+          "Excel",
+          "PDF",
+          "Images"
+        ],
+        "action": "Upload files",
+        "onClick": "onNavigateToUpload"
+      },
+      {
+        "icon": "Webhook",
+        "title": "API & Webhooks",
+        "description": "Integrate via REST APIs or set up webhooks for automated data flow",
+        "tags": [
+          "REST API",
+          "Webhooks",
+          "GraphQL"
+        ],
+        "action": "Configure API"
+      }
+    ],
+    "popularIntegrations": [
+      {
+        "name": "Microsoft Excel",
+        "description": "Spreadsheet files",
+        "icon": "📊",
+        "color": "bg-green-50"
+      },
+      {
+        "name": "Salesforce",
+        "description": "CRM data",
+        "icon": "☁️",
+        "color": "bg-blue-50"
+      },
+      {
+        "name": "Power BI",
+        "description": "Analytics platform",
+        "icon": "📈",
+        "color": "bg-purple-50"
+      },
+      {
+        "name": "Google Sheets",
+        "description": "Cloud spreadsheets",
+        "icon": "📋",
+        "color": "bg-red-50"
+      }
+    ],
+    "recentActivities": [
+      {
+        "title": "Cotton material origin traceability data sync completed",
+        "subtitle": "From supplier database • 2 hours ago",
+        "status": "success"
+      },
+      {
+        "title": "Product origin compliance report upload in progress",
+        "subtitle": "CSV file upload • 40% complete",
+        "status": "processing"
+      },
+      {
+        "title": "Material share of origins tracking established",
+        "subtitle": "Blockchain integration • Yesterday",
+        "status": "completed"
+      }
+    ]
+  },
+  "file-upload": {
+    "fileTypes": [
+      {
+        "id": "excel",
+        "title": "Excel Files",
+        "description": "Upload .xlsx or .xls spreadsheets with structured ESG data",
+        "icon": "faFileExcel",
+        "iconColor": "text-green-600",
+        "badge": "Recommended",
+        "badgeColor": "bg-green-100 text-green-800"
+      },
+      {
+        "id": "csv",
+        "title": "CSV Files",
+        "description": "Comma-separated value files for tabular data import",
+        "icon": "faFileCsv",
+        "iconColor": "text-blue-600",
+        "badge": "Fast Processing",
+        "badgeColor": "bg-blue-100 text-blue-800"
+      },
+      {
+        "id": "pdf",
+        "title": "PDF Documents",
+        "description": "Reports, certificates, and other PDF documents",
+        "icon": "faFilePdf",
+        "iconColor": "text-red-600",
+        "badge": "AI Powered",
+        "badgeColor": "bg-red-100 text-red-800"
+      },
+      {
+        "id": "word",
+        "title": "Word Documents",
+        "description": "Text documents with ESG policies and procedures",
+        "icon": "faFileWord",
+        "iconColor": "text-purple-600",
+        "badge": "Text Extraction",
+        "badgeColor": "bg-purple-100 text-purple-800"
+      },
+      {
+        "id": "images",
+        "title": "Images",
+        "description": "Photos of certificates, charts, or document scans",
+        "icon": "faFileImage",
+        "iconColor": "text-yellow-600",
+        "badge": "OCR Ready",
+        "badgeColor": "bg-yellow-100 text-yellow-800"
+      },
+      {
+        "id": "multiple",
+        "title": "Multiple Files",
+        "description": "Upload multiple files of different types at once",
+        "icon": "faFile",
+        "iconColor": "text-gray-600",
+        "badge": "Batch Upload",
+        "badgeColor": "bg-gray-100 text-gray-800"
+      }
+    ]
+  },
+  "supplier-assessment-page": {
+    "TABS": [
+      "Suppliers",
+      "Supplier Assessment",
+      "Traceability",
+      "Data Integration",
+      "Data Management"
+    ],
+    "FILTERS": {
+      "topics": [
+        "All Topics",
+        "Environmental",
+        "Social",
+        "Governance"
+      ],
+      "creators": [
+        "All Creators",
+        "John Smith",
+        "Sarah Johnson",
+        "Mike Chen"
+      ]
+    },
+    "templates": [
+      {
+        "id": "blank",
+        "title": "Create Blank Assessment",
+        "description": "Start from scratch",
+        "icon": "fa-plus",
+        "recommended": true,
+        "details": {
+          "sections": 0,
+          "questions": 0,
+          "time": "N/A",
+          "completion": "N/A",
+          "sample": []
+        }
+      },
+      {
+        "id": "template1",
+        "title": "Certificate of Origin Assessment",
+        "description": "Traceability • Created by Sarah Johnson",
+        "icon": "fa-certificate",
+        "lastUsed": "Mar 15, 2024",
+        "details": {
+          "category": "Traceability",
+          "questions": 38,
+          "sections": 5,
+          "time": "1.5-2 hours",
+          "completion": "89%",
+          "sample": [
+            "Are certificates of origin properly documented?",
+            "Do you verify manufacturing country claims?",
+            "Are trade compliance requirements met?"
+          ]
+        }
+      },
+      {
+        "id": "template2",
+        "title": "Materials Invoice Verification",
+        "description": "Traceability • Created by John Smith",
+        "icon": "fa-file-invoice",
+        "lastUsed": "Mar 10, 2024",
+        "details": {
+          "category": "Traceability",
+          "questions": 42,
+          "sections": 6,
+          "time": "2-2.5 hours",
+          "completion": "84%",
+          "sample": [
+            "Are material invoices properly itemized?",
+            "Do you verify supplier credentials?",
+            "Are pricing discrepancies investigated?"
+          ]
+        }
+      },
+      {
+        "id": "template3",
+        "title": "Bill of Materials Tracking",
+        "description": "Traceability • Created by Mike Chen",
+        "icon": "fa-list-alt",
+        "lastUsed": "Mar 5, 2024",
+        "details": {
+          "category": "Traceability",
+          "questions": 35,
+          "sections": 4,
+          "time": "1.5-2 hours",
+          "completion": "91%",
+          "sample": [
+            "Are all components properly documented?",
+            "Do you track material composition percentages?",
+            "Are alternative materials identified?"
+          ]
+        }
+      }
+    ]
+  },
+  "assessment-templates": [
+    {
+      "id": "blank",
+      "title": "Blank Assessment",
+      "description": "",
+      "tags": [],
+      "sections": []
+    },
+    {
+      "id": "template1",
+      "title": "Certificate of Origin Assessment",
+      "description": "Traceability • Created by Sarah Johnson",
+      "sections": [
+        {
+          "id": "sec1",
+          "title": "Supplier Information",
+          "questions": [
+            {
+              "id": "q1",
+              "text": "What is the full legal name of the supplier?",
+              "type": "text"
+            },
+            {
+              "id": "q2",
+              "text": "What is the supplier's primary address?",
+              "type": "text"
+            }
+          ]
+        },
+        {
+          "id": "sec2",
+          "title": "Documentation Verification",
+          "questions": [
+            {
+              "id": "q3",
+              "text": "Are certificates of origin properly documented?",
+              "type": "boolean"
+            },
+            {
+              "id": "q4",
+              "text": "Do you verify manufacturing country claims?",
+              "type": "boolean"
+            },
+            {
+              "id": "q5",
+              "text": "Which of the following documents are required?",
+              "type": "multiple-choice",
+              "allowMultipleAnswers": true,
+              "answers": [
+                {
+                  "id": "ans1",
+                  "text": "Bill of Lading"
+                },
+                {
+                  "id": "ans2",
+                  "text": "Certificate of Origin"
+                },
+                {
+                  "id": "ans3",
+                  "text": "Commercial Invoice"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "template2",
+      "title": "Materials Invoice Verification",
+      "description": "Traceability • Created by John Smith",
+      "sections": [
+        {
+          "id": "sec1",
+          "title": "Invoice Details",
+          "questions": [
+            {
+              "id": "q1",
+              "text": "Are material invoices properly itemized?",
+              "type": "boolean"
+            },
+            {
+              "id": "q2",
+              "text": "Are pricing discrepancies investigated?",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "template3",
+      "title": "Bill of Materials Tracking",
+      "description": "Traceability • Created by Mike Chen",
+      "sections": [
+        {
+          "id": "sec1",
+          "title": "Component Documentation",
+          "questions": [
+            {
+              "id": "q1",
+              "text": "Are all components properly documented in the BOM?",
+              "type": "boolean"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

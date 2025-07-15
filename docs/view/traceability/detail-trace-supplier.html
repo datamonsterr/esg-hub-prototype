@@ -1,0 +1,451 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head>
+<body class="bg-gray-50 font-arial text-base">
+
+    <nav id="header" class="bg-white border-b border-border">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                            <i class="fas fa-leaf text-white text-sm"></i>
+                        </div>
+                        <span class="ml-2 text-xl font-medium text-gray-900">Traceability Hub</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integrations</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                        <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer">Traceability Request</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Reports</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bell text-lg"></i>
+                    </button>
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        
+        <div id="traceability-header" class="bg-white rounded-lg border border-border p-8 mb-8">
+            <div class="flex items-start justify-between mb-6">
+                <div class="flex items-start space-x-4">
+                    <div class="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
+                        <i class="fas fa-route text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-medium text-gray-900 mb-2">Footwear Supply Chain Journey Mapping Assessment 2024</h1>
+                        <div class="flex items-center space-x-4 text-sm text-gray-600 mb-2">
+                            <span>Request ID: TR-2024-FSC-001</span>
+                            <span>•</span>
+                            <span>From: Adidas Global Sustainability Team</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-error rounded-full"></div>
+                                <span class="text-sm font-medium text-error">Mandatory Assessment</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-share-nodes text-accent text-sm"></i>
+                                <span class="text-sm text-accent font-medium">Cascading Required</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="bg-error/20 text-error px-3 py-1 rounded-full text-sm font-medium">
+                            <i class="fas fa-exclamation-triangle mr-1"></i>
+                            Deadline: 3 days
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500">Due: March 31, 2024</p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <h3 class="font-medium text-gray-900 mb-3">Message from Brand</h3>
+                <p class="text-gray-700 leading-relaxed mb-4">Dear Supply Partner,</p>
+                <p class="text-gray-700 leading-relaxed mb-4">We are conducting a comprehensive journey mapping assessment to trace the complete lifecycle of footwear products through our supply chain. This assessment will help us identify key touchpoints, stakeholders, and sustainability impacts at each stage of footwear production, from raw material sourcing (leather, rubber, textiles) to final shoe assembly and distribution.</p>
+                <p class="text-gray-700 leading-relaxed mb-4">Your participation is crucial for our sustainability goals and compliance requirements. Please complete this assessment by the deadline to maintain our partnership status.</p>
+                <p class="text-gray-700 leading-relaxed mb-4"><strong>Important:</strong> This assessment requires cascading to your Tier 2 suppliers (material suppliers and sub-contractors). You must distribute this assessment to relevant suppliers in your network within 7 days of completion.</p>
+                <div class="mt-4 pt-4 border-t border-border">
+                    <p class="text-sm text-gray-600">Best regards,<br>Adidas Global Sustainability Team</p>
+                </div>
+            </div>
+
+            <!-- Cascading Information -->
+            <div class="bg-accent/10 border border-accent/30 rounded-lg p-6 mb-6">
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-share-nodes text-accent text-lg mt-1"></i>
+                    <div>
+                        <h3 class="font-medium text-gray-900 mb-2">Cascading Requirements</h3>
+                        <p class="text-gray-700 text-sm mb-3">This assessment must be cascaded to your lower tier suppliers as part of the traceability requirements.</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-accent rounded-full"></div>
+                                <span class="text-sm text-gray-700"><strong>Target Tiers:</strong> Tier 2 (Material suppliers, Sub-contractors)</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-accent rounded-full"></div>
+                                <span class="text-sm text-gray-700"><strong>Scope:</strong> Material/Product specific suppliers only</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-accent rounded-full"></div>
+                                <span class="text-sm text-gray-700"><strong>Timing:</strong> Within 7 days of your completion</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-accent rounded-full"></div>
+                                <span class="text-sm text-gray-700"><strong>Deadline for Tier 2:</strong> 14 days after cascade initiation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cascading-section" class="bg-white rounded-lg border border-border mb-8">
+            <div class="p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2 flex items-center space-x-2">
+                            <i class="fas fa-share-nodes text-accent"></i>
+                            <span>Cascading to Suppliers</span>
+                        </h3>
+                        <p class="text-gray-600">Select Tier 2 suppliers to cascade this assessment</p>
+                    </div>
+                    <button class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Add New Supplier</span>
+                    </button>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="border border-border rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="font-medium text-gray-900">Material-Related Suppliers</h4>
+                            <div class="relative">
+                                <input type="text" placeholder="Search suppliers..." class="pl-10 pr-4 py-2 border border-border rounded-lg w-64 focus:ring-2 focus:ring-primary focus:border-primary">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="max-h-64 overflow-y-auto border border-border rounded-lg p-3 bg-gray-50">
+                            <div class="space-y-3">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Leather Suppliers Co.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Leather Suppliers Co.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Raw Materials | Materials: Leather, Synthetic</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Rubber Processing Ltd.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Rubber Processing Ltd.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Processing | Materials: Rubber, Sole Components</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Textile Weaving Inc.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Textile Weaving Inc.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Textile | Materials: Cotton, Polyester Blend</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Metal Hardware Corp.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Metal Hardware Corp.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Hardware | Materials: Eyelets, Buckles, Zippers</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Adhesive Solutions Ltd.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Adhesive Solutions Ltd.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Chemicals | Materials: Glues, Bonding Agents</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Foam &amp; Padding Co.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Foam &amp; Padding Co.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Comfort | Materials: EVA Foam, Memory Foam</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Dye &amp; Finishing Works">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Dye &amp; Finishing Works</span>
+                                            <span class="text-gray-500 text-sm block">Category: Finishing | Materials: Dyes, Protective Coatings</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary supplier-checkbox" data-supplier="Packaging Materials Inc.">
+                                    <div class="flex-1 flex items-center justify-between">
+                                        <div>
+                                            <span class="text-gray-900 font-medium">Packaging Materials Inc.</span>
+                                            <span class="text-gray-500 text-sm block">Category: Packaging | Materials: Boxes, Labels, Tissue</span>
+                                        </div>
+                                        <span class="bg-secondary text-gray-700 px-2 py-1 rounded text-xs">Tier 2</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-border rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3">Selected Suppliers for Cascading</h4>
+                        <div id="selected-suppliers" class="min-h-16 bg-gray-50 rounded-lg p-3">
+                            <p class="text-gray-500 text-sm text-center">No suppliers selected yet</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-accent/10 border border-accent/30 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <i class="fas fa-info-circle text-accent"></i>
+                            <span class="font-medium text-gray-900">Cascading Timeline</span>
+                        </div>
+                        <p class="text-sm text-gray-700">Selected suppliers will receive the assessment within 24 hours and have 14 days to complete it.</p>
+                    </div>
+
+                    <!-- Add Call to Action for Cascading -->
+                    <div class="flex items-center justify-center pt-4">
+                        <button id="start-cascading-btn" class="bg-accent text-white px-8 py-3 rounded-lg hover:bg-accent/90 flex items-center space-x-2 text-lg font-medium">
+                            <i class="fas fa-share-nodes"></i>
+                            <span>Start Cascading Process</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="assessment-section" class="bg-white rounded-lg border border-border">
+            <div class="border-b border-border p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-xl font-medium text-gray-900 mb-2">Assessment Overview</h2>
+                        <p class="text-gray-600">Complete the traceability assessment to fulfill brand requirements</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium mb-2">Not Started</div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <span class="text-sm text-gray-600">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-clock text-gray-400"></i>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Estimated Time</p>
+                            <p class="text-sm text-gray-600">45 minutes</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-list text-gray-400"></i>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Questions</p>
+                            <p class="text-sm text-gray-600">2 sections, 6 questions</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-calendar text-gray-400"></i>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Deadline</p>
+                            <p class="text-sm text-error">March 31, 2024</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-share-nodes text-accent"></i>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">Cascading</p>
+                            <p class="text-sm text-accent">Required</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center mb-6">
+                    <button id="start-assessment-btn" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-primary/90 flex items-center space-x-2 text-lg font-medium">
+                        <i class="fas fa-play"></i>
+                        <span>Start Assessment</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3 flex items-center space-x-2">
+                            <i class="fas fa-tags text-primary"></i>
+                            <span>Artifacts</span>
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-secondary text-gray-700 px-3 py-1 rounded-full text-sm">MAT-001</span>
+                                <span class="bg-secondary text-gray-700 px-3 py-1 rounded-full text-sm">PROD-001</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Material and product codes</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3 flex items-center space-x-2">
+                            <i class="fas fa-cogs text-primary"></i>
+                            <span>Actions</span>
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">ACT-001</span>
+                                <span class="bg-accent/20 text-accent px-3 py-1 rounded-full text-sm">ACT-002</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Quality &amp; compliance actions</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-medium text-gray-900 mb-3 flex items-center space-x-2">
+                            <i class="fas fa-users text-primary"></i>
+                            <span>Actors</span>
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Supplier</span>
+                                <span class="bg-primary/20 text-primary px-3 py-1 rounded-full text-sm">Tier 2</span>
+                            </div>
+                            <p class="text-xs text-gray-500">Involved stakeholders</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 flex items-center space-x-2">
+                            <i class="fas fa-download"></i>
+                            <span>Download Requirements</span>
+                        </button>
+                        <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 flex items-center space-x-2">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Need Help?</span>
+                        </button>
+                        <button class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 flex items-center space-x-2">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email for Clarification</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button id="continue-assessment-btn" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 hidden">
+                            Continue Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('start-assessment-btn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Starting...</span>';
+            setTimeout(() => {
+                this.style.display = 'none';
+                document.getElementById('continue-assessment-btn').classList.remove('hidden');
+                document.querySelector('.bg-gray-100.text-gray-600').textContent = 'In Progress';
+                document.querySelector('.bg-gray-100.text-gray-600').className = 'bg-accent/20 text-accent px-3 py-1 rounded-full text-sm font-medium mb-2';
+            }, 1500);
+        });
+
+        document.getElementById('start-cascading-btn').addEventListener('click', function() {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Initiating Cascade...</span>';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-check"></i><span>Cascading Initiated</span>';
+                this.className = 'bg-primary text-white px-8 py-3 rounded-lg cursor-default text-lg font-medium';
+            }, 2000);
+        });
+    </script>
+
+</body></html>

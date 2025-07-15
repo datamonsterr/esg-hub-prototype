@@ -1,0 +1,446 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head>
+<body class="bg-gray-50 font-arial text-base">
+
+    <nav id="header" class="bg-white border-b border-border">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                            <i class="fas fa-leaf text-white text-sm"></i>
+                        </div>
+                        <span class="ml-2 text-xl font-medium text-gray-900">ESG Hub</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Suppliers</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">ESG Assessment</span>
+                        <div class="relative group">
+                            <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer flex items-center">
+                                Traceability
+                                <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                            </span>
+                            <div class="absolute top-full left-0 mt-1 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                <span class="block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-primary cursor-pointer">Request</span>
+                                <span class="block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-primary cursor-pointer">Analytics</span>
+                            </div>
+                        </div>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integration</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bell text-lg"></i>
+                    </button>
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        
+        <section id="page-header" class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-medium text-gray-900 mb-2">Traceability Analytics</h1>
+                    <p class="text-gray-600">Analyze traceability data across your supply chain with advanced query capabilities</p>
+                </div>
+                <button id="export-btn" class="bg-white text-primary border border-primary px-6 py-3 rounded-md hover:bg-primary/5 flex items-center space-x-2">
+                    <i class="fas fa-download"></i>
+                    <span>Export Data</span>
+                </button>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <section id="query-builder" class="lg:col-span-1">
+                <div class="bg-white rounded-lg border border-border p-5">
+                    <div class="flex border-b border-border mb-4">
+                        <button id="manual-tab" class="flex-1 py-2 px-4 text-sm font-medium text-primary border-b-2 border-primary">
+                            Query Builder
+                        </button>
+                        <button id="ai-tab" class="flex-1 py-2 px-4 text-sm font-medium text-gray-500 hover:text-gray-700">
+                            Use AI
+                        </button>
+                    </div>
+                    
+                    <div id="manual-query" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dimensions</label>
+                            <select id="dimension-select" class="w-full px-3 py-2 border border-border rounded-md text-sm mb-2">
+                                <option value="">Select dimension...</option>
+                                <option value="country_origin">Country of Origin</option>
+                                <option value="material_type">Material Type</option>
+                                <option value="product_category">Product Category</option>
+                                <option value="supplier_tier">Supplier Tier</option>
+                                <option value="region">Region</option>
+                                <option value="assessment_id">Assessment ID</option>
+                                <option value="request_id">Request ID</option>
+                            </select>
+                            <div id="selected-dimensions" class="min-h-[60px] space-y-1 p-2 border border-border rounded-md bg-gray-50"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Metrics</label>
+                            <select id="metric-select" class="w-full px-3 py-2 border border-border rounded-md text-sm mb-2">
+                                <option value="">Select metric...</option>
+                                <option value="origin_percentage">% of Origin Traced</option>
+                                <option value="tariff_risk">Tariff Policy Risk</option>
+                                <option value="material_traceability">Material Traceability %</option>
+                                <option value="compliance_score">Compliance Score</option>
+                                <option value="supply_chain_visibility">Supply Chain Visibility</option>
+                                <option value="risk_score">Overall Risk Score</option>
+                            </select>
+                            <div id="selected-metrics" class="min-h-[60px] space-y-1 p-2 border border-border rounded-md bg-gray-50"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Filters</label>
+                            <div id="filters-container" class="space-y-3">
+                                <div class="filter-group p-3 border border-border rounded-md bg-gray-50">
+                                    <div class="flex space-x-2 mb-2">
+                                        <select class="filter-dimension flex-1 px-3 py-2 border border-border rounded-md text-sm">
+                                            <option value="">Dimension...</option>
+                                            <option value="country_origin">Country of Origin</option>
+                                            <option value="material_type">Material Type</option>
+                                            <option value="product_category">Product Category</option>
+                                        </select>
+                                        <select class="filter-comparator px-3 py-2 border border-border rounded-md text-sm">
+                                            <option value="equals">Equals</option>
+                                            <option value="contains">Contains</option>
+                                            <option value="greater_than">&gt;</option>
+                                            <option value="less_than">&lt;</option>
+                                        </select>
+                                    </div>
+                                    <input type="text" placeholder="Filter value..." class="filter-value w-full px-3 py-2 border border-border rounded-md text-sm">
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button id="add-and-filter" class="px-3 py-1 bg-primary/10 text-primary text-sm rounded-md hover:bg-primary/20">+ AND</button>
+                                    <button id="add-or-filter" class="px-3 py-1 bg-accent/10 text-accent text-sm rounded-md hover:bg-accent/20">+ OR</button>
+                                </div>
+                                <select class="w-full px-3 py-2 border border-border rounded-md text-sm">
+                                    <option>Last 12 months</option>
+                                    <option>Last 6 months</option>
+                                    <option>Last 3 months</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/90 text-sm">
+                            Apply Query
+                        </button>
+                    </div>
+
+                    <div id="ai-query" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">AI Assistant</label>
+                            <textarea placeholder="Ask me about traceability data... e.g., 'Show me tariff risk levels for footwear products from Vietnam'" class="w-full px-3 py-2 border border-border rounded-md text-sm h-32 resize-none"></textarea>
+                        </div>
+                        <button class="w-full bg-accent text-white py-2 rounded-md hover:bg-accent/90 text-sm">
+                            Query
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="main-content" class="lg:col-span-3 space-y-6">
+                
+                <div id="key-insights" class="bg-white rounded-lg border border-border p-5">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Key Insights</h2>
+                    <div class="prose text-sm text-gray-700 leading-relaxed">
+                        <p>Footwear traceability analysis reveals <span class="font-medium text-error">high tariff policy risk</span> for products sourced from Vietnam and China, affecting <span class="font-medium text-gray-900">68% of your footwear supply chain</span>. Current <span class="font-medium text-primary">origin traceability stands at 82%</span>, with <span class="font-medium text-accent">synthetic materials showing 95% traceability</span> compared to leather at 71%.</p>
+                        
+                        <p class="mt-3">Recent policy changes indicate potential <span class="font-medium text-error">15-25% tariff increases</span> on footwear imports from these regions. Consider <span class="font-medium text-primary">diversifying suppliers</span> to Thailand and Indonesia where tariff risks are <span class="font-medium text-primary">significantly lower</span> and traceability compliance exceeds 90%.</p>
+                    </div>
+                </div>
+
+                <div id="dashboard-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <div id="esg-score-chart" class="bg-white rounded-lg border border-border p-5">
+                        <h3 class="text-base font-medium text-gray-900 mb-4">Tariff Risk by Country</h3>
+                        <div id="esg-chart" class="h-64"></div>
+                    </div>
+
+                    <div id="carbon-footprint-chart" class="bg-white rounded-lg border border-border p-5">
+                        <h3 class="text-base font-medium text-gray-900 mb-4">Origin Traceability Trends</h3>
+                        <div id="carbon-chart" class="h-64"></div>
+                    </div>
+
+                    <div id="compliance-metrics" class="bg-white rounded-lg border border-border p-5">
+                        <h3 class="text-base font-medium text-gray-900 mb-4">Traceability Overview</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Overall Traceability</span>
+                                <span class="text-sm font-medium text-primary">82%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 82%"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mt-4">
+                                <div class="text-center">
+                                    <div class="text-2xl font-medium text-primary">34</div>
+                                    <div class="text-xs text-gray-600">Traced</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-2xl font-medium text-error">8</div>
+                                    <div class="text-xs text-gray-600">Untraced</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="water-usage-chart" class="bg-white rounded-lg border border-border p-5">
+                        <h3 class="text-base font-medium text-gray-900 mb-4">Material Traceability</h3>
+                        <div id="water-chart" class="h-64"></div>
+                    </div>
+                </div>
+
+                <div id="detailed-table" class="bg-white rounded-lg border border-border">
+                    <div class="p-5 border-b border-border">
+                        <h3 class="text-base font-medium text-gray-900">Detailed Results</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900 text-sm">Country</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900 text-sm">Tariff Risk</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900 text-sm">Origin %</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900 text-sm">Material</th>
+                                    <th class="text-left py-3 px-4 font-medium text-gray-900 text-sm">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border">
+                                <tr>
+                                    <td class="py-3 px-4 text-sm">Vietnam</td>
+                                    <td class="py-3 px-4 text-sm"><span class="text-error font-medium">High</span></td>
+                                    <td class="py-3 px-4 text-sm">85%</td>
+                                    <td class="py-3 px-4 text-sm">Synthetic</td>
+                                    <td class="py-3 px-4 text-sm"><span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">At Risk</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-sm">China</td>
+                                    <td class="py-3 px-4 text-sm"><span class="text-error font-medium">High</span></td>
+                                    <td class="py-3 px-4 text-sm">78%</td>
+                                    <td class="py-3 px-4 text-sm">Leather</td>
+                                    <td class="py-3 px-4 text-sm"><span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">At Risk</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-sm">Thailand</td>
+                                    <td class="py-3 px-4 text-sm"><span class="text-primary font-medium">Low</span></td>
+                                    <td class="py-3 px-4 text-sm">92%</td>
+                                    <td class="py-3 px-4 text-sm">Synthetic</td>
+                                    <td class="py-3 px-4 text-sm"><span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Secure</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Tab switching
+        document.getElementById('manual-tab').addEventListener('click', function() {
+            document.getElementById('manual-query').classList.remove('hidden');
+            document.getElementById('ai-query').classList.add('hidden');
+            this.classList.add('text-primary', 'border-b-2', 'border-primary');
+            this.classList.remove('text-gray-500');
+            document.getElementById('ai-tab').classList.remove('text-primary', 'border-b-2', 'border-primary');
+            document.getElementById('ai-tab').classList.add('text-gray-500');
+        });
+
+        document.getElementById('ai-tab').addEventListener('click', function() {
+            document.getElementById('ai-query').classList.remove('hidden');
+            document.getElementById('manual-query').classList.add('hidden');
+            this.classList.add('text-primary', 'border-b-2', 'border-primary');
+            this.classList.remove('text-gray-500');
+            document.getElementById('manual-tab').classList.remove('text-primary', 'border-b-2', 'border-primary');
+            document.getElementById('manual-tab').classList.add('text-gray-500');
+        });
+
+        // Dimension selection
+        document.getElementById('dimension-select').addEventListener('change', function() {
+            if (this.value) {
+                const container = document.getElementById('selected-dimensions');
+                const tag = document.createElement('div');
+                tag.className = 'inline-flex items-center px-2 py-1 bg-primary/10 text-primary text-xs rounded-md mr-1 mb-1';
+                tag.innerHTML = `${this.options[this.selectedIndex].text} <button class="ml-1 text-primary/70 hover:text-primary" onclick="this.parentElement.remove()">×</button>`;
+                container.appendChild(tag);
+                this.value = '';
+            }
+        });
+
+        // Metric selection
+        document.getElementById('metric-select').addEventListener('change', function() {
+            if (this.value) {
+                const container = document.getElementById('selected-metrics');
+                const tag = document.createElement('div');
+                tag.className = 'inline-flex items-center px-2 py-1 bg-accent/10 text-accent text-xs rounded-md mr-1 mb-1';
+                tag.innerHTML = `${this.options[this.selectedIndex].text} <button class="ml-1 text-accent/70 hover:text-accent" onclick="this.parentElement.remove()">×</button>`;
+                container.appendChild(tag);
+                this.value = '';
+            }
+        });
+
+        // Filter management
+        document.getElementById('add-and-filter').addEventListener('click', function() {
+            addFilter('AND');
+        });
+
+        document.getElementById('add-or-filter').addEventListener('click', function() {
+            addFilter('OR');
+        });
+
+        function addFilter(operator) {
+            const container = document.getElementById('filters-container');
+            const filterDiv = document.createElement('div');
+            filterDiv.className = 'filter-group p-3 border border-border rounded-md bg-gray-50';
+            
+            filterDiv.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-medium text-gray-600">${operator}</span>
+                    <button onclick="this.closest('.filter-group').remove()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xs"></i>
+                    </button>
+                </div>
+                <div class="flex space-x-2 mb-2">
+                    <select class="filter-dimension flex-1 px-3 py-2 border border-border rounded-md text-sm">
+                        <option value="">Dimension...</option>
+                        <option value="country_origin">Country of Origin</option>
+                        <option value="material_type">Material Type</option>
+                        <option value="product_category">Product Category</option>
+                    </select>
+                    <select class="filter-comparator px-3 py-2 border border-border rounded-md text-sm">
+                        <option value="equals">Equals</option>
+                        <option value="contains">Contains</option>
+                        <option value="greater_than">></option>
+                        <option value="less_than"><</option>
+                    </select>
+                </div>
+                <input type="text" placeholder="Filter value..." class="filter-value w-full px-3 py-2 border border-border rounded-md text-sm">
+            `;
+            
+            const addButtonsDiv = container.querySelector('.flex.items-center.space-x-2');
+            container.insertBefore(filterDiv, addButtonsDiv);
+        }
+
+        Highcharts.chart('esg-chart', {
+            chart: { type: 'column', backgroundColor: 'transparent' },
+            title: { text: null },
+            xAxis: { categories: ['Vietnam', 'China', 'Thailand', 'Indonesia', 'India'] },
+            yAxis: { title: { text: 'Risk Level' }, max: 10 },
+            series: [{
+                name: 'Tariff Risk',
+                data: [8.5, 8.2, 3.1, 4.2, 5.8],
+                color: '#DF3F40'
+            }],
+            legend: { enabled: false },
+            credits: { enabled: false }
+        });
+
+        Highcharts.chart('carbon-chart', {
+            chart: { type: 'line', backgroundColor: 'transparent' },
+            title: { text: null },
+            xAxis: { categories: ['Q1', 'Q2', 'Q3', 'Q4'] },
+            yAxis: { title: { text: 'Traceability %' } },
+            series: [{
+                name: 'Origin Traceability',
+                data: [75, 78, 80, 82],
+                color: '#328E6E'
+            }],
+            legend: { enabled: false },
+            credits: { enabled: false }
+        });
+
+        Highcharts.chart('water-chart', {
+            chart: { type: 'column', backgroundColor: 'transparent' },
+            title: { text: null },
+            xAxis: { categories: ['Synthetic', 'Leather', 'Cotton', 'Rubber'] },
+            yAxis: { 
+                title: { text: 'Requests' },
+                stackLabels: { enabled: true }
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: { enabled: true }
+                }
+            },
+            series: [{
+                name: 'Traced',
+                data: [95, 71, 88, 82],
+                color: '#328E6E'
+            }, {
+                name: 'Untraced',
+                data: [5, 29, 12, 18],
+                color: '#E3E6EA'
+            }],
+            credits: { enabled: false }
+        });
+    </script>
+
+
+</body></html>

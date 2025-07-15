@@ -12,23 +12,48 @@ import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useModal } from "../context/modal/modal-context";
 import { RoleSelectionModalContent } from "./role-selection-modal-content";
-import { Edit, LogOut, User } from "lucide-react";
+import { Edit, LogOut, User, LogIn } from "lucide-react";
+import { Button } from "./ui/button";
 
 export function UserAccountNav() {
   const { showModal } = useModal();
-  const { user } = useUser();
-  const { signOut, openUserProfile } = useClerk();
+  const { user, isLoaded } = useUser();
+  const { signOut, openUserProfile, openSignIn } = useClerk();
   const router = useRouter();
 
-  if (!user) return null;
+  // Show loading state if user is not loaded yet
+  if (!isLoaded) {
+    return (
+      <div className="h-9 w-9 rounded-full bg-gray-200 animate-pulse" />
+    );
+  }
+
+  // Show sign-in button if no user
+  if (!user) {
+    return (
+      <Button 
+        variant="outline" 
+        size="sm" 
+        onClick={() => openSignIn()}
+        className="flex items-center gap-2"
+      >
+        <LogIn className="h-4 w-4" />
+        Sign In
+      </Button>
+    );
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar className="h-9 w-9 cursor-pointer">
-          <AvatarImage src={user.imageUrl} alt={user.fullName ?? "User"} />
-          <AvatarFallback>
-            {user.firstName?.charAt(0)}
+        <Avatar className="h-9 w-9 cursor-pointer border-2 border-gray-200 hover:border-gray-300 transition-colors">
+          <AvatarImage 
+            src={user.imageUrl} 
+            alt={user.fullName ?? "User"} 
+            className="object-cover"
+          />
+          <AvatarFallback className="bg-brand-primary text-white font-medium">
+            {user.firstName?.charAt(0) || user.emailAddresses[0]?.emailAddress?.charAt(0) || "U"}
             {user.lastName?.charAt(0)}
           </AvatarFallback>
         </Avatar>

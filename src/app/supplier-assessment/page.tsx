@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchAssessments, useSupplierAssessmentPage } from '@/src/api/supplier-assessment';
+import { useSearchAssessments, useSupplierAssessmentPage } from '@/src/api/assessment';
 import { Assessment, Template } from '@/src/types/supplier-assessment';
 import {
   Search,

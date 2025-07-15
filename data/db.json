@@ -935,6 +935,48 @@
       "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
       "status": "success",
       "createdAt": "2025-07-15T05:47:46.990Z"
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:10:40.167Z"
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:31:01.452Z"
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:44:02.236Z"
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:50:12.904Z"
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:54:15.330Z"
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "title": "File Upload",
+      "subtitle": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "status": "success",
+      "createdAt": "2025-07-15T06:54:15.850Z"
     }
   ],
   "file-upload": {
@@ -2825,6 +2867,414 @@
           "contentUrl": "/document-summary/82e76c06-ba00-4759-a884-23a4709001ff"
         }
       ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/f8151046-5555-473f-8f70-d55d0adf8038"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/f8151046-5555-473f-8f70-d55d0adf8038"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/f8151046-5555-473f-8f70-d55d0adf8038"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/99987adc-645e-4d9c-820e-6a61a749c813"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/99987adc-645e-4d9c-820e-6a61a749c813"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/99987adc-645e-4d9c-820e-6a61a749c813"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/81449afa-2cf3-4097-b380-c3da4c213e03"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/81449afa-2cf3-4097-b380-c3da4c213e03"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/81449afa-2cf3-4097-b380-c3da4c213e03"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/7739acbb-3219-4137-a9ab-99281665f752"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/7739acbb-3219-4137-a9ab-99281665f752"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/7739acbb-3219-4137-a9ab-99281665f752"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/12dd53cc-81f3-4461-bcbf-3f3f60bc1977"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/12dd53cc-81f3-4461-bcbf-3f3f60bc1977"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/12dd53cc-81f3-4461-bcbf-3f3f60bc1977"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "description": "Processed document: DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c"
+        }
+      ]
     }
   ],
   "key-highlights-data": [
@@ -3532,6 +3982,162 @@
     },
     {
       "id": "82e76c06-ba00-4759-a884-23a4709001ff",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "highlights": [
+        {
+          "title": "Document successfully processed and validated",
+          "percentage": 100,
+          "status": "success",
+          "suggestion": "Review",
+          "detail": "All data extracted and validated successfully"
+        },
+        {
+          "title": "Data integrity checks completed",
+          "percentage": 95,
+          "status": "info",
+          "suggestion": "Monitor",
+          "detail": "Minor formatting inconsistencies detected"
+        },
+        {
+          "title": "Integration readiness assessment",
+          "percentage": 87,
+          "status": "warning",
+          "suggestion": "Optimize",
+          "detail": "Some fields may need manual review"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
       "highlights": [
         {
           "title": "Document successfully processed and validated",
@@ -4353,6 +4959,228 @@
           "status": "verified"
         }
       ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "fileName": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf",
+      "fileSize": "1.2 MB",
+      "data": [
+        {
+          "material": "Organic Cotton",
+          "origin": "India - Gujarat",
+          "supplier": "GreenTech Materials Ltd",
+          "cert": "GOTS Certified",
+          "date": "2025-07-15",
+          "qty": 2500,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Recycled Polyester",
+          "origin": "Japan - Osaka",
+          "supplier": "EcoFiber Corp",
+          "cert": "GRS Certified",
+          "date": "2025-07-15",
+          "qty": 1800,
+          "unit": "kg",
+          "status": "verified"
+        },
+        {
+          "material": "Natural Dyes",
+          "origin": "Peru - Lima",
+          "supplier": "Natural Colors Ltd",
+          "cert": "OEKO-TEX",
+          "date": "2025-07-15",
+          "qty": 50,
+          "unit": "L",
+          "status": "verified"
+        }
+      ]
     }
   ],
   "document-summary": [
@@ -4780,6 +5608,264 @@
         "accuracy": 92,
         "consistency": 88
       }
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "description": "Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.",
+      "reportingPeriod": "2024 Q1",
+      "organizationCount": 3,
+      "keyMetrics": [
+        {
+          "name": "Material Traceability",
+          "value": "98",
+          "unit": "%",
+          "category": "compliance"
+        },
+        {
+          "name": "Supplier Certifications",
+          "value": "3",
+          "unit": "verified",
+          "category": "certification"
+        },
+        {
+          "name": "Carbon Footprint",
+          "value": "2.1",
+          "unit": "tCO2e",
+          "category": "environmental"
+        },
+        {
+          "name": "Data Completeness",
+          "value": "95",
+          "unit": "%",
+          "category": "quality"
+        },
+        {
+          "name": "Processing Time",
+          "value": "5.2",
+          "unit": "seconds",
+          "category": "performance"
+        }
+      ],
+      "dataQuality": {
+        "completeness": 95,
+        "accuracy": 92,
+        "consistency": 88
+      }
     }
   ],
   "document-actors": [
@@ -4888,6 +5974,210 @@
     {
       "id": "82e76c06-ba00-4759-a884-23a4709001ff",
       "documentId": "82e76c06-ba00-4759-a884-23a4709001ff",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "documentId": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "documentId": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "documentId": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "documentId": "7739acbb-3219-4137-a9ab-99281665f752",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "documentId": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Primary Supplier",
+          "description": "GreenTech Materials Ltd - Verified",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand Owner",
+          "description": "EcoSustain Corp - Validated",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body - Approved",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        },
+        {
+          "id": 4,
+          "title": "Logistics Provider",
+          "description": "Sustainable Transport Co - Confirmed",
+          "color": "bg-yellow-50 text-yellow-900",
+          "dotColor": "bg-yellow-500"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "documentId": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
       "actors": [
         {
           "id": 1,
@@ -5052,6 +6342,210 @@
           "id": 4,
           "title": "Certification Verification",
           "code": "CERT-VERIFY-2025-531",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "documentId": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-439",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-060",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-953",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-936",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "documentId": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-015",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-116",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-514",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-968",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "documentId": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-075",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-198",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-256",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-256",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "documentId": "7739acbb-3219-4137-a9ab-99281665f752",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-861",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-602",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-111",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-951",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "documentId": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-228",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-646",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-173",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-844",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "documentId": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-395",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-328",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-852",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-217",
           "type": "certification",
           "color": "bg-orange-100 text-orange-800"
         }
@@ -5302,6 +6796,860 @@
           "Status": "Verified"
         }
       ]
+    },
+    {
+      "id": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "documentId": "f8151046-5555-473f-8f70-d55d0adf8038",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
+    },
+    {
+      "id": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "documentId": "99987adc-645e-4d9c-820e-6a61a749c813",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
+    },
+    {
+      "id": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "documentId": "81449afa-2cf3-4097-b380-c3da4c213e03",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
+    },
+    {
+      "id": "7739acbb-3219-4137-a9ab-99281665f752",
+      "documentId": "7739acbb-3219-4137-a9ab-99281665f752",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
+    },
+    {
+      "id": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "documentId": "12dd53cc-81f3-4461-bcbf-3f3f60bc1977",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
+    },
+    {
+      "id": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "documentId": "3d6fc73e-2b6c-4d0c-9e47-523bb8a56c2c",
+      "title": "DID Series 2--Decentralized Digital Identity DID Application Scenarios_Decentralized Digital Identity DID User Manual-CSDN Blog.pdf - Supply Chain Analysis (Processed)",
+      "columns": [
+        "Material",
+        "Supplier",
+        "Origin",
+        "Certification",
+        "Quantity",
+        "Unit",
+        "Sustainability Score",
+        "Status"
+      ],
+      "data": [
+        {
+          "id": "row-1",
+          "Material": "Organic Cotton",
+          "Supplier": "GreenTech Materials Ltd",
+          "Origin": "India - Gujarat",
+          "Certification": "GOTS Certified",
+          "Quantity": "2500",
+          "Unit": "kg",
+          "Sustainability Score": "9.4",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-2",
+          "Material": "Recycled Polyester",
+          "Supplier": "EcoFiber Corp",
+          "Origin": "Japan - Osaka",
+          "Certification": "GRS Certified",
+          "Quantity": "1800",
+          "Unit": "kg",
+          "Sustainability Score": "8.9",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-3",
+          "Material": "Natural Dyes",
+          "Supplier": "Natural Colors Ltd",
+          "Origin": "Peru - Lima",
+          "Certification": "OEKO-TEX",
+          "Quantity": "50",
+          "Unit": "L",
+          "Sustainability Score": "9.5",
+          "Status": "Verified"
+        },
+        {
+          "id": "row-4",
+          "Material": "Bamboo Fiber",
+          "Supplier": "Sustainable Bamboo Co",
+          "Origin": "Vietnam - Mekong Delta",
+          "Certification": "FSC Certified",
+          "Quantity": "800",
+          "Unit": "kg",
+          "Sustainability Score": "9.1",
+          "Status": "Verified"
+        }
+      ]
     }
-  ]
+  ],
+  "traceability-requests": [
+    {
+      "id": "TR-2024-001",
+      "suppliers": ["sup-001", "sup-002", "sup-003"],
+      "assessmentId": "ESG-2024-A15",
+      "status": "Completed",
+      "progress": {
+        "responded": 3,
+        "total": 3
+      },
+      "createdDate": "2024-03-15T00:00:00Z",
+      "lastUpdated": "2024-03-20T00:00:00Z",
+      "expirationDate": "2024-03-30T00:00:00Z",
+      "artifactTags": ["Material Sourcing"],
+      "actionTags": ["Environmental Impact"],
+      "message": "Please complete this assessment for environmental impact analysis.",
+      "cascadeSettings": {
+        "type": "required",
+        "targetTiers": ["tier-2", "tier-3"],
+        "scope": "material-specific",
+        "timing": "tier1-complete",
+        "autoReminder": true,
+        "completionNotification": true
+      }
+    },
+    {
+      "id": "TR-2024-002",
+      "suppliers": ["sup-004"],
+      "assessmentId": "ESG-2024-B22",
+      "status": "In Progress",
+      "progress": {
+        "responded": 0,
+        "total": 1
+      },
+      "createdDate": "2024-03-18T00:00:00Z",
+      "lastUpdated": "2024-03-19T00:00:00Z",
+      "expirationDate": "2024-04-01T00:00:00Z",
+      "artifactTags": ["Supply Chain"],
+      "actionTags": ["Transparency"],
+      "message": "Supply chain transparency assessment required.",
+      "cascadeSettings": {
+        "type": "optional",
+        "targetTiers": ["tier-2"],
+        "scope": "all-suppliers",
+        "timing": "immediate",
+        "autoReminder": true,
+        "completionNotification": false
+      }
+    },
+    {
+      "id": "TR-2024-003",
+      "suppliers": ["sup-005", "sup-006", "sup-007", "sup-008", "sup-009"],
+      "assessmentId": "ESG-2024-C08",
+      "status": "Overdue",
+      "progress": {
+        "responded": 2,
+        "total": 5
+      },
+      "createdDate": "2024-03-10T00:00:00Z",
+      "lastUpdated": "2024-03-12T00:00:00Z",
+      "expirationDate": "2024-03-25T00:00:00Z",
+      "artifactTags": ["Manufacturing"],
+      "actionTags": ["Compliance"],
+      "message": "Compliance assessment for manufacturing processes.",
+      "cascadeSettings": {
+        "type": "required",
+        "targetTiers": ["tier-2", "tier-3", "tier-4-plus"],
+        "scope": "risk-based",
+        "timing": "7-days",
+        "autoReminder": true,
+        "completionNotification": true
+      }
+    },
+    {
+      "id": "TR-2024-004",
+      "suppliers": ["sup-010", "sup-011"],
+      "assessmentId": "ESG-2024-D11",
+      "status": "Pending",
+      "progress": {
+        "responded": 0,
+        "total": 2
+      },
+      "createdDate": "2024-03-22T00:00:00Z",
+      "lastUpdated": "2024-03-22T00:00:00Z",
+      "expirationDate": "2024-04-05T00:00:00Z",
+      "artifactTags": ["Textiles"],
+      "actionTags": ["Sustainability"],
+      "message": "Sustainability assessment for textile suppliers.",
+      "cascadeSettings": {
+        "type": "none",
+        "targetTiers": [],
+        "scope": "material-specific",
+        "timing": "manual",
+        "autoReminder": false,
+        "completionNotification": true
+      }
+    },
+    {
+      "id": "TR-2024-005",
+      "suppliers": ["sup-012", "sup-013", "sup-014"],
+      "assessmentId": "ESG-2024-E07",
+      "status": "Completed",
+      "progress": {
+        "responded": 3,
+        "total": 3
+      },
+      "createdDate": "2024-03-08T00:00:00Z",
+      "lastUpdated": "2024-03-15T00:00:00Z",
+      "expirationDate": "2024-03-20T00:00:00Z",
+      "artifactTags": ["Raw Materials"],
+      "actionTags": ["Quality Control"],
+      "message": "Quality control assessment for raw materials.",
+      "cascadeSettings": {
+        "type": "required",
+        "targetTiers": ["tier-2"],
+        "scope": "material-specific",
+        "timing": "immediate",
+        "autoReminder": true,
+        "completionNotification": true
+      }
+    }
+  ],
+  "traceability-requests-detail": [
+    {
+      "id": "TR-2024-001",
+      "suppliers": ["sup-001", "sup-002", "sup-003"],
+      "assessmentId": "ESG-2024-A15",
+      "status": "Completed",
+      "progress": {
+        "responded": 3,
+        "total": 3
+      },
+      "createdDate": "2024-03-15T00:00:00Z",
+      "lastUpdated": "2024-03-20T00:00:00Z",
+      "expirationDate": "2024-03-30T00:00:00Z",
+      "artifactTags": ["Material Sourcing"],
+      "actionTags": ["Environmental Impact"],
+      "message": "Please complete this assessment for environmental impact analysis.",
+      "cascadeSettings": {
+        "type": "required",
+        "targetTiers": ["tier-2", "tier-3"],
+        "scope": "material-specific",
+        "timing": "tier1-complete",
+        "autoReminder": true,
+        "completionNotification": true
+      },
+      "supplierResponses": [
+        {
+          "id": "resp-001",
+          "supplierId": "sup-001",
+          "supplierName": "Textile Supplier Co.",
+          "supplierCategory": "Primary Fabric Supplier",
+          "status": "Fulfilled",
+          "responseDate": "2024-03-18T00:00:00Z",
+          "responseData": {
+            "documentUrl": "/documents/response-001.pdf",
+            "extractedData": {}
+          },
+          "tier2Suppliers": [
+            {
+              "id": "tier2-001",
+              "name": "Cotton Farm Ltd",
+              "category": "Raw Material",
+              "status": "Cascaded"
+            },
+            {
+              "id": "tier2-002",
+              "name": "Dye House Corp",
+              "category": "Processing",
+              "status": "Cascaded"
+            }
+          ]
+        },
+        {
+          "id": "resp-002",
+          "supplierId": "sup-002",
+          "supplierName": "Manufacturing Ltd.",
+          "supplierCategory": "Secondary Manufacturing Partner",
+          "status": "Rejected",
+          "responseDate": "2024-03-17T00:00:00Z",
+          "rejectionReason": "Unable to provide detailed environmental impact data due to confidentiality constraints."
+        },
+        {
+          "id": "resp-003",
+          "supplierId": "sup-003",
+          "supplierName": "Global Materials Inc.",
+          "supplierCategory": "Raw Material Supplier",
+          "status": "Pending"
+        }
+      ]
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "Textile Supplier Co.",
+      "category": "Textile",
+      "location": "Vietnam",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-002",
+      "name": "Anonymous Supplier #001",
+      "category": "Manufacturing",
+      "location": "Hidden",
+      "isAnonymous": true
+    },
+    {
+      "id": "sup-003",
+      "name": "Global Materials Inc.",
+      "category": "Raw Materials",
+      "location": "India",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-004",
+      "name": "Manufacturing Ltd.",
+      "category": "Manufacturing",
+      "location": "China",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-005",
+      "name": "Eco Fabrics Corp.",
+      "category": "Textile",
+      "location": "Thailand",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-006",
+      "name": "Sustainable Sources",
+      "category": "Raw Materials",
+      "location": "Peru",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-007",
+      "name": "Anonymous Supplier #002",
+      "category": "Textile",
+      "location": "Hidden",
+      "isAnonymous": true
+    },
+    {
+      "id": "sup-008",
+      "name": "Green Manufacturing Co.",
+      "category": "Manufacturing",
+      "location": "Indonesia",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-009",
+      "name": "Organic Cotton Ltd.",
+      "category": "Raw Materials",
+      "location": "Bangladesh",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-010",
+      "name": "Quality Textiles Inc.",
+      "category": "Textile",
+      "location": "Mexico",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-011",
+      "name": "Artisan Fabrics",
+      "category": "Textile",
+      "location": "Guatemala",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-012",
+      "name": "Premium Materials Corp.",
+      "category": "Raw Materials",
+      "location": "Turkey",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-013",
+      "name": "Innovative Manufacturing",
+      "category": "Manufacturing",
+      "location": "South Korea",
+      "isAnonymous": false
+    },
+    {
+      "id": "sup-014",
+      "name": "Eco-Friendly Suppliers",
+      "category": "Raw Materials",
+      "location": "Brazil",
+      "isAnonymous": false
+    }
+  ],
+  "material-codes": [
+    {
+      "id": "mat-001",
+      "code": "MAT-001",
+      "name": "Cotton Fabric",
+      "category": "Natural Fiber"
+    },
+    {
+      "id": "mat-002",
+      "code": "MAT-002",
+      "name": "Polyester Blend",
+      "category": "Synthetic Fiber"
+    },
+    {
+      "id": "mat-003",
+      "code": "MAT-003",
+      "name": "Organic Cotton",
+      "category": "Natural Fiber"
+    },
+    {
+      "id": "mat-004",
+      "code": "MAT-004",
+      "name": "Recycled Polyester",
+      "category": "Recycled Fiber"
+    },
+    {
+      "id": "mat-005",
+      "code": "MAT-005",
+      "name": "Wool",
+      "category": "Natural Fiber"
+    },
+    {
+      "id": "mat-006",
+      "code": "MAT-006",
+      "name": "Leather",
+      "category": "Animal Product"
+    }
+  ],
+  "product-codes": [
+    {
+      "id": "prod-001",
+      "code": "PROD-001",
+      "name": "Running Shoes",
+      "category": "Footwear"
+    },
+    {
+      "id": "prod-002",
+      "code": "PROD-002",
+      "name": "Training Gear",
+      "category": "Apparel"
+    },
+    {
+      "id": "prod-003",
+      "code": "PROD-003",
+      "name": "Casual Wear",
+      "category": "Apparel"
+    },
+    {
+      "id": "prod-004",
+      "code": "PROD-004",
+      "name": "Sports Equipment",
+      "category": "Equipment"
+    },
+    {
+      "id": "prod-005",
+      "code": "PROD-005",
+      "name": "Outdoor Gear",
+      "category": "Equipment"
+    }
+  ],
+  "action-codes": [
+    {
+      "id": "act-001",
+      "code": "ACT-001",
+      "name": "Quality Inspection",
+      "description": "Comprehensive quality control assessment"
+    },
+    {
+      "id": "act-002",
+      "code": "ACT-002",
+      "name": "Sustainability Audit",
+      "description": "Environmental and social sustainability evaluation"
+    },
+    {
+      "id": "act-003",
+      "code": "ACT-003",
+      "name": "Compliance Check",
+      "description": "Regulatory and legal compliance verification"
+    },
+    {
+      "id": "act-004",
+      "code": "ACT-004",
+      "name": "Environmental Impact",
+      "description": "Environmental impact assessment and mitigation"
+    },
+    {
+      "id": "act-005",
+      "code": "ACT-005",
+      "name": "Transparency",
+      "description": "Supply chain transparency and disclosure"
+    }
+  ],
+  "traceability-analytics": {
+    "keyInsights": "Footwear traceability analysis reveals high tariff policy risk for products sourced from Vietnam and China, affecting 68% of your footwear supply chain. Current origin traceability stands at 82%, with synthetic materials showing 95% traceability compared to leather at 71%. Recent policy changes indicate potential 15-25% tariff increases on footwear imports from these regions. Consider diversifying suppliers to Thailand and Indonesia where tariff risks are significantly lower and traceability compliance exceeds 90%.",
+    "tariffRiskByCountry": [
+      {
+        "country": "Vietnam",
+        "riskLevel": "High",
+        "riskScore": 8.5,
+        "originPercentage": 85,
+        "material": "Synthetic",
+        "status": "At Risk"
+      },
+      {
+        "country": "China",
+        "riskLevel": "High",
+        "riskScore": 8.2,
+        "originPercentage": 78,
+        "material": "Leather",
+        "status": "At Risk"
+      },
+      {
+        "country": "Thailand",
+        "riskLevel": "Low",
+        "riskScore": 3.1,
+        "originPercentage": 92,
+        "material": "Synthetic",
+        "status": "Secure"
+      },
+      {
+        "country": "Indonesia",
+        "riskLevel": "Low",
+        "riskScore": 4.2,
+        "originPercentage": 89,
+        "material": "Natural",
+        "status": "Secure"
+      },
+      {
+        "country": "India",
+        "riskLevel": "Medium",
+        "riskScore": 5.8,
+        "originPercentage": 83,
+        "material": "Cotton",
+        "status": "Monitoring"
+      }
+    ],
+    "originTraceabilityTrends": [
+      {
+        "period": "Q1",
+        "value": 75
+      },
+      {
+        "period": "Q2",
+        "value": 78
+      },
+      {
+        "period": "Q3",
+        "value": 80
+      },
+      {
+        "period": "Q4",
+        "value": 82
+      }
+    ],
+    "materialTraceability": [
+      {
+        "material": "Synthetic",
+        "traced": 95,
+        "untraced": 5,
+        "percentage": 95
+      },
+      {
+        "material": "Leather",
+        "traced": 71,
+        "untraced": 29,
+        "percentage": 71
+      },
+      {
+        "material": "Cotton",
+        "traced": 88,
+        "untraced": 12,
+        "percentage": 88
+      },
+      {
+        "material": "Rubber",
+        "traced": 82,
+        "untraced": 18,
+        "percentage": 82
+      }
+    ],
+    "overallStats": {
+      "traceabilityPercentage": 82,
+      "tracedCount": 34,
+      "untracedCount": 8
+    }
+  }
 }

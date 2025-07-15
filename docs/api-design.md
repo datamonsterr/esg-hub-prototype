@@ -129,4 +129,85 @@ The application uses SWR for data fetching. The following hooks are available in
 - `useSupplierAssessmentPage()`: Fetches data for the supplier assessment page.
 - `useDataIntegrations()`: Fetches data for the data integrations page.
 - `useDataValidation()`: Fetches data for the data validation page.
-- `useFileUpload()`: Fetches data for the file upload page. 
+- `useFileUpload()`: Fetches data for the file upload page.
+- `useTraceabilityRequests()`: Fetches all traceability requests.
+- `useTraceabilityRequest(id)`: Fetches a single traceability request with details.
+- `useCreateTraceabilityRequest(data)`: Creates a new traceability request.
+- `useUpdateTraceabilityRequest(id, data)`: Updates an existing traceability request.
+- `useDeleteTraceabilityRequest(id)`: Deletes a traceability request.
+- `useTraceabilityAnalytics(query?)`: Fetches analytics data with optional query filters.
+- `useSuppliers()`: Fetches available suppliers for requests.
+- `useMaterialCodes()`: Fetches available material codes.
+- `useProductCodes()`: Fetches available product codes.
+- `useActionCodes()`: Fetches available action codes.
+
+### Traceability
+
+- **GET** `/traceability-requests`
+  - **Description:** Retrieves a list of all traceability requests for the authenticated brand.
+  - **Response Body:** An array of `TraceabilityRequest` objects.
+  - **Type Definition:**
+    ```typescript
+    export interface TraceabilityRequest {
+      id: string;
+      suppliers: string[];
+      assessmentId: string;
+      status: 'Pending' | 'In Progress' | 'Completed' | 'Overdue';
+      progress: {
+        responded: number;
+        total: number;
+      };
+      createdDate: string;
+      lastUpdated: string;
+      expirationDate: string;
+      artifactTags: string[];
+      actionTags: string[];
+      message?: string;
+      cascadeSettings: CascadeSettings;
+    }
+    ```
+
+- **GET** `/traceability-requests/:id`
+  - **Description:** Retrieves a specific traceability request with detailed supplier responses.
+  - **Response Body:** A `TraceabilityRequest` object with expanded `supplierResponses` array.
+  - **Type Definition:**
+    ```typescript
+    export interface TraceabilityRequestDetail extends TraceabilityRequest {
+      supplierResponses: SupplierResponse[];
+    }
+    ```
+
+- **POST** `/traceability-requests`
+  - **Description:** Creates a new traceability request.
+  - **Request Body:** A `CreateTraceabilityRequest` object.
+  - **Response Body:** The newly created `TraceabilityRequest` object.
+
+- **PUT** `/traceability-requests/:id`
+  - **Description:** Updates an existing traceability request.
+  - **Request Body:** A partial `TraceabilityRequest` object.
+  - **Response Body:** The updated `TraceabilityRequest` object.
+
+- **DELETE** `/traceability-requests/:id`
+  - **Description:** Deletes a traceability request.
+  - **Response Body:** Success confirmation.
+
+- **GET** `/traceability-analytics`
+  - **Description:** Retrieves analytics data for traceability dashboard.
+  - **Query Parameters:** Optional `AnalyticsQuery` object for filtering.
+  - **Response Body:** A `TraceabilityAnalytics` object.
+
+- **GET** `/suppliers`
+  - **Description:** Retrieves available suppliers for selection in requests.
+  - **Response Body:** An array of `Supplier` objects.
+
+- **GET** `/material-codes`
+  - **Description:** Retrieves available material codes for tagging.
+  - **Response Body:** An array of `MaterialCode` objects.
+
+- **GET** `/product-codes`
+  - **Description:** Retrieves available product codes for tagging.
+  - **Response Body:** An array of `ProductCode` objects.
+
+- **GET** `/action-codes`
+  - **Description:** Retrieves available action codes for tagging.
+  - **Response Body:** An array of `ActionCode` objects. 

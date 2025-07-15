@@ -9,6 +9,12 @@ const labelMap: Record<string, string> = {
   "validation": "Data Validation",
   "data-management": "Data Management",
   "traceability-request": "Traceability Request",
+  "supplier-traceability": "Traceability Requests",
+  "traceability": "Traceability",
+  "request": "Request",
+  "create": "Create",
+  "analytics": "Analytics",
+  "assessment": "Assessment",
   "reports": "Reports",
   "supplier-assessment": "Supplier Assessment",
 }

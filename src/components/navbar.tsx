@@ -37,12 +37,13 @@ export function Navbar() {
   const supplierNavItems = [
     { href: "/data-integration", label: "Data Integrations", match: "/data-integration" },
     { href: "/data-management", label: "Data Management", match: "/data-management" },
-    { href: "/traceability-request", label: "Traceability Request", match: "/traceability-request" },
+    { href: "/supplier-traceability", label: "Traceability Requests", match: "/supplier-traceability" },
     { href: "/reports", label: "Reports", match: "/reports" },
   ];
 
   const brandNavItems = [
     { href: "/data-integration", label: "Data Integration", match: "/data-integration" },
+    { href: "/data-management", label: "Data Management", match: "/data-management" },
     {
       label: "Traceability",
       match: "/traceability",

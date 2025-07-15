@@ -1,0 +1,341 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head>
+<body class="bg-gray-50 font-arial text-base">
+
+    <nav id="header" class="bg-white border-b border-border">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                            <i class="fas fa-leaf text-white text-sm"></i>
+                        </div>
+                        <span class="ml-2 text-xl font-medium text-gray-900">Traceability Hub</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integrations</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                        <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer">Traceability Request</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Reports</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bell text-lg"></i>
+                    </button>
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        
+        <div class="flex items-center justify-between mb-8" id="page-header">
+            <div>
+                <h1 class="text-3xl font-medium text-gray-900 mb-2">Traceability Requests</h1>
+                <p class="text-gray-600">Complete assessments from brands and supply chain partners</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <input type="text" placeholder="Search requests..." class="pl-10 pr-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+                <select class="border border-border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option>All Status</option>
+                    <option>New</option>
+                    <option>Ongoing</option>
+                    <option>Complete</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg border border-border">
+            
+            <div id="request-stats" class="border-b border-border p-6">
+                <div class="grid grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-medium text-gray-900">12</div>
+                        <div class="text-sm text-gray-600">Total Requests</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-medium text-accent">4</div>
+                        <div class="text-sm text-gray-600">New</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-medium text-primary">5</div>
+                        <div class="text-sm text-gray-600">Ongoing</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-medium text-gray-900">3</div>
+                        <div class="text-sm text-gray-600">Complete</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="requests-list" class="divide-y divide-border">
+                
+                <div id="request-1" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                                <i class="fas fa-leaf text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Cotton Supply Chain Transparency Assessment</h3>
+                                    <span class="px-2 py-1 bg-accent/20 text-accent text-xs rounded-full font-medium">New</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-001</span>
+                                    <span><strong>From:</strong> H&amp;M Sustainability Team</span>
+                                    <span><strong>Received:</strong> Jan 15, 2024</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Map cotton sourcing from farm to fabric mill, including organic certification tracking and water usage documentation.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-exclamation-triangle text-error"></i>
+                                <span class="text-error text-sm font-medium">Required</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Due: Feb 15, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">3 days overdue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-2" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shoe-prints text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Footwear Supply Chain Journey Mapping Assessment</h3>
+                                    <span class="px-2 py-1 bg-primary/20 text-primary text-xs rounded-full font-medium">Ongoing</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-002</span>
+                                    <span><strong>From:</strong> Adidas Global Sustainability</span>
+                                    <span><strong>Received:</strong> Jan 18, 2024</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Complete lifecycle tracking from leather/rubber sourcing to final shoe assembly and distribution.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-clock text-accent"></i>
+                                <span class="text-accent text-sm font-medium">Required</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Due: Mar 31, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">45% complete</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-3" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tshirt text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Polyester Recycling Chain Documentation</h3>
+                                    <span class="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full font-medium">Complete</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-003</span>
+                                    <span><strong>From:</strong> Patagonia Supply Chain</span>
+                                    <span><strong>Received:</strong> Dec 20, 2023</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Track recycled polyester from plastic bottle collection to fiber production and garment manufacturing.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-check-circle text-primary"></i>
+                                <span class="text-primary text-sm font-medium">Submitted</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Completed: Jan 10, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">5 days early</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-4" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-seedling text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Wool Fiber Origin and Animal Welfare Assessment</h3>
+                                    <span class="px-2 py-1 bg-accent/20 text-accent text-xs rounded-full font-medium">New</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-004</span>
+                                    <span><strong>From:</strong> Uniqlo Sourcing Team</span>
+                                    <span><strong>Received:</strong> Jan 22, 2024</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Document wool sourcing practices including farm locations, animal welfare standards, and processing methods.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-info-circle text-gray-400"></i>
+                                <span class="text-gray-600 text-sm font-medium">Optional</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Due: Apr 15, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">Not started</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-5" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-gem text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Denim Manufacturing Water Usage Tracking</h3>
+                                    <span class="px-2 py-1 bg-primary/20 text-primary text-xs rounded-full font-medium">Ongoing</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-005</span>
+                                    <span><strong>From:</strong> Levi's Environmental Team</span>
+                                    <span><strong>Received:</strong> Jan 12, 2024</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Track water consumption and treatment processes in denim washing and finishing operations.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-clock text-accent"></i>
+                                <span class="text-accent text-sm font-medium">Required</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Due: Mar 12, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">20% complete</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="request-6" class="p-6 hover:bg-gray-50 cursor-pointer">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-cut text-white text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-3 mb-2">
+                                    <h3 class="text-lg font-medium text-gray-900">Leather Tanning Process Chemical Documentation</h3>
+                                    <span class="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full font-medium">Complete</span>
+                                </div>
+                                <div class="flex items-center space-x-6 text-sm text-gray-600 mb-2">
+                                    <span><strong>Request ID:</strong> TRC-2024-006</span>
+                                    <span><strong>From:</strong> Coach Leather Goods</span>
+                                    <span><strong>Received:</strong> Dec 15, 2023</span>
+                                </div>
+                                <p class="text-gray-600 text-sm">Document chemical usage in leather tanning processes and environmental compliance measures.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <i class="fas fa-check-circle text-primary"></i>
+                                <span class="text-primary text-sm font-medium">Submitted</span>
+                            </div>
+                            <div class="text-sm text-gray-600">Completed: Jan 8, 2024</div>
+                            <div class="text-xs text-gray-500 mt-1">On time</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="pagination" class="flex items-center justify-between mt-6">
+            <div class="text-sm text-gray-600">
+                Showing 1-6 of 12 requests
+            </div>
+            <div class="flex items-center space-x-2">
+                <button class="px-3 py-2 border border-border rounded-lg text-gray-600 hover:bg-gray-50">Previous</button>
+                <button class="px-3 py-2 bg-primary text-white rounded-lg">1</button>
+                <button class="px-3 py-2 border border-border rounded-lg text-gray-600 hover:bg-gray-50">2</button>
+                <button class="px-3 py-2 border border-border rounded-lg text-gray-600 hover:bg-gray-50">Next</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.querySelectorAll('#requests-list > div').forEach(request => {
+            request.addEventListener('click', function() {
+                const requestId = this.querySelector('strong').nextSibling.textContent.trim();
+                console.log('Opening request:', requestId);
+            });
+        });
+    </script>
+
+
+</body></html>

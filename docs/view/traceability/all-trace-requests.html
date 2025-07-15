@@ -1,0 +1,406 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head><body class="bg-gray-50 font-arial text-base">
+
+    <!-- Navigation Bar -->
+    <nav id="header" class="bg-white border-b border-border">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                            <i class="text-white text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-leaf" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="leaf" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5h88c8.8 0 16 7.2 16 16s-7.2 16-16 16H288 216s0 0 0 0c-16.6 0-32.7 1.9-48.2 5.4c-25.9 5.9-50 16.4-71.4 30.7c0 0 0 0 0 0C38.3 298.8 0 364.9 0 440v16c0 13.3 10.7 24 24 24s24-10.7 24-24V440c0-48.7 20.7-92.5 53.8-123.2C121.6 392.3 190.3 448 272 448l1 0c132.1-.7 239-130.9 239-291.4c0-42.6-7.5-83.1-21.1-119.6c-2.6-6.9-12.7-6.6-16.2-.1C455.9 72.1 418.7 96 376 96L272 96z"></path></svg></i>
+                        </div>
+                        <span class="ml-2 text-xl font-medium text-gray-900">Traceability Hub</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Suppliers</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Supplier Assessment</span>
+                        <div class="relative group">
+                            <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer flex items-center">
+                                Traceability
+                                <i class="ml-1 text-xs" data-fa-i2svg=""><svg class="svg-inline--fa fa-chevron-down" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"></path></svg></i>
+                            </span>
+                            <div class="absolute top-full left-0 mt-1 w-48 bg-white border border-border rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
+                                <span class="block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-primary cursor-pointer">Request</span>
+                                <span class="block px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-primary cursor-pointer">Analytics</span>
+                            </div>
+                        </div>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integration</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="text-lg" data-fa-i2svg=""><svg class="svg-inline--fa fa-bell" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="bell" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 0c-17.7 0-32 14.3-32 32V51.2C119 66 64 130.6 64 208v18.8c0 47-17.3 92.4-48.5 127.6l-7.4 8.3c-8.4 9.4-10.4 22.9-5.3 34.4S19.4 416 32 416H416c12.6 0 24-7.4 29.2-18.9s3.1-25-5.3-34.4l-7.4-8.3C401.3 319.2 384 273.9 384 226.8V208c0-77.4-55-142-128-156.8V32c0-17.7-14.3-32-32-32zm45.3 493.3c12-12 18.7-28.3 18.7-45.3H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7z"></path></svg></i>
+                    </button>
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        
+        <!-- Header Section -->
+        <section id="page-header" class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-medium text-gray-900 mb-2">Traceability Requests</h1>
+                    <p class="text-gray-600">Manage traceability requests and track supplier responses for material assessment</p>
+                </div>
+                <button id="create-request-btn" class="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90 flex items-center space-x-2">
+                    <i data-fa-i2svg=""><svg class="svg-inline--fa fa-plus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"></path></svg></i>
+                    <span class="">Create New Request</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Search and Filter -->
+        <section id="search-filter" class="mb-8">
+            <div class="bg-white rounded-lg border border-border p-5">
+                <div class="flex flex-col lg:flex-row gap-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <i class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" data-fa-i2svg=""><svg class="svg-inline--fa fa-magnifying-glass" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"></path></svg></i>
+                            <input type="text" placeholder="Search by Request ID, Supplier, or Assessment..." class="w-full pl-10 pr-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <select class="px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-w-32">
+                            <option>All Status</option>
+                            <option>Pending</option>
+                            <option>In Progress</option>
+                            <option>Completed</option>
+                            <option>Overdue</option>
+                        </select>
+                        <select class="px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary min-w-32">
+                            <option>All Suppliers</option>
+                            <option>Supplier A</option>
+                            <option>Supplier B</option>
+                            <option>Supplier C</option>
+                        </select>
+                        <button class="px-6 py-3 border border-border rounded-md hover:bg-gray-50 flex items-center space-x-2">
+                            <i data-fa-i2svg=""><svg class="svg-inline--fa fa-filter" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="filter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M3.9 54.9C10.5 40.9 24.5 32 40 32H472c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9V448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6V320.9L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z"></path></svg></i>
+                            <span class="">More Filters</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Requests Table -->
+        <section id="requests-table" class="mb-8">
+            <div class="bg-white rounded-lg border border-border overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[1200px]">
+                        <thead class="bg-gray-50 border-b border-border">
+                            <tr>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-32">Request ID</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-48">Suppliers</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-40">Assessment ID</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-28">Status</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-32">Progress</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-32">Created Date</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-32">Last Updated</th>
+                                <th class="text-left py-4 px-4 font-medium text-gray-900 w-24">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-border">
+                            <tr id="request-row-1" class="hover:bg-gray-50">
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-primary">TR-2024-001</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-gray-900">Textile Supplier Co.</span>
+                                        <span class="text-gray-500 text-sm">+2 more suppliers</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900">ESG-2024-A15</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Completed</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-900">3/3 responded</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                            <div class="bg-green-500 h-1.5 rounded-full w-full"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 15, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 20, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-primary" title="View">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-eye" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-primary" title="Edit">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-pen-to-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-error" title="Delete">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-trash" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="request-row-2" class="hover:bg-gray-50">
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-primary">TR-2024-002</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-gray-900">Manufacturing Ltd.</span>
+                                        <span class="text-gray-500 text-sm">Single supplier</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900">ESG-2024-B22</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded">In Progress</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-900">1/1 pending</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                            <div class="bg-yellow-500 h-1.5 rounded-full w-1/2"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 18, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 19, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-primary" title="View">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-eye" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-primary" title="Edit">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-pen-to-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-error" title="Delete">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-trash" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="request-row-3" class="hover:bg-gray-50">
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-primary">TR-2024-003</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-gray-900">Global Materials Inc.</span>
+                                        <span class="text-gray-500 text-sm">+4 more suppliers</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900">ESG-2024-C08</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">Overdue</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-900">2/5 responded</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                            <div class="bg-red-500 h-1.5 rounded-full w-2/5"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 10, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 12, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-primary" title="View">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-eye" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-primary" title="Edit">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-pen-to-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-error" title="Delete">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-trash" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="request-row-4" class="hover:bg-gray-50">
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-primary">TR-2024-004</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-gray-900">Eco Fabrics Corp.</span>
+                                        <span class="text-gray-500 text-sm">+1 more supplier</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900">ESG-2024-D11</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">Pending</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-900">0/2 responded</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                            <div class="bg-gray-400 h-1.5 rounded-full w-0"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 22, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 22, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-primary" title="View">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-eye" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-primary" title="Edit">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-pen-to-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-error" title="Delete">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-trash" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="request-row-5" class="hover:bg-gray-50">
+                                <td class="py-4 px-4">
+                                    <span class="font-medium text-primary">TR-2024-005</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-gray-900">Sustainable Sources</span>
+                                        <span class="text-gray-500 text-sm">+2 more suppliers</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900">ESG-2024-E07</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">Completed</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-900">3/3 responded</span>
+                                        <div class="w-16 bg-gray-200 rounded-full h-1.5 mt-1">
+                                            <div class="bg-green-500 h-1.5 rounded-full w-full"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 08, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <span class="text-gray-900 text-sm">Mar 15, 2024</span>
+                                </td>
+                                <td class="py-4 px-4">
+                                    <div class="flex space-x-2">
+                                        <button class="text-gray-400 hover:text-primary" title="View">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-eye" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="eye" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-primary" title="Edit">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-pen-to-square" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-to-square" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"></path></svg></i>
+                                        </button>
+                                        <button class="text-gray-400 hover:text-error" title="Delete">
+                                            <i class="text-sm" data-fa-i2svg=""><svg class="svg-inline--fa fa-trash" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <section id="pagination" class="flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">23</span> results
+            </div>
+            <div class="flex items-center space-x-2">
+                <button class="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-border rounded-md hover:bg-gray-50 disabled:opacity-50" disabled="">
+                    <i data-fa-i2svg=""><svg class="svg-inline--fa fa-chevron-left" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"></path></svg></i>
+                </button>
+                <button class="px-3 py-2 text-sm font-medium text-white bg-primary border border-primary rounded-md">1</button>
+                <button class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-border rounded-md hover:bg-gray-50">2</button>
+                <button class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-border rounded-md hover:bg-gray-50">3</button>
+                <span class="px-3 py-2 text-sm font-medium text-gray-500">...</span>
+                </div></section></main></body></html>

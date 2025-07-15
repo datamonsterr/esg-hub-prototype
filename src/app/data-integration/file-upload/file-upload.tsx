@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { useState, useCallback, useRef } from "react"
-import { Upload, ArrowLeft } from "lucide-react"
+import { useState, useCallback, useRef, useEffect } from "react"
+import { Upload, ArrowLeft, File as FileIcon, X } from "lucide-react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faFilePdf,
@@ -16,24 +16,58 @@ import {
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent } from "@/src/components/ui/card"
 import { Alert, AlertDescription } from "@/src/components/ui/alert"
-import { useFileUpload } from '@/src/api/data-integration';
+import { useFileUpload, useCreateActivity, useGetActivityStatus, useCreateDocument } from '@/src/api/integration';
 import { GlobalLoading } from '@/src/components/global-loading';
 import { FileType } from '@/src/types/file-upload';
 import { ErrorComponent } from '@/src/components/ui/error';
 import { useToast } from '@/src/hooks/use-toast';
+import { ComingSoonModal } from "@/src/components/coming-soon-modal"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/src/components/ui/dialog"
+import { useRouter } from "next/navigation"
+import { v4 as uuidv4 } from 'uuid';
 
 interface FileUploadProps {
   onNavigateBack: () => void
-  onNavigateToValidation: () => void
 }
 
-export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploadProps) {
-  const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+export function FileUpload({ onNavigateBack }: FileUploadProps) {
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { fileUpload, isLoading, isError } = useFileUpload();
-  const { showErrorToast } = useToast();
+  const { showErrorToast, showSuccessToast } = useToast();
+  const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedFileType, setSelectedFileType] = useState<FileType | null>(null);
+  const [uploadingActivityId, setUploadingActivityId] = useState<string | null>(null);
+  const router = useRouter();
+  const { createActivity: createActivityMutation } = useCreateActivity();
+  const { createDocument: createDocumentMutation } = useCreateDocument();
+
+  const { activity: uploadingActivity, isLoading: isStatusLoading } = useGetActivityStatus(uploadingActivityId);
+
+  const onNavigateToValidation = (activityId: string) => {
+    router.push(`/data-integration/validation/${activityId}`);
+  };
+
+  useEffect(() => {
+    if (uploadingActivity?.status === 'success') {
+      showSuccessToast("File processed successfully! Navigating to validation...");
+      const timer = setTimeout(() => {
+        if (uploadingActivityId) {
+          onNavigateToValidation(uploadingActivityId);
+        }
+      }, 1500); // Delay for toast visibility
+      return () => clearTimeout(timer);
+    }
+  }, [uploadingActivity, onNavigateToValidation, showSuccessToast, uploadingActivityId]);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -52,11 +86,13 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
       setDragActive(false);
 
       if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const files = Array.from(e.dataTransfer.files);
-        setUploadedFiles((prev) => [...prev, ...files]);
+        setUploadedFile(e.dataTransfer.files[0]);
+        if (isUploadModalOpen) {
+          setIsUploadModalOpen(false);
+        }
       }
     },
-    []
+    [isUploadModalOpen]
   );
 
   if (isLoading) {
@@ -71,26 +107,70 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
     return null;
   }
 
-  const handleFileTypeSelect = (typeId: string) => {
-    setSelectedFileTypes((prev) => (prev.includes(typeId) ? prev.filter((id) => id !== typeId) : [...prev, typeId]));
-  };
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setUploadedFiles((prev) => [...prev, ...files]);
+    if (e.target.files && e.target.files[0]) {
+      setUploadedFile(e.target.files[0]);
+      if (isUploadModalOpen) {
+        setIsUploadModalOpen(false);
+      }
     }
   };
 
-  const handleStartUpload = () => {
-    if (uploadedFiles.length === 0) {
-      showErrorToast("Please select files to upload first.")
+  const handleStartUpload = async () => {
+    if (!uploadedFile) {
+      showErrorToast("Please select a file to upload first.")
       return
     }
-    onNavigateToValidation()
+    try {
+      const newActivityId = uuidv4();
+      const fileExtension = uploadedFile.name.split('.').pop() || '';
+      
+      // Create document entry in database first
+      await createDocumentMutation({
+        id: newActivityId,
+        fileName: uploadedFile.name,
+        fileExtension,
+      });
+
+      // Upload the file with the same UUID
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+      formData.append('id', newActivityId);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('File upload failed');
+      }
+
+      // Create activity entry
+      const newActivity = await createActivityMutation({
+        id: newActivityId,
+        title: "File Upload",
+        subtitle: uploadedFile.name,
+      });
+
+      setUploadingActivityId(newActivity.id);
+      showSuccessToast("Upload started, processing file...");
+      // The useGetActivityStatus hook will now monitor the status
+    } catch (error) {
+      console.error('Upload failed:', error);
+      showErrorToast("Failed to start upload process.");
+    }
   }
 
-  // Helper to choose icon for each uploaded file in the list
+  const handleCardClick = (type: FileType) => {
+    if (type.id === 'multiple') {
+      setIsComingSoonModalOpen(true);
+    } else {
+      setSelectedFileType(type);
+      setIsUploadModalOpen(true);
+    }
+  };
+
   const getIconForFile = (file: File) => {
     if (file.type.startsWith('image')) return faFileImage;
     if (file.name.endsWith('.pdf')) return faFilePdf;
@@ -119,6 +199,15 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
     }
   };
 
+  const fileTypeAccept = {
+    excel: ".xlsx,.xls",
+    csv: ".csv",
+    pdf: ".pdf",
+    word: ".doc,.docx",
+    images: "image/*",
+    multiple: "*/*"
+  };
+
   return (
     <div className="space-y-8">
       {/* How it works */}
@@ -142,15 +231,8 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
           {fileUpload.fileTypes.map((type: FileType) => (
             <Card
               key={type.id}
-              className={`cursor-pointer transition-all rounded-brand ${
-                selectedFileTypes.includes(type.id)
-                  ? "ring-2 ring-brand-primary border-brand-primary"
-                  : "border-border-light hover:shadow-md"
-              } bg-white`}
-              onClick={() => {
-                handleFileTypeSelect(type.id)
-                fileInputRef.current?.click()
-              }}
+              className="cursor-pointer transition-all rounded-brand border-border-light hover:shadow-md bg-white"
+              onClick={() => handleCardClick(type)}
             >
               <CardContent className="p-6 text-center">
                 <FontAwesomeIcon icon={getIconFromFileType(type.icon)} className={`text-3xl mb-3 ${type.iconColor}`} />
@@ -166,7 +248,7 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
       </div>
 
       {/* File Upload Area */}
-      <div>
+      {!uploadedFile && (
         <div
           className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${
             dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
@@ -177,59 +259,60 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
           onDrop={handleDrop}
         >
           <Upload className="h-12 w-12 text-brand-primary mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">Drag and drop your files here</h3>
-          <p className="text-gray-600 mb-6">or click to browse and select files from your computer</p>
+          <h3 className="text-lg font-medium mb-2">Drag and drop your file here</h3>
+          <p className="text-gray-600 mb-6">or click to browse and select a file from your computer</p>
 
           <input
             type="file"
-            multiple
             onChange={handleFileSelect}
             className="hidden"
             id="file-upload"
-            accept=".xlsx,.xls,.csv,.pdf,.doc,.docx,.jpg,.jpeg,.png"
             ref={fileInputRef}
           />
           <Button
             className="bg-brand-primary hover:bg-brand-primary/90 rounded-brand"
             onClick={() => fileInputRef.current?.click()}
           >
-            Choose Files
+            Choose File
           </Button>
 
           <p className="text-sm text-gray-500 mt-4">
-            Maximum file size: 100MB per file
-            <br />
-            Supported formats: Excel, CSV, PDF, Word, JPG, PNG
+            Maximum file size: 100MB
           </p>
         </div>
+      )}
 
-        {/* Uploaded Files List */}
-        {uploadedFiles.length > 0 && (
-          <div className="mt-6">
-            <h3 className="font-medium mb-4">Uploaded Files ({uploadedFiles.length})</h3>
-            <div className="space-y-2">
-              {uploadedFiles.map((file, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-brand">
-                  <div className="flex items-center space-x-3">
-                    <FontAwesomeIcon icon={getIconForFile(file)} className="text-gray-500 text-lg" />
-                    <div>
-                      <p className="font-medium">{file.name}</p>
-                      <p className="text-sm text-gray-600">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setUploadedFiles((prev) => prev.filter((_, i) => i !== index))}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
+      {/* Uploaded File Info */}
+      {uploadedFile && (
+        <div className="mt-6">
+          <h3 className="font-medium mb-4">Uploaded File</h3>
+          <div className="flex items-center justify-between p-3 bg-gray-50 rounded-brand">
+            <div className="flex items-center space-x-3">
+              <FontAwesomeIcon icon={getIconForFile(uploadedFile)} className="text-gray-500 text-lg" />
+              <div>
+                <p className="font-medium">{uploadedFile.name}</p>
+                <p className="text-sm text-gray-600">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+              </div>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setUploadedFile(null);
+                setUploadingActivityId(null);
+              }}
+            >
+              Remove
+            </Button>
           </div>
-        )}
-      </div>
+          {uploadingActivity && (
+             <div className="flex items-center space-x-2 mt-2">
+               <p>Status: {uploadingActivity.status}</p>
+                {uploadingActivity.status === 'processing' && isStatusLoading && <p>(checking...)</p>}
+             </div>
+          )}
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className="flex justify-between">
@@ -241,11 +324,97 @@ export function FileUpload({ onNavigateBack, onNavigateToValidation }: FileUploa
           <Button variant="outline" className="border-border-light rounded-brand bg-transparent">
             Save as Draft
           </Button>
-          <Button onClick={handleStartUpload} className="bg-brand-primary hover:bg-brand-primary/90 rounded-brand">
-            Start Upload
+          <Button onClick={handleStartUpload} className="bg-brand-primary hover:bg-brand-primary/90 rounded-brand" disabled={!!uploadingActivityId}>
+            {uploadingActivityId ? 'Processing...' : 'Start Upload'}
           </Button>
         </div>
       </div>
+
+      <ComingSoonModal isOpen={isComingSoonModalOpen} onClose={() => setIsComingSoonModalOpen(false)} />
+      
+      <FileUploadModal 
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        fileType={selectedFileType}
+        onFileSelect={handleFileSelect}
+        onDrop={handleDrop}
+        dragActive={dragActive}
+        handleDrag={handleDrag}
+      />
     </div>
   )
+}
+
+function FileUploadModal({ 
+  isOpen, 
+  onClose, 
+  fileType, 
+  onFileSelect, 
+  onDrop,
+  dragActive,
+  handleDrag,
+}: { 
+  isOpen: boolean, 
+  onClose: () => void, 
+  fileType: FileType | null, 
+  onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  onDrop: (e: React.DragEvent) => void,
+  dragActive: boolean,
+  handleDrag: (e: React.DragEvent) => void,
+}) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileTypeAccept = {
+    excel: ".xlsx,.xls",
+    csv: ".csv",
+    pdf: ".pdf",
+    word: ".doc,.docx",
+    images: "image/*",
+    multiple: "*/*"
+  };
+
+  if (!fileType) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={onDrop}
+      >
+        <DialogHeader>
+          <DialogTitle>Upload {fileType.title}</DialogTitle>
+        </DialogHeader>
+        <div
+          className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${
+            dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
+          }`}
+        >
+          <Upload className="h-12 w-12 text-brand-primary mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2">Drag and drop your file here</h3>
+          <p className="text-gray-600 mb-6">or click to browse and select a file</p>
+          <input
+            type="file"
+            onChange={onFileSelect}
+            className="hidden"
+            ref={fileInputRef}
+            accept={fileTypeAccept[fileType.id as keyof typeof fileTypeAccept]}
+          />
+          <Button
+            className="bg-brand-primary hover:bg-brand-primary/90 rounded-brand"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Choose File
+          </Button>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }

@@ -5,12 +5,33 @@ const axiosInstance = axios.create({
 });
 
 export const apiEndpoints = {
-  supplierAssessments: '/supplier-assessments',
-  dataValidation: '/data-validation',
-  dataIntegrations: '/data-integrations',
-  fileUpload: '/file-upload',
+  assessments: {
+    base: '/supplier-assessments',
+    id: (id: string) => `/supplier-assessments/${id}`,
+  },
+  assessmentTemplates: {
+    base: '/assessment-templates',
+    id: (id: string) => `/assessment-templates/${id}`,
+  },
+  integrations: {
+    base: '/data-integrations',
+    activities: '/activities',
+    fileUpload: '/file-upload',
+  },
+  dataValidation: {
+    base: '/data-validation',
+    keyHighlights: '/key-highlights-data',
+  },
+  documents: {
+    processed: '/processed-documents',
+    previews: '/file-previews',
+    summary: '/document-summary',
+    actors: '/document-actors',
+    actions: '/document-actions',
+    tables: '/document-tables',
+  },
+  notifications: '/notifications',
   supplierAssessmentPage: '/supplier-assessment-page',
-  assessmentTemplates: '/assessment-templates',
 };
 
 export default axiosInstance; 

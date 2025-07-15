@@ -1,31 +1,33 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Search, Database, Upload, Webhook, CheckCircle, Clock, XCircle, Eye } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
-import { useDataIntegrations } from '@/src/api/data-integration';
+import { useDataIntegrations, useGetActivities } from '@/src/api/integration';
 import { GlobalLoading } from '@/src/components/global-loading';
-import { IntegrationMethod, PopularIntegration, RecentActivity } from '@/src/types/data-integration';
+import { IntegrationMethod, PopularIntegration, Activity } from '@/src/types/data-integration';
 import { ErrorComponent } from '@/src/components/ui/error';
+import { formatDistanceToNow } from 'date-fns';
+import { ActivitiesModal } from "@/src/components/data-integration/activities-modal"
 
-interface DataIntegrationsProps {
-  onNavigateToUpload: () => void
-}
-
-export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) {
+export function DataIntegrations() {
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const { dataIntegrations, isLoading, isError } = useDataIntegrations();
+  const { activities, isLoading: activitiesLoading, isError: activitiesError } = useGetActivities(3);
+  const [isActivitiesModalOpen, setIsActivitiesModalOpen] = useState(false)
 
-  if (isLoading) {
+  if (isLoading || activitiesLoading) {
     return <GlobalLoading />;
   }
 
-  if (isError) {
+  if (isError || activitiesError) {
     return <ErrorComponent title="Error Loading Data" description="There was an error loading the data integrations. Please try again later." />;
   }
 
@@ -130,7 +132,7 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
                 <CardFooter className="pt-0">
                   <Button
                     className="w-full bg-brand-primary hover:bg-brand-primary/90 rounded-brand"
-                    onClick={method.onClick === 'onNavigateToUpload' ? onNavigateToUpload : undefined}
+                    onClick={method.onClick === 'onNavigateToUpload' ? () => router.push('/data-integration/file-upload') : undefined}
                   >
                     {method.action} →
                   </Button>
@@ -171,24 +173,27 @@ export function DataIntegrations({ onNavigateToUpload }: DataIntegrationsProps) 
       <Card className="border-border-light rounded-brand">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-medium">Recent Integration Activity</CardTitle>
-          <Button variant="outline" size="sm" className="border-border-light rounded-brand bg-transparent">
+          <Button variant="outline" size="sm" className="border-border-light rounded-brand bg-transparent" onClick={() => setIsActivitiesModalOpen(true)}>
             <Eye className="h-4 w-4 mr-2" />
             View All Activities
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
-          {dataIntegrations.recentActivities.map((activity: RecentActivity, index: number) => (
+          {activities && activities.map((activity: Activity, index: number) => (
             <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-brand">
               {getStatusIcon(activity.status)}
               <div className="flex-1">
                 <h4 className="font-medium text-gray-900">{activity.title}</h4>
-                <p className="text-sm text-gray-600">{activity.subtitle}</p>
+                <p className="text-sm text-gray-600">
+                  {activity.subtitle} • {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
+                </p>
               </div>
               {getStatusBadge(activity.status)}
             </div>
           ))}
         </CardContent>
       </Card>
+      <ActivitiesModal isOpen={isActivitiesModalOpen} onClose={() => setIsActivitiesModalOpen(false)} />
     </div>
   )
 }

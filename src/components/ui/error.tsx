@@ -9,7 +9,7 @@ interface ErrorComponentProps {
   description: string;
 }
 
-export function ErrorComponent({ title, description }: ErrorComponentProps) {
+export function ErrorComponent({ title = 'Error', description = 'An error occurred while loading this page.' }: ErrorComponentProps) {
   const router = useRouter();
 
   return (

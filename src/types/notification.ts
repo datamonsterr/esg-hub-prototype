@@ -1,12 +1,11 @@
 export interface Notification {
-  id: number;
+  id: string;
+  organizationId: string;
   type: string;
-  user: {
-    name: string;
-    avatar: string;
-  };
+  title: string;
   message: string;
-  timestamp: string;
   isRead: boolean;
-  link?: string;
+  priority: "low" | "medium" | "high";
+  actionUrl?: string;
+  createdAt: string;
 } 

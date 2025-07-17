@@ -11,11 +11,11 @@ export default function TraceabilityLayout({ children }: { children: ReactNode }
 
   useEffect(() => {
     if (isLoaded && user) {
-      const userRole = user.unsafeMetadata.userRole as "supplier" | "brand"
+      const organizationId = user.unsafeMetadata.organizationId as string
       
-      // Only allow brands to access traceability features
-      if (userRole !== "brand") {
-        router.replace("/")
+      // Check if user belongs to an organization
+      if (!organizationId) {
+        router.replace("/onboarding")
         return
       }
     }
@@ -36,15 +36,15 @@ export default function TraceabilityLayout({ children }: { children: ReactNode }
     return null
   }
 
-  const userRole = user.unsafeMetadata.userRole as "supplier" | "brand"
+  const organizationId = user.unsafeMetadata.organizationId as string
   
-  // Redirect if not a brand
-  if (userRole !== "brand") {
+  // Redirect if not part of an organization
+  if (!organizationId) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Restricted</h2>
-          <p className="text-gray-600">This feature is only available for brand users.</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Organization Required</h2>
+          <p className="text-gray-600">You need to be part of an organization to access this feature.</p>
         </div>
       </div>
     )

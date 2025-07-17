@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchAssessments, useSupplierAssessmentPage } from '@/src/api/assessment';
-import { Assessment, Template } from '@/src/types/supplier-assessment';
+import { Assessment, Template } from '@/src/types/assessment';
 import {
   Search,
   Filter,

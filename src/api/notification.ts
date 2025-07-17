@@ -1,12 +1,12 @@
 'use client';
 
 import useSWR from 'swr';
-import axiosInstance, { apiEndpoints } from './axios';
+import axiosInstance, { endpoints } from './axios';
 import { Notification } from '../types/notification';
 
 // #region RAW API
 export const getNotifications = async (): Promise<Notification[]> => {
-  const res = await axiosInstance.get(apiEndpoints.notifications);
+  const res = await axiosInstance.get(endpoints.notifications);
   return res.data;
 };
 // #endregion
@@ -14,7 +14,7 @@ export const getNotifications = async (): Promise<Notification[]> => {
 // #region SWR
 export function useGetNotifications() {
   const { data, error, isLoading } = useSWR<Notification[]>(
-    apiEndpoints.notifications,
+    endpoints.notifications,
     getNotifications,
   );
 

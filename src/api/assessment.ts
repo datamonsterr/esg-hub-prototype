@@ -2,34 +2,34 @@
 
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import axiosInstance, { apiEndpoints } from './axios';
+import axiosInstance, { endpoints } from './axios';
 import {
   Assessment,
   AssessmentTemplate,
   SupplierAssessmentPageData,
-} from '../types/supplier-assessment';
+} from '../types/assessment';
 import { v4 as uuidv4 } from 'uuid';
 import { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 // #region RAW API
 export const getAssessments = async () => {
-  const res = await axiosInstance.get(apiEndpoints.assessments.base);
+  const res = await axiosInstance.get(endpoints.assessments.base);
   return res.data;
 };
 
 export const getAssessmentById = async (id: string) => {
-  const res = await axiosInstance.get(apiEndpoints.assessments.id(id));
+  const res = await axiosInstance.get(endpoints.assessments.id(id));
   return res.data;
 };
 
 export const getTemplateById = async (id: string) => {
-  const res = await axiosInstance.get(apiEndpoints.assessmentTemplates.id(id));
+  const res = await axiosInstance.get(endpoints.assessmentTemplates.id(id));
   return res.data;
 };
 
 export const getSupplierAssessmentPage = async () => {
-  const res = await axiosInstance.get(apiEndpoints.supplierAssessmentPage);
+  const res = await axiosInstance.get(endpoints.supplierAssessmentPage);
   return res.data;
 };
 
@@ -51,7 +51,7 @@ export const createAssessment = async (
     topicColor: 'gray',
   };
   const response = await axiosInstance.post(
-    apiEndpoints.assessments.base,
+    endpoints.assessments.base,
     newAssessment,
   );
   return response.data;
@@ -63,7 +63,7 @@ const fetcher = (url: string) => axiosInstance.get(url).then((res) => res.data);
 
 export function useGetAssessments() {
   const { data, error, isLoading } = useSWR<Assessment[]>(
-    apiEndpoints.assessments.base,
+    endpoints.assessments.base,
     fetcher,
   );
 
@@ -88,7 +88,7 @@ export function useSearchAssessments() {
     data: allAssessments,
     error,
     isLoading,
-  } = useSWR<Assessment[]>(apiEndpoints.assessments.base, fetcher);
+  } = useSWR<Assessment[]>(endpoints.assessments.base, fetcher);
 
   const searchResult = useMemo(() => {
     if (!allAssessments) {
@@ -125,7 +125,7 @@ export function useSearchAssessments() {
 
 export function useGetAssessment(id: string) {
   const { data, error, isLoading } = useSWR<Assessment>(
-    id ? apiEndpoints.assessments.id(id) : null,
+    id ? endpoints.assessments.id(id) : null,
     fetcher,
   );
 
@@ -138,7 +138,7 @@ export function useGetAssessment(id: string) {
 
 export function useGetTemplate(id: string) {
   const { data, error, isLoading } = useSWR<AssessmentTemplate>(
-    id ? apiEndpoints.assessmentTemplates.id(id) : null,
+    id ? endpoints.assessmentTemplates.id(id) : null,
     fetcher,
   );
 
@@ -151,7 +151,7 @@ export function useGetTemplate(id: string) {
 
 export function useCreateAssessment() {
   const { trigger, isMutating } = useSWRMutation(
-    apiEndpoints.assessments.base,
+    endpoints.assessments.base,
     createAssessment,
   );
 
@@ -163,7 +163,7 @@ export function useCreateAssessment() {
 
 export function useSupplierAssessmentPage() {
   const { data, error, isLoading } = useSWR<SupplierAssessmentPageData>(
-    apiEndpoints.supplierAssessmentPage,
+    endpoints.supplierAssessmentPage,
     fetcher,
   );
 

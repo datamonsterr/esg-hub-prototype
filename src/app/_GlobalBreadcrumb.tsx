@@ -4,14 +4,14 @@ import { usePathname } from "next/navigation"
 import { Breadcrumb } from "@/src/components/breadcrumb"
 
 const labelMap: Record<string, string> = {
-  "data-integration": "Data Integrations",
+  "integration": "Integrations",
   "file-upload": "File Upload",
-  "validation": "Data Validation",
-  "data-management": "Data Management",
-  "traceability-request": "Traceability Request",
-  "supplier-traceability": "Traceability Requests",
+  "validation": "Validation",
+  "management": "Management",
   "traceability": "Traceability",
-  "request": "Request",
+  "incoming": "Incoming",
+  "outgoing": "Outgoing",
+  "supplier-traceability": "Traceability Requests",
   "create": "Create",
   "analytics": "Analytics",
   "assessment": "Assessment",
@@ -19,9 +19,17 @@ const labelMap: Record<string, string> = {
   "supplier-assessment": "Supplier Assessment",
 }
 
+const isOrganizationId = (segment: string) => { 
+  return /^\d+$/.test(segment) || (segment.length > 10 && /[a-zA-Z]/.test(segment) && /\d/.test(segment));
+};
+
 const isDynamicId = (segment: string) => {
   // Checks if the segment is a number or a long alphanumeric string (like a CUID or UUID)
   return /^\d+$/.test(segment) || (segment.length > 10 && /[a-zA-Z]/.test(segment) && /\d/.test(segment));
+};
+
+const isIgnored = (segment: string) => {
+  return isOrganizationId(segment) || isDynamicId(segment) || segment === "undefined";
 };
 
 export default function GlobalBreadcrumb() {
@@ -35,7 +43,7 @@ export default function GlobalBreadcrumb() {
   let cumulativePath = ""
   segments.forEach((segment) => {
     cumulativePath += `/${segment}`
-    if (isDynamicId(segment)) return; // Skip dynamic IDs
+    if (isIgnored(segment)) return; // Skip dynamic IDs
 
     const label = labelMap[segment] || segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
     items.push({ label, href: cumulativePath })

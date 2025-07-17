@@ -6,29 +6,29 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/src/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useModal } from "../context/modal/modal-context";
-import { RoleSelectionModalContent } from "./role-selection-modal-content";
-import { Edit, LogOut, User, LogIn } from "lucide-react";
+import { Users, LogOut, User, LogIn, Settings, Building } from "lucide-react";
 import { Button } from "./ui/button";
 
 export function UserAccountNav() {
-  const { showModal } = useModal();
   const { user, isLoaded } = useUser();
   const { signOut, openUserProfile, openSignIn } = useClerk();
   const router = useRouter();
 
-  // Show loading state if user is not loaded yet
+  const organizationId = user?.organizationMemberships[0]?.organization.id;
+  const organizationName = user?.organizationMemberships[0]?.organization.name;
+  const organizationRole = user?.organizationMemberships[0]?.role;
+
   if (!isLoaded) {
     return (
       <div className="h-9 w-9 rounded-full bg-gray-200 animate-pulse" />
     );
   }
 
-  // Show sign-in button if no user
   if (!user) {
     return (
       <Button 
@@ -59,13 +59,28 @@ export function UserAccountNav() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <DropdownMenuLabel>
+          <p className="font-semibold">{user.fullName}</p>
+          <p className="text-sm text-gray-500">{organizationName}</p>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => openUserProfile()}>
           <User className="mr-2 h-4 w-4" />
           <span>Manage Account</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => showModal(<RoleSelectionModalContent />)}>
-          <Edit className="mr-2 h-4 w-4" />
-          <span>Change Role</span>
+        {organizationRole === "org:admin" && (
+          <DropdownMenuItem onClick={() => router.push("/user-management")}>
+            <Users className="mr-2 h-4 w-4" />
+            <span>Manage Users</span>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={() => router.push(`/organization/${organizationId}`)}>
+          <Building className="mr-2 h-4 w-4" />
+          <span>Organization Profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/organization/settings")}>
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Organization Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

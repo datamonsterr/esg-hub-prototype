@@ -1,0 +1,164 @@
+'use client'
+import React, { useState, useEffect } from "react"
+import { Input } from "@/src/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
+import { Button } from "@/src/components/ui/button"
+import axiosInstance from "@/src/api/axios"
+import type { Product, ComponentNode } from "@/src/types/product"
+
+interface ExtractedProductTreeProps {
+  tree: Product
+  onChange?: (updated: Product) => void
+}
+
+export function ExtractedProductTree({ tree, onChange }: ExtractedProductTreeProps) {
+  const [product, setProduct] = useState<Product>(tree)
+  const [orgs, setOrgs] = useState<{ id: string; name: string }[]>([])
+
+  useEffect(() => {
+    setProduct(tree)
+  }, [tree])
+
+  useEffect(() => {
+    async function fetchOrgs() {
+      const { data } = await axiosInstance.get('/organizations')
+      setOrgs(data.map((o: any) => ({ id: o.id, name: o.name })))
+    }
+    fetchOrgs()
+  }, [])
+
+  // Helper to update a node in the tree by path
+  const updateNodeByPath = (node: ComponentNode, path: number[], field: keyof ComponentNode, value: any): ComponentNode => {
+    if (path.length === 0) {
+      return { ...node, [field]: value }
+    }
+    const [idx, ...rest] = path
+    return {
+      ...node,
+      children: node.children.map((child, i) =>
+        i === idx ? updateNodeByPath(child, rest, field, value) : child
+      )
+    }
+  }
+
+  // Helper to update supplier in the tree by path
+  const updateSupplierByPath = (node: ComponentNode, path: number[], orgId: string): ComponentNode => {
+    if (path.length === 0) {
+      return { ...node, supplierOrganizationId: orgId }
+    }
+    const [idx, ...rest] = path
+    return {
+      ...node,
+      children: node.children.map((child, i) =>
+        i === idx ? updateSupplierByPath(child, rest, orgId) : child
+      )
+    }
+  }
+
+  // Save changes handler
+  const handleSave = () => {
+    if (onChange) onChange(product)
+  }
+
+  // Recursive tree node renderer
+  const TreeNode = ({ node, path }: { node: ComponentNode, path: number[] }) => (
+    <li className="ml-4 border-l-2 border-gray-200 pl-4 mb-4 list-none">
+      <div className="p-4 border rounded-lg bg-white flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <span className="font-medium">Name:</span>
+          <Input
+            value={node.name}
+            onChange={e => setProduct({
+              ...product,
+              children: product.children?.map((child, idx) =>
+                idx === path[0]
+                  ? updateNodeByPath(child, path.slice(1), 'name', e.target.value)
+                  : child
+              ) || []
+            })}
+            className="w-64"
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="font-medium">Supplier:</span>
+          <Select
+            value={node.supplierOrganizationId || ''}
+            onValueChange={val => setProduct({
+              ...product,
+              children: product.children?.map((child, idx) =>
+                idx === path[0]
+                  ? updateSupplierByPath(child, path.slice(1), val)
+                  : child
+              ) || []
+            })}
+          >
+            <SelectTrigger className="w-64">
+              <SelectValue placeholder="Select supplier" />
+            </SelectTrigger>
+            <SelectContent>
+              {orgs.map(org => (
+                <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="font-medium">Type:</span>
+          <span>{node.type}</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="font-medium">Description:</span>
+          <Input
+            value={node.description}
+            onChange={e => setProduct({
+              ...product,
+              children: product.children?.map((child, idx) =>
+                idx === path[0]
+                  ? updateNodeByPath(child, path.slice(1), 'description', e.target.value)
+                  : child
+              ) || []
+            })}
+            className="w-96"
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <span className="font-medium">Quantity:</span>
+          <span>{node.quantity}</span>
+          <span className="ml-2 text-xs text-gray-500">{node.unit}</span>
+        </div>
+      </div>
+      {/* Render children recursively as nested list */}
+      {node.children && node.children.length > 0 && (
+        <ul className="ml-4 mt-2">
+          {node.children.map((child, idx) => (
+            <TreeNode key={child.id || idx} node={child} path={[...path, idx]} />
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+
+  return (
+    <div className="space-y-6">
+      <div className="p-4 border rounded-lg bg-gray-50">
+        <h3 className="text-lg font-medium mb-2">Product: {product.name}</h3>
+        <div className="text-sm text-gray-600 mb-2">SKU: {product.sku}</div>
+        <div className="text-sm text-gray-600 mb-2">Category: {product.category}</div>
+        <div className="text-sm text-gray-600 mb-2">Description: {product.description}</div>
+      </div>
+      <div>
+        <h4 className="font-medium mb-2">Component Tree</h4>
+        <ul className="space-y-4">
+          {product.children && product.children.length > 0 ? (
+            product.children.map((child, idx) => (
+              <TreeNode key={child.id || idx} node={child} path={[idx]} />
+            ))
+          ) : (
+            <li className="text-gray-500">No components found.</li>
+          )}
+        </ul>
+      </div>
+      <Button className="mt-4" onClick={handleSave}>Save Changes</Button>
+    </div>
+  )
+} 

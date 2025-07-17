@@ -1,71 +1,43 @@
 'use client';
 
-import useSWR from 'swr';
-import useSWRMutation from 'swr/mutation';
-import axiosInstance, { apiEndpoints } from './axios';
-import {
-  DataIntegrationsData,
-  Activity,
-  ProcessedDocument,
-  FilePreviewData,
-  KeyHighlightsData,
-  FileUploadData,
-  DocumentSummaryData,
-  Actor,
-  DynamicTable,
-} from '../types/data-integration';
+import { ComponentNode } from '@/src/types/product';
 import { useEffect } from 'react';
-import { toast } from 'sonner';
+import useSWR from 'swr';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  ActivityWithProduct,
+  Actor,
+  DataIntegrationsData,
+  DocumentSummaryData,
+  DynamicTable,
+  FilePreviewData,
+  FileUploadData,
+  KeyHighlightsData,
+  ProcessedDocument
+} from '../types/integration';
+import axiosInstance, { endpoints } from './axios';
+import { useUpdateProduct } from './product';
 
 // #region RAW API
 export const getDataIntegrations = async () => {
-  const res = await axiosInstance.get(apiEndpoints.integrations.base);
+  const res = await axiosInstance.get(endpoints.integration.base);
   return res.data;
 };
 
 export const getFileUpload = async () => {
-  const res = await axiosInstance.get(apiEndpoints.integrations.fileUpload);
+  const res = await axiosInstance.get(endpoints.integration.fileUpload);
   return res.data;
-};
-
-export const getActivities = async (limit?: number) => {
-  const res = await axiosInstance.get(apiEndpoints.integrations.activities);
-  const activities = res.data
-    ? [...res.data]
-        .sort(
-          (a: Activity, b: Activity) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )
-        .slice(0, limit)
-    : [];
-  return activities;
 };
 
 export const getActivityById = async (id: string) => {
   const res = await axiosInstance.get(
-    `${apiEndpoints.integrations.activities}/${id}`,
+    `${endpoints.integration.activities}/${id}`,
   );
   return res.data;
 };
 
-export const createActivity = async (
-  url: string,
-  { arg }: { arg: { id: string; title: string; subtitle: string } },
-) => {
-  const newActivity: Activity = {
-    ...arg,
-    status: 'processing',
-    createdAt: new Date().toISOString(),
-  };
-  const response = await axiosInstance.post(
-    apiEndpoints.integrations.activities,
-    newActivity,
-  );
-  return response.data;
-};
-
 export const getDocumentById = async (id: string) => {
-  const res = await axiosInstance.get(apiEndpoints.documents.processed + `/${id}`);
+  const res = await axiosInstance.get(endpoints.documents.processed + `/${id}`);
   return res.data;
 };
 
@@ -157,10 +129,10 @@ export const createDocument = async (
 
   // Create all entries in parallel
   const [processedDocResponse] = await Promise.all([
-    axiosInstance.post(apiEndpoints.documents.processed, newProcessedDoc),
+    axiosInstance.post(endpoints.documents.processed, newProcessedDoc),
     
     // Create file preview data with comprehensive mock content
-    axiosInstance.post(apiEndpoints.documents.previews, {
+    axiosInstance.post(endpoints.documents.previews, {
       id,
       fileName,
       fileSize: "Processing...",
@@ -199,7 +171,7 @@ export const createDocument = async (
     }),
     
     // Create key highlights data with comprehensive mock content
-    axiosInstance.post(apiEndpoints.dataValidation.keyHighlights, {
+    axiosInstance.post(endpoints.dataValidation.keyHighlights, {
       id,
       highlights: [
         {
@@ -227,7 +199,7 @@ export const createDocument = async (
     }),
     
     // Create document summary data with comprehensive mock content
-    axiosInstance.post(apiEndpoints.documents.summary, {
+    axiosInstance.post(endpoints.documents.summary, {
       id,
       description: `ESG compliance report for ${fileName} covering supply chain traceability, material origins, and certification status. Document includes comprehensive data from 3 key suppliers across multiple regions with detailed material sourcing information.`,
       reportingPeriod: "2024 Q1",
@@ -266,7 +238,7 @@ export const createDocument = async (
     }),
 
     // Create document actors data
-    axiosInstance.post(apiEndpoints.documents.actors, {
+    axiosInstance.post(endpoints.documents.actors, {
       id,
       documentId: id,
       actors: [
@@ -302,7 +274,7 @@ export const createDocument = async (
     }),
 
     // Create document actions data
-    axiosInstance.post(apiEndpoints.documents.actions, {
+    axiosInstance.post(endpoints.documents.actions, {
       id,
       documentId: id,
       actions: [
@@ -338,7 +310,7 @@ export const createDocument = async (
     }),
 
     // Create document table data
-    axiosInstance.post(apiEndpoints.documents.tables, {
+    axiosInstance.post(endpoints.documents.tables, {
       id,
       documentId: id,
       title: `${fileName} - Supply Chain Analysis`,
@@ -401,9 +373,9 @@ export const createDocument = async (
 // #region SWR
 const fetcher = (url: string) => axiosInstance.get(url).then((res) => res.data);
 
-export function useDataIntegrations() {
+export function useGetDataIntegrations() {
   const { data, error, isLoading } = useSWR<DataIntegrationsData>(
-    apiEndpoints.integrations.base,
+    endpoints.integration.base,
     fetcher,
   );
 
@@ -414,9 +386,9 @@ export function useDataIntegrations() {
   };
 }
 
-export function useFileUpload() {
+export function useGetFileUpload() {
   const { data, error, isLoading } = useSWR<FileUploadData>(
-    apiEndpoints.integrations.fileUpload,
+    endpoints.integration.fileUpload,
     fetcher,
   );
 
@@ -427,46 +399,9 @@ export function useFileUpload() {
   };
 }
 
-export function useGetActivities(limit?: number) {
-  const { data, error, isLoading } = useSWR<Activity[]>(
-    apiEndpoints.integrations.activities,
-    () => getActivities(limit),
-  );
-
-  return {
-    activities: data,
-    isLoading,
-    isError: error,
-  };
-}
-
-export function useCreateActivity() {
-  const { trigger, isMutating } = useSWRMutation(
-    apiEndpoints.integrations.activities,
-    createActivity,
-  );
-
-  return {
-    createActivity: trigger,
-    isCreating: isMutating,
-  };
-}
-
-export function useCreateDocument() {
-  const { trigger, isMutating } = useSWRMutation(
-    apiEndpoints.documents.processed,
-    createDocument,
-  );
-
-  return {
-    createDocument: trigger,
-    isCreating: isMutating,
-  };
-}
-
 export function useGetActivityStatus(activityId: string | null) {
-  const { data, error, isLoading, mutate } = useSWR<Activity>(
-    activityId ? `${apiEndpoints.integrations.activities}/${activityId}` : null,
+  const { data, error, isLoading, mutate } = useSWR<ActivityWithProduct>(
+    activityId ? `${endpoints.integration.activities}/${activityId}` : null,
     fetcher,
     {
       refreshInterval: (latestData) => {
@@ -475,248 +410,50 @@ export function useGetActivityStatus(activityId: string | null) {
       },
     },
   );
+  
+  const { updateProduct } = useUpdateProduct();
 
   useEffect(() => {
-    if (data?.status === 'processing') {
+    if (data?.status === 'processing' && data.productId) {
+      const { productId } = data;
       // This logic should be on the backend, but we simulate it here for now.
       const processDocument = async () => {
         try {
           // Simulate processing time
           await new Promise((resolve) => setTimeout(resolve, 5000));
           
-          // Update the existing document entries with processed data
-          await Promise.all([
-            // Update file preview with processed data
-            axiosInstance.patch(`${apiEndpoints.documents.previews}/${data.id}`, {
-              fileSize: "1.2 MB",
-              data: [
-                {
-                  material: "Organic Cotton",
-                  origin: "India - Gujarat",
-                  supplier: "GreenTech Materials Ltd",
-                  cert: "GOTS Certified",
-                  date: new Date().toISOString().split('T')[0],
-                  qty: 2500,
-                  unit: "kg",
-                  status: "verified"
-                },
-                {
-                  material: "Recycled Polyester",
-                  origin: "Japan - Osaka",
-                  supplier: "EcoFiber Corp",
-                  cert: "GRS Certified",
-                  date: new Date().toISOString().split('T')[0],
-                  qty: 1800,
-                  unit: "kg",
-                  status: "verified"
-                },
-                {
-                  material: "Natural Dyes",
-                  origin: "Peru - Lima",
-                  supplier: "Natural Colors Ltd",
-                  cert: "OEKO-TEX",
-                  date: new Date().toISOString().split('T')[0],
-                  qty: 50,
-                  unit: "L",
-                  status: "verified"
-                }
-              ]
-            }),
+          const { data: filePreview } = await axiosInstance.get<FilePreviewData>(`/file-previews/${data.id}`);
 
-            // Update key highlights with processed results
-            axiosInstance.patch(`${apiEndpoints.dataValidation.keyHighlights}/${data.id}`, {
-              highlights: [
-                {
-                  title: "Document successfully processed and validated",
-                  percentage: 100,
-                  status: "success",
-                  suggestion: "Review",
-                  detail: "All data extracted and validated successfully"
-                },
-                {
-                  title: "Data integrity checks completed",
-                  percentage: 95,
-                  status: "info",
-                  suggestion: "Monitor",
-                  detail: "Minor formatting inconsistencies detected"
-                },
-                {
-                  title: "Integration readiness assessment",
-                  percentage: 87,
-                  status: "warning",
-                  suggestion: "Optimize",
-                  detail: "Some fields may need manual review"
-                }
-              ]
-            }),
+          const productToUpdate = await axiosInstance.get(`/products/${productId}`).then(res => res.data);
 
-            // Update document summary with processed results
-            axiosInstance.patch(`${apiEndpoints.documents.summary}/${data.id}`, {
-              description: `Successfully processed ESG compliance report with comprehensive data extraction and validation. Document contains verified supply chain traceability data from 3 certified suppliers across multiple regions with complete material sourcing information and certification details.`,
-              reportingPeriod: "2024 Q1",
-              organizationCount: 3,
-              keyMetrics: [
-                {
-                  name: "Material Traceability",
-                  value: "98",
-                  unit: "%",
-                  category: "compliance"
-                },
-                {
-                  name: "Supplier Certifications",
-                  value: "3",
-                  unit: "verified",
-                  category: "certification"
-                },
-                {
-                  name: "Carbon Footprint",
-                  value: "2.1",
-                  unit: "tCO2e",
-                  category: "environmental"
-                },
-                {
-                  name: "Data Completeness",
-                  value: "95",
-                  unit: "%",
-                  category: "quality"
-                },
-                {
-                  name: "Processing Time",
-                  value: "5.2",
-                  unit: "seconds",
-                  category: "performance"
-                }
-              ],
-              dataQuality: {
-                completeness: 95,
-                accuracy: 92,
-                consistency: 88
-              }
-            }),
+          const newComponents: ComponentNode[] = filePreview.data.map((item: any) => ({
+            id: uuidv4(),
+            name: item.material,
+            quantity: item.qty,
+            organizationId: productToUpdate.organizationId,
+            type: 'raw_material',
+            description: `Sourced from ${item.supplier}`,
+            unit: item.unit,
+            metadata: {
+              originCountry: item.origin,
+              certifications: [item.cert],
+            },
+            dataCompleteness: 75,
+            missingDataFields: ['carbon_footprint'],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            children: [],
+          }));
 
-            // Update document actors with processed results
-            axiosInstance.patch(`${apiEndpoints.documents.actors}/${data.id}`, {
-              actors: [
-                {
-                  id: 1,
-                  title: "Primary Supplier",
-                  description: "GreenTech Materials Ltd - Verified",
-                  color: "bg-blue-50 text-blue-900",
-                  dotColor: "bg-blue-500"
-                },
-                {
-                  id: 2,
-                  title: "Brand Owner",
-                  description: "EcoSustain Corp - Validated",
-                  color: "bg-green-50 text-green-900",
-                  dotColor: "bg-green-500"
-                },
-                {
-                  id: 3,
-                  title: "Auditor",
-                  description: "ESG Certification Body - Approved",
-                  color: "bg-purple-50 text-purple-900",
-                  dotColor: "bg-purple-500"
-                },
-                {
-                  id: 4,
-                  title: "Logistics Provider",
-                  description: "Sustainable Transport Co - Confirmed",
-                  color: "bg-yellow-50 text-yellow-900",
-                  dotColor: "bg-yellow-500"
-                }
-              ]
-            }),
-
-            // Update document actions with processed results
-            axiosInstance.patch(`${apiEndpoints.documents.actions}/${data.id}`, {
-              actions: [
-                {
-                  id: 1,
-                  title: "Sustainability Audit",
-                  code: `SUSTAIN-AUDIT-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-                  type: "audit",
-                  color: "bg-green-100 text-green-800"
-                },
-                {
-                  id: 2,
-                  title: "Supply Chain Mapping",
-                  code: `SUPPLY-MAP-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-                  type: "traceability",
-                  color: "bg-blue-100 text-blue-800"
-                },
-                {
-                  id: 3,
-                  title: "Carbon Footprint Assessment",
-                  code: `CARBON-ASSESS-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-                  type: "environmental",
-                  color: "bg-purple-100 text-purple-800"
-                },
-                {
-                  id: 4,
-                  title: "Certification Verification",
-                  code: `CERT-VERIFY-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-                  type: "certification",
-                  color: "bg-orange-100 text-orange-800"
-                }
-              ]
-            }),
-
-            // Update document table with processed results
-            axiosInstance.patch(`${apiEndpoints.documents.tables}/${data.id}`, {
-              title: `${data.subtitle} - Supply Chain Analysis (Processed)`,
-              columns: ["Material", "Supplier", "Origin", "Certification", "Quantity", "Unit", "Sustainability Score", "Status"],
-              data: [
-                {
-                  id: "row-1",
-                  Material: "Organic Cotton",
-                  Supplier: "GreenTech Materials Ltd",
-                  Origin: "India - Gujarat",
-                  Certification: "GOTS Certified",
-                  Quantity: "2500",
-                  Unit: "kg",
-                  "Sustainability Score": "9.4",
-                  Status: "Verified"
-                },
-                {
-                  id: "row-2",
-                  Material: "Recycled Polyester",
-                  Supplier: "EcoFiber Corp",
-                  Origin: "Japan - Osaka",
-                  Certification: "GRS Certified",
-                  Quantity: "1800",
-                  Unit: "kg",
-                  "Sustainability Score": "8.9",
-                  Status: "Verified"
-                },
-                {
-                  id: "row-3",
-                  Material: "Natural Dyes",
-                  Supplier: "Natural Colors Ltd",
-                  Origin: "Peru - Lima",
-                  Certification: "OEKO-TEX",
-                  Quantity: "50",
-                  Unit: "L",
-                  "Sustainability Score": "9.5",
-                  Status: "Verified"
-                },
-                {
-                  id: "row-4",
-                  Material: "Bamboo Fiber",
-                  Supplier: "Sustainable Bamboo Co",
-                  Origin: "Vietnam - Mekong Delta",
-                  Certification: "FSC Certified",
-                  Quantity: "800",
-                  Unit: "kg",
-                  "Sustainability Score": "9.1",
-                  Status: "Verified"
-                }
-              ]
-            })
-          ]);
+          const updatedProduct = {
+            ...productToUpdate,
+            children: [...(productToUpdate.children || []), ...newComponents],
+          };
+          
+          await updateProduct(productId, updatedProduct);
 
           await axiosInstance.patch(
-            `${apiEndpoints.integrations.activities}/${data.id}`,
+            `${endpoints.integration.activities}/${data.id}`,
             { status: 'success' },
           );
           mutate();
@@ -724,7 +461,7 @@ export function useGetActivityStatus(activityId: string | null) {
           console.error('Failed to simulate document processing', e);
           if (data?.id) {
             await axiosInstance.patch(
-              `${apiEndpoints.integrations.activities}/${data.id}`,
+              `${endpoints.integration.activities}/${data.id}`,
               { status: 'failed' },
             );
             mutate();
@@ -745,7 +482,7 @@ export function useGetActivityStatus(activityId: string | null) {
 
 export function useGetDocument(id: string) {
   const { data, error, isLoading } = useSWR<ProcessedDocument>(
-    id ? apiEndpoints.documents.processed + `/${id}` : null,
+    id ? endpoints.documents.processed + `/${id}` : null,
     fetcher,
   );
 
@@ -782,7 +519,7 @@ export function useGetDocumentSummary(url: string | undefined) {
     async (fetchUrl: string) => {
       // Extract ID from URL like "/document-summary/c983ee50-0c80-43aa-b6c8-6d24e974dab9"
       const id = fetchUrl.split('/').pop();
-      const response = await fetcher(`${apiEndpoints.documents.summary}/${id}`);
+      const response = await fetcher(`${endpoints.documents.summary}/${id}`);
       return response;
     }
   );
@@ -796,7 +533,7 @@ export function useGetDocumentSummary(url: string | undefined) {
 
 export function useGetActors(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<Actor[]>(
-    documentId ? `${apiEndpoints.documents.processed}/${documentId}` : null,
+    documentId ? `${endpoints.documents.processed}/${documentId}` : null,
     async (url: string) => {
       try {
         const response = await fetcher(url);
@@ -826,7 +563,7 @@ export function useGetActors(documentId: string | undefined) {
 
 export function useGetDynamicTable(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<DynamicTable>(
-    documentId ? `${apiEndpoints.documents.previews}/${documentId}` : null,
+    documentId ? `${endpoints.documents.previews}/${documentId}` : null,
     async (url: string): Promise<DynamicTable> => {
       try {
         const previewResponse = await fetcher(url);
@@ -885,7 +622,7 @@ export function useGetDynamicTable(documentId: string | undefined) {
 
 export function useGetActions(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<any[]>(
-    documentId ? `${apiEndpoints.documents.actions}/${documentId}` : null,
+    documentId ? `${endpoints.documents.actions}/${documentId}` : null,
     async (url: string) => {
       try {
         const response = await fetcher(url);
@@ -910,6 +647,44 @@ export function useGetActions(documentId: string | undefined) {
     actions: data,
     isLoading,
     isError: error,
+  };
+}
+
+// --- Mock Extracted Product Tree API ---
+export const getExtractedProductTree = async (activityId: string) => {
+  // For demo, just return a static product/component tree with suppliers from db.json
+  // In real app, this would be based on the uploaded file and extraction process
+  const { data: products } = await axiosInstance.get('/products');
+  const { data: components } = await axiosInstance.get('/components');
+  const { data: orgs } = await axiosInstance.get('/organizations');
+  // Pick the first product as the extracted one
+  const product = products[0];
+  // Get all components for this product
+  const productComponents = components.filter((c: any) => c.productId === product.id);
+  // Attach supplier info
+  const componentsWithSupplier = productComponents.map((c: any) => ({
+    ...c,
+    supplier: orgs.find((o: any) => o.id === c.supplierOrganizationId) || null
+  }));
+  return {
+    activityId,
+    product: {
+      ...product,
+      components: componentsWithSupplier
+    }
+  };
+};
+
+export function useGetExtractedProductTree(activityId: string | undefined) {
+  const { data, error, isLoading, mutate } = useSWR(
+    activityId ? endpoints.integration.extractedProductTree(activityId) : null,
+    () => activityId ? getExtractedProductTree(activityId) : null
+  );
+  return {
+    extractedTree: data,
+    isLoading,
+    isError: error,
+    mutate,
   };
 }
 // #endregion 

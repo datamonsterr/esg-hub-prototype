@@ -1,92 +1,123 @@
+'use client';
+
 import useSWR from 'swr';
-import useSWRMutation from 'swr/mutation';
-import { 
-  TraceabilityRequest, 
-  TraceabilityRequestDetail, 
-  CreateTraceabilityRequest, 
-  TraceabilityAnalytics,
-  AnalyticsQuery,
-  Supplier,
-  MaterialCode,
-  ProductCode,
-  ActionCode 
-} from '../types/traceability';
+import axiosInstance, { endpoints } from './axios';
+import {
+  TraceabilityRequest,
+  TraceabilityRequestDetail,
+  CreateTraceabilityRequest,
+  TraceabilityResponse,
+  TraceabilityAnalytics
+} from '@/src/types';
 
-const API_BASE = 'http://localhost:3001';
+// #region RAW API
+export const getIncomingRequests = async (params?: {
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}): Promise<TraceabilityRequest[]> => {
+  const res = await axiosInstance.get(endpoints.traceabilityRequests.incoming, { params });
+  return res.data;
+};
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+export const getOutgoingRequests = async (params?: {
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}): Promise<TraceabilityRequest[]> => {
+  const res = await axiosInstance.get(endpoints.traceabilityRequests.outgoing, { params });
+  return res.data;
+};
 
-// Create request mutation
-async function createRequest(url: string, { arg }: { arg: CreateTraceabilityRequest }) {
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(arg),
+export const getTraceabilityRequest = async (id: string): Promise<TraceabilityRequestDetail> => {
+  const res = await axiosInstance.get(endpoints.traceabilityRequests.id(id));
+  return res.data;
+};
+
+export const createTraceabilityRequest = async (data: CreateTraceabilityRequest): Promise<TraceabilityRequest> => {
+  const res = await axiosInstance.post(endpoints.traceabilityRequests.base, data);
+  return res.data;
+};
+
+export const updateTraceabilityRequest = async (id: string, data: Partial<TraceabilityRequest>): Promise<TraceabilityRequest> => {
+  const res = await axiosInstance.put(endpoints.traceabilityRequests.id(id), data);
+  return res.data;
+};
+
+export const respondToRequest = async (id: string, response: TraceabilityResponse): Promise<TraceabilityRequest> => {
+  const res = await axiosInstance.post(endpoints.traceabilityRequests.respond(id), response);
+  return res.data;
+};
+
+export const getTraceabilityAnalytics = async (): Promise<TraceabilityAnalytics> => {
+  // Mock data for now
+  return Promise.resolve({
+    keyInsights: 'Tariff risks from Vietnam have increased by 15% in the last quarter, primarily affecting footwear production. Material traceability for leather remains low at 45%, posing a compliance risk.',
+    tariffRiskByCountry: [
+      { country: 'Vietnam', risk: 75 },
+      { country: 'China', risk: 60 },
+      { country: 'Indonesia', risk: 45 },
+      { country: 'Brazil', risk: 30 },
+      { country: 'India', risk: 25 },
+    ],
+    materialTraceability: [
+      { material: 'Leather', percentage: 45 },
+      { material: 'Rubber', percentage: 80 },
+      { material: 'Cotton', percentage: 70 },
+      { material: 'Synthetics', percentage: 90 },
+    ],
+    complianceScore: 82,
+    supplyChainVisibility: 65,
   });
-  
-  if (!response.ok) {
-    throw new Error('Failed to create request');
-  }
-  
-  return response.json();
-}
+};
 
-// Update request mutation
-async function updateRequest(url: string, { arg }: { arg: Partial<TraceabilityRequest> }) {
-  const response = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(arg),
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to update request');
-  }
-  
-  return response.json();
-}
+// #endregion
 
-// Delete request mutation
-async function deleteRequest(url: string) {
-  const response = await fetch(url, {
-    method: 'DELETE',
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to delete request');
-  }
-  
-  return { success: true };
-}
-
-// Get all traceability requests
-export function useTraceabilityRequests() {
+// #region SWR
+export function useGetIncomingRequests(params?: {
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}) {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
-    `${API_BASE}/traceability-requests`,
-    fetcher
+    [endpoints.traceabilityRequests.incoming, params],
+    () => getIncomingRequests(params),
   );
 
   return {
-    requests: data,
+    incomingRequests: data,
     isLoading,
     isError: error,
     mutate,
   };
 }
 
-// Get single traceability request with details
-export function useTraceabilityRequest(id?: string) {
+export function useGetOutgoingRequests(params?: {
+  status?: string;
+  priority?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}) {
+  const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
+    ['/traceability-requests/outgoing', params],
+    () => getOutgoingRequests(params),
+  );
+
+  return {
+    outgoingRequests: data,
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+export function useGetTraceabilityRequest(id: string) {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityRequestDetail>(
-    id ? `${API_BASE}/traceability-requests-detail?id=${id}` : null,
-    async (url: string) => {
-      const data = await fetcher(url);
-      // Since json-server returns an array, find the specific request
-      return Array.isArray(data) ? data.find((req: TraceabilityRequestDetail) => req.id === id) : data;
-    }
+    id ? endpoints.traceabilityRequests.id(id) : null,
+    () => getTraceabilityRequest(id),
   );
 
   return {
@@ -97,55 +128,34 @@ export function useTraceabilityRequest(id?: string) {
   };
 }
 
-// Create new traceability request
 export function useCreateTraceabilityRequest() {
-  const { trigger, isMutating, error } = useSWRMutation(
-    `${API_BASE}/traceability-requests`,
-    createRequest
-  );
-
-  return {
-    createRequest: trigger,
-    isCreating: isMutating,
-    error,
+  const createRequest = async (data: CreateTraceabilityRequest) => {
+    return await createTraceabilityRequest(data);
   };
+
+  return { createTraceabilityRequest: createRequest };
 }
 
-// Update traceability request
-export function useUpdateTraceabilityRequest(id: string) {
-  const { trigger, isMutating, error } = useSWRMutation(
-    `${API_BASE}/traceability-requests/${id}`,
-    updateRequest
-  );
-
-  return {
-    updateRequest: trigger,
-    isUpdating: isMutating,
-    error,
+export function useUpdateTraceabilityRequest() {
+  const updateRequest = async (id: string, data: Partial<TraceabilityRequest>) => {
+    return await updateTraceabilityRequest(id, data);
   };
+
+  return { updateTraceabilityRequest: updateRequest };
 }
 
-// Delete traceability request
-export function useDeleteTraceabilityRequest(id: string) {
-  const { trigger, isMutating, error } = useSWRMutation(
-    `${API_BASE}/traceability-requests/${id}`,
-    deleteRequest
-  );
-
-  return {
-    deleteRequest: trigger,
-    isDeleting: isMutating,
-    error,
+export function useRespondToRequest() {
+  const respond = async (id: string, response: TraceabilityResponse) => {
+    return await respondToRequest(id, response);
   };
+
+  return { respondToRequest: respond };
 }
 
-// Get traceability analytics
-export function useTraceabilityAnalytics(query?: AnalyticsQuery) {
-  const queryString = query ? `?${new URLSearchParams(query as any).toString()}` : '';
-  
+export function useTraceabilityAnalytics() {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityAnalytics>(
-    `${API_BASE}/traceability-analytics${queryString}`,
-    fetcher
+    '/traceability-requests/analytics',
+    getTraceabilityAnalytics
   );
 
   return {
@@ -156,58 +166,4 @@ export function useTraceabilityAnalytics(query?: AnalyticsQuery) {
   };
 }
 
-// Get suppliers
-export function useSuppliers() {
-  const { data, error, isLoading } = useSWR<Supplier[]>(
-    `${API_BASE}/suppliers`,
-    fetcher
-  );
-
-  return {
-    suppliers: data,
-    isLoading,
-    isError: error,
-  };
-}
-
-// Get material codes
-export function useMaterialCodes() {
-  const { data, error, isLoading } = useSWR<MaterialCode[]>(
-    `${API_BASE}/material-codes`,
-    fetcher
-  );
-
-  return {
-    materialCodes: data,
-    isLoading,
-    isError: error,
-  };
-}
-
-// Get product codes
-export function useProductCodes() {
-  const { data, error, isLoading } = useSWR<ProductCode[]>(
-    `${API_BASE}/product-codes`,
-    fetcher
-  );
-
-  return {
-    productCodes: data,
-    isLoading,
-    isError: error,
-  };
-}
-
-// Get action codes
-export function useActionCodes() {
-  const { data, error, isLoading } = useSWR<ActionCode[]>(
-    `${API_BASE}/action-codes`,
-    fetcher
-  );
-
-  return {
-    actionCodes: data,
-    isLoading,
-    isError: error,
-  };
-} 
+// #endregion 

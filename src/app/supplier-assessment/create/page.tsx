@@ -5,7 +5,7 @@ import React, { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useForm, useFieldArray, SubmitHandler, Controller } from 'react-hook-form';
 import { useGetTemplate, useCreateAssessment } from '@/src/api/supplier-assessment';
-import type { AssessmentTemplate } from '@/src/types/supplier-assessment';
+import type { AssessmentTemplate } from '@/src/types/assessment';
 import { ArrowLeft, Bot, Plus, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { LoadingProgress } from '@/src/components/ui/loading-progress';

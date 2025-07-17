@@ -8,7 +8,7 @@ import {
   DialogFooter,
 } from '@/src/components/ui/dialog';
 import { Button } from '@/src/components/ui/button';
-import { Template } from '@/src/types/supplier-assessment';
+import { Template } from '@/src/types/assessment';
 import Link from 'next/link';
 import Icon from '@/src/components/ui/icon';
 

@@ -63,3 +63,4 @@ Table assessment_responses {
   response_data jsonb [not null, note: 'Stores the actual answers to the form']
   created_at timestamptz [default: `now()`]
 }
+ Note that: components and products is the same concept

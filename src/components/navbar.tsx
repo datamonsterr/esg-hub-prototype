@@ -2,12 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, CheckCircle } from "lucide-react"
+import { Bell } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Button } from "./ui/button"
-import { useModal } from "../context/modal/modal-context"
-import { useEffect } from "react"
-import { RoleSelectionModalContent } from "./role-selection-modal-content"
 import { UserAccountNav } from "./user-account-nav"
 import {
   DropdownMenu,
@@ -22,40 +19,22 @@ import { formatDistanceToNow } from 'date-fns';
 
 export function Navbar() {
   const pathname = usePathname()
-  const { user } = useUser()
-  const { showModal } = useModal();
   const { notifications } = useGetNotifications();
 
-  useEffect(() => {
-    if (user && !user.unsafeMetadata.userRole) {
-      showModal(<RoleSelectionModalContent />);
-    }
-  }, [user, showModal]);
-
-  const userRole = user?.unsafeMetadata.userRole as "supplier" | "brand";
-
-  const supplierNavItems = [
-    { href: "/data-integration", label: "Data Integrations", match: "/data-integration" },
-    { href: "/data-management", label: "Data Management", match: "/data-management" },
-    { href: "/supplier-traceability", label: "Traceability Requests", match: "/supplier-traceability" },
-    { href: "/reports", label: "Reports", match: "/reports" },
-  ];
-
-  const brandNavItems = [
-    { href: "/data-integration", label: "Data Integration", match: "/data-integration" },
-    { href: "/data-management", label: "Data Management", match: "/data-management" },
+  const navItems = [
+    { href: "/management", label: "Management", match: "/management" },
+    { href: "/integration", label: "Integration", match: "/integration" },
     {
       label: "Traceability",
       match: "/traceability",
       subItems: [
-        { href: "/traceability/request", label: "Request", match: "/traceability/request" },
-        { href: "/traceability/analytics", label: "Analytics", match: "/traceability/analytics" },
+        { href: "/traceability/incoming", label: "Incoming Requests", match: "/traceability/incoming" },
+        { href: "/traceability/outgoing", label: "Outgoing Requests", match: "/traceability/outgoing" },
+    { href: "/traceability/analytics", label: "Analytics", match: "/traceability/analytics" },
       ],
     },
-    { href: "/supplier-assessment", label: "Supplier Assessment", match: "/supplier-assessment" },
+    { href: "/assessments", label: "Assessments", match: "/assessments" },
   ];
-
-  const navItems = userRole === 'brand' ? brandNavItems : supplierNavItems;
 
   const linkClasses = (active: boolean) =>
     [
@@ -79,13 +58,13 @@ export function Navbar() {
           <div className="flex space-x-6">
             {navItems.map((item) => {
               if ('subItems' in item && item.subItems) {
-                // Handle dropdown for brand's Traceability
+                // Handle dropdown for Traceability
                 return (
                   <div key={item.label} className="relative group">
                     <span className={linkClasses(pathname.startsWith(item.match))}>
                       {item.label}
                     </span>
-                    <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 py-2 w-48">
+                    <div className="absolute hidden group-hover:block bg-white shadow-lg rounded-md mt-2 py-2 w-48 z-50">
                       {item.subItems.map(subItem => (
                         <Link key={subItem.href} href={subItem.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                           {subItem.label}
@@ -123,14 +102,12 @@ export function Navbar() {
               {notifications && notifications.length > 0 ? (
                 notifications.map((notification) => (
                   <DropdownMenuItem key={notification.id} asChild>
-                    <Link href={notification.link || '#'} className="flex items-start p-2 space-x-3">
-                      <div className="flex-shrink-0">
-                        <img className="h-8 w-8 rounded-full" src={notification.user.avatar} alt={notification.user.name} />
-                      </div>
+                    <Link href={notification.actionUrl || '#'} className="flex items-start p-2 space-x-3">
                       <div className="flex-1">
-                        <p className="text-sm text-gray-900" dangerouslySetInnerHTML={{ __html: `<span class='font-semibold'>${notification.user.name}</span> ${notification.message}` }} />
+                        <p className="text-sm font-medium text-gray-900">{notification.title}</p>
+                        <p className="text-xs text-gray-600 mt-1">{notification.message}</p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true })}
+                          {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
                         </p>
                       </div>
                       {!notification.isRead && (

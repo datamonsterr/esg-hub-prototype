@@ -18,7 +18,7 @@ const labelMap: Record<string, string> = {
   "reports": "Reports",
 }
 
-const isOrganizationId = (segment: string) => { 
+const isOrganizationId = (segment: string) => {
   return /^\d+$/.test(segment) || (segment.length > 10 && /[a-zA-Z]/.test(segment) && /\d/.test(segment));
 };
 
@@ -27,8 +27,13 @@ const isDynamicId = (segment: string) => {
   return /^\d+$/.test(segment) || (segment.length > 10 && /[a-zA-Z]/.test(segment) && /\d/.test(segment));
 };
 
+const isAssessmentId = (segment: string) => {
+  // Checks if the segment is a valid assessment ID format (e.g., "assessment-12345")
+  return /^asm-\d+$/.test(segment);
+}
+
 const isIgnored = (segment: string) => {
-  return isOrganizationId(segment) || isDynamicId(segment) || segment === "undefined";
+  return isAssessmentId(segment) || isOrganizationId(segment) || isDynamicId(segment) || segment === "undefined";
 };
 
 export default function GlobalBreadcrumb() {

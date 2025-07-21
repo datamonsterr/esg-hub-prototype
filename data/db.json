@@ -6,17 +6,8 @@
       "type": "brand",
       "address": "123 Sustainability Ave, San Francisco, CA 94102",
       "contactEmail": "contact@ecosustain.com",
-      "capabilities": [
-        "design",
-        "marketing",
-        "retail",
-        "quality_assurance"
-      ],
-      "certifications": [
-        "B-Corp",
-        "Carbon Neutral",
-        "Fair Trade"
-      ],
+      "capabilities": ["design", "marketing", "retail", "quality_assurance"],
+      "certifications": ["B-Corp", "Carbon Neutral", "Fair Trade"],
       "verificationStatus": "verified",
       "createdAt": "2024-01-15T00:00:00Z",
       "updatedAt": "2024-03-20T00:00:00Z"
@@ -27,17 +18,8 @@
       "type": "supplier",
       "address": "456 Industrial Park, Mumbai, India 400001",
       "contactEmail": "info@greentech-materials.in",
-      "capabilities": [
-        "manufacturing",
-        "sourcing",
-        "testing",
-        "certification"
-      ],
-      "certifications": [
-        "GOTS",
-        "ISO 14001",
-        "OEKO-TEX"
-      ],
+      "capabilities": ["manufacturing", "sourcing", "testing", "certification"],
+      "certifications": ["GOTS", "ISO 14001", "OEKO-TEX"],
       "verificationStatus": "verified",
       "createdAt": "2024-01-10T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
@@ -48,16 +30,8 @@
       "type": "raw_material_supplier",
       "address": "789 Farm Road, Gujarat, India 380001",
       "contactEmail": "sales@naturalfibers.in",
-      "capabilities": [
-        "farming",
-        "fiber_processing",
-        "organic_certification"
-      ],
-      "certifications": [
-        "Organic India",
-        "Fair Trade",
-        "Rainforest Alliance"
-      ],
+      "capabilities": ["farming", "fiber_processing", "organic_certification"],
+      "certifications": ["Organic India", "Fair Trade", "Rainforest Alliance"],
       "verificationStatus": "verified",
       "createdAt": "2024-01-08T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
@@ -68,16 +42,8 @@
       "type": "manufacturer",
       "address": "321 Processing Lane, Osaka, Japan 530-0001",
       "contactEmail": "contact@ecofiber.jp",
-      "capabilities": [
-        "fiber_processing",
-        "recycling",
-        "manufacturing"
-      ],
-      "certifications": [
-        "GRS",
-        "ISO 9001",
-        "OEKO-TEX"
-      ],
+      "capabilities": ["fiber_processing", "recycling", "manufacturing"],
+      "certifications": ["GRS", "ISO 9001", "OEKO-TEX"],
       "verificationStatus": "verified",
       "createdAt": "2024-01-12T00:00:00Z",
       "updatedAt": "2024-03-22T00:00:00Z"
@@ -88,17 +54,8 @@
       "type": "manufacturer",
       "address": "654 Green Street, Ho Chi Minh City, Vietnam 700000",
       "contactEmail": "info@sustainmfg.vn",
-      "capabilities": [
-        "cutting",
-        "sewing",
-        "assembly",
-        "packaging"
-      ],
-      "certifications": [
-        "WRAP",
-        "SA8000",
-        "ISO 14001"
-      ],
+      "capabilities": ["cutting", "sewing", "assembly", "packaging"],
+      "certifications": ["WRAP", "SA8000", "ISO 14001"],
       "verificationStatus": "pending",
       "createdAt": "2024-02-01T00:00:00Z",
       "updatedAt": "2024-03-10T00:00:00Z"
@@ -115,10 +72,7 @@
       "componentTreeId": "comp-001",
       "metadata": {
         "sustainabilityScore": 8.5,
-        "certifications": [
-          "GOTS",
-          "Carbon Neutral"
-        ],
+        "certifications": ["GOTS", "Carbon Neutral"],
         "originCountry": "Vietnam",
         "carbonFootprint": 12.5,
         "weightKg": 0.285,
@@ -147,10 +101,7 @@
       "componentTreeId": "comp-010",
       "metadata": {
         "sustainabilityScore": 9.2,
-        "certifications": [
-          "GOTS",
-          "Fair Trade"
-        ],
+        "certifications": ["GOTS", "Fair Trade"],
         "originCountry": "India",
         "carbonFootprint": 5.8,
         "weightKg": 0.15,
@@ -161,10 +112,7 @@
         }
       },
       "dataCompleteness": 92,
-      "missingDataFields": [
-        "dyeing_chemicals",
-        "packaging_materials"
-      ],
+      "missingDataFields": ["dyeing_chemicals", "packaging_materials"],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -178,10 +126,7 @@
       "componentTreeId": "comp-020",
       "metadata": {
         "sustainabilityScore": 7.8,
-        "certifications": [
-          "GRS",
-          "OEKO-TEX"
-        ],
+        "certifications": ["GRS", "OEKO-TEX"],
         "originCountry": "Japan",
         "carbonFootprint": 8.2,
         "weightKg": 0.22,
@@ -236,18 +181,12 @@
       "metadata": {
         "materialType": "composite",
         "originCountry": "Vietnam",
-        "certifications": [
-          "GOTS",
-          "Carbon Neutral"
-        ],
+        "certifications": ["GOTS", "Carbon Neutral"],
         "sustainabilityScore": 8.5,
         "carbonFootprint": 12.5
       },
       "dataCompleteness": 85,
-      "missingDataFields": [
-        "assembly_energy",
-        "packaging_impact"
-      ],
+      "missingDataFields": ["assembly_energy", "packaging_impact"],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-20T00:00:00Z"
     },
@@ -265,18 +204,13 @@
       "metadata": {
         "materialType": "textile_composite",
         "originCountry": "India",
-        "certifications": [
-          "GOTS"
-        ],
+        "certifications": ["GOTS"],
         "sustainabilityScore": 8.8,
         "carbonFootprint": 4.2,
         "recycledContent": 40
       },
       "dataCompleteness": 88,
-      "missingDataFields": [
-        "dyeing_process",
-        "finishing_chemicals"
-      ],
+      "missingDataFields": ["dyeing_process", "finishing_chemicals"],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -294,17 +228,12 @@
       "metadata": {
         "materialType": "organic_cotton",
         "originCountry": "India",
-        "certifications": [
-          "GOTS",
-          "Fair Trade"
-        ],
+        "certifications": ["GOTS", "Fair Trade"],
         "sustainabilityScore": 9.5,
         "carbonFootprint": 2.1
       },
       "dataCompleteness": 95,
-      "missingDataFields": [
-        "water_footprint"
-      ],
+      "missingDataFields": ["water_footprint"],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
     },
@@ -322,18 +251,13 @@
       "metadata": {
         "materialType": "recycled_polyester",
         "originCountry": "Japan",
-        "certifications": [
-          "GRS"
-        ],
+        "certifications": ["GRS"],
         "sustainabilityScore": 8.2,
         "carbonFootprint": 1.8,
         "recycledContent": 100
       },
       "dataCompleteness": 85,
-      "missingDataFields": [
-        "chemical_additives",
-        "dyeing_process"
-      ],
+      "missingDataFields": ["chemical_additives", "dyeing_process"],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
     },
@@ -351,9 +275,7 @@
       "metadata": {
         "materialType": "recycled_rubber",
         "originCountry": "Japan",
-        "certifications": [
-          "Environmental Choice"
-        ],
+        "certifications": ["Environmental Choice"],
         "sustainabilityScore": 7.5,
         "carbonFootprint": 6.8,
         "recycledContent": 75
@@ -381,9 +303,7 @@
       "metadata": {
         "materialType": "natural_cork",
         "originCountry": "Portugal",
-        "certifications": [
-          "FSC"
-        ],
+        "certifications": ["FSC"],
         "sustainabilityScore": 9.1,
         "carbonFootprint": 1.2
       },
@@ -411,18 +331,12 @@
       "metadata": {
         "materialType": "organic_cotton",
         "originCountry": "India",
-        "certifications": [
-          "GOTS",
-          "Fair Trade"
-        ],
+        "certifications": ["GOTS", "Fair Trade"],
         "sustainabilityScore": 9.2,
         "carbonFootprint": 5.8
       },
       "dataCompleteness": 92,
-      "missingDataFields": [
-        "packaging_materials",
-        "transport_impact"
-      ],
+      "missingDataFields": ["packaging_materials", "transport_impact"],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -440,17 +354,12 @@
       "metadata": {
         "materialType": "organic_cotton_yarn",
         "originCountry": "India",
-        "certifications": [
-          "GOTS",
-          "Organic India"
-        ],
+        "certifications": ["GOTS", "Organic India"],
         "sustainabilityScore": 9.8,
         "carbonFootprint": 4.2
       },
       "dataCompleteness": 95,
-      "missingDataFields": [
-        "spinning_energy"
-      ],
+      "missingDataFields": ["spinning_energy"],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
     },
@@ -468,17 +377,12 @@
       "metadata": {
         "materialType": "natural_dye",
         "originCountry": "India",
-        "certifications": [
-          "Organic"
-        ],
+        "certifications": ["Organic"],
         "sustainabilityScore": 9.5,
         "carbonFootprint": 0.8
       },
       "dataCompleteness": 88,
-      "missingDataFields": [
-        "extraction_method",
-        "mordant_used"
-      ],
+      "missingDataFields": ["extraction_method", "mordant_used"],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
     }
@@ -488,13 +392,8 @@
       "id": "tr-inc-001",
       "requestingOrganizationId": "org-001",
       "targetOrganizationId": "org-002",
-      "productIds": [
-        "prod-001"
-      ],
-      "componentIds": [
-        "comp-002",
-        "comp-003"
-      ],
+      "productIds": ["prod-001"],
+      "componentIds": ["comp-002", "comp-003"],
       "assessmentTemplateId": "at-001",
       "status": "pending",
       "priority": "high",
@@ -502,10 +401,7 @@
       "message": "We need detailed information about the organic cotton fabric used in our running shoe upper material for our upcoming sustainability report.",
       "cascadeSettings": {
         "enableCascade": true,
-        "targetTiers": [
-          "tier-2",
-          "tier-3"
-        ],
+        "targetTiers": ["tier-2", "tier-3"],
         "cascadeScope": "material-specific",
         "cascadeTiming": "after-response",
         "autoReminder": true
@@ -518,10 +414,7 @@
       "requestingOrganizationId": "org-001",
       "targetOrganizationId": "org-004",
       "productIds": [],
-      "componentIds": [
-        "comp-004",
-        "comp-005"
-      ],
+      "componentIds": ["comp-004", "comp-005"],
       "assessmentTemplateId": "at-002",
       "status": "in_progress",
       "priority": "medium",
@@ -544,10 +437,7 @@
       "requestingOrganizationId": "org-002",
       "targetOrganizationId": "org-003",
       "productIds": [],
-      "componentIds": [
-        "comp-003",
-        "comp-011"
-      ],
+      "componentIds": ["comp-003", "comp-011"],
       "assessmentTemplateId": "at-003",
       "status": "completed",
       "priority": "medium",
@@ -555,9 +445,7 @@
       "message": "We need detailed farming practices and certification documentation for the organic cotton supplied to us.",
       "cascadeSettings": {
         "enableCascade": true,
-        "targetTiers": [
-          "tier-2"
-        ],
+        "targetTiers": ["tier-2"],
         "cascadeScope": "material-specific",
         "cascadeTiming": "immediate",
         "autoReminder": true
@@ -686,21 +574,9 @@
             {
               "id": "q-007",
               "text": "What percentage of the final product is recycled content?",
-              "type": "number",
+              "type": "text",
               "isRequired": true,
-              "productDataField": "recycled_content_percentage",
-              "validationRules": [
-                {
-                  "type": "min",
-                  "value": 0,
-                  "message": "Percentage cannot be negative"
-                },
-                {
-                  "type": "max",
-                  "value": 100,
-                  "message": "Percentage cannot exceed 100"
-                }
-              ]
+              "productDataField": "recycled_content_percentage"
             },
             {
               "id": "q-008",
@@ -794,18 +670,344 @@
       "updatedAt": "2024-03-05T00:00:00Z"
     }
   ],
+  "assessments": [
+    {
+      "id": "asm-001",
+      "templateId": "at-001",
+      "title": "Organic Cotton Farming Assessment - Natural Fibers Co",
+      "description": "Assessment of organic cotton farming practices for Natural Fibers Co",
+      "organizationId": "org-003",
+      "requestingOrganizationId": "org-001",
+      "productIds": ["prod-002"],
+      "componentIds": ["comp-003", "comp-011"],
+      "status": "completed",
+      "priority": "high",
+      "topic": "Material Sourcing",
+      "tags": ["organic", "cotton", "farming", "sustainability"],
+      "icon": "fa-leaf",
+      "topicColor": "green",
+      "creator": "Sarah Johnson",
+      "assignedTo": "Agricultural Compliance Team",
+      "dueDate": "2024-04-15T00:00:00Z",
+      "completedAt": "2024-04-12T15:30:00Z",
+      "dataCompleteness": 95,
+      "responses": [
+        {
+          "questionId": "q-001",
+          "questionText": "What farming methods are used for cotton cultivation?",
+          "answer": "organic",
+          "answerText": "Organic farming",
+          "metadata": {
+            "confidence": "high",
+            "verificationStatus": "verified",
+            "supportingDocuments": ["cert-organic-2024.pdf"]
+          }
+        },
+        {
+          "questionId": "q-002",
+          "questionText": "What is the annual water consumption per hectare for cotton cultivation?",
+          "answer": 1200,
+          "answerText": "1,200 liters per hectare annually",
+          "metadata": {
+            "unit": "liters/hectare/year",
+            "measurementMethod": "flow_meter",
+            "verificationStatus": "verified"
+          }
+        },
+        {
+          "questionId": "q-003",
+          "questionText": "Are any synthetic pesticides or fertilizers used?",
+          "answer": false,
+          "answerText": "No synthetic chemicals are used",
+          "metadata": {
+            "certificationBody": "Organic India",
+            "lastInspection": "2024-03-15T00:00:00Z"
+          }
+        },
+        {
+          "questionId": "q-004",
+          "questionText": "Describe the cotton ginning and processing methods used",
+          "answer": "Traditional mechanical ginning process using roller gins to separate cotton fibers from seeds. No chemical treatments are applied during ginning. The process is powered by renewable solar energy.",
+          "metadata": {
+            "processingLocation": "Gujarat, India",
+            "energySource": "solar",
+            "certifiedBy": "GOTS"
+          }
+        },
+        {
+          "questionId": "q-005",
+          "questionText": "What chemicals are used in the cotton processing?",
+          "answer": "No chemicals are used in our processing. We use only mechanical separation and natural air drying.",
+          "metadata": {
+            "verification": "third_party_audit",
+            "auditDate": "2024-03-10T00:00:00Z"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "id": "att-001",
+          "fileName": "organic-certification-2024.pdf",
+          "fileSize": "2.3 MB",
+          "uploadedAt": "2024-04-10T10:15:00Z",
+          "description": "GOTS Organic Certification Document"
+        },
+        {
+          "id": "att-002",
+          "fileName": "water-usage-report.xlsx",
+          "fileSize": "1.1 MB",
+          "uploadedAt": "2024-04-11T14:20:00Z",
+          "description": "Annual Water Consumption Report"
+        }
+      ],
+      "createdAt": "2024-03-25T00:00:00Z",
+      "updatedAt": "2024-04-12T15:30:00Z"
+    },
+    {
+      "id": "asm-002",
+      "templateId": "at-002",
+      "title": "Recycled Polyester Environmental Impact - EcoFiber Processing",
+      "description": "Environmental impact assessment for recycled polyester production",
+      "organizationId": "org-004",
+      "requestingOrganizationId": "org-001",
+      "productIds": ["prod-001"],
+      "componentIds": ["comp-004", "comp-005"],
+      "status": "in_progress",
+      "priority": "medium",
+      "topic": "Environmental Impact",
+      "tags": ["recycled", "polyester", "environmental", "carbon-footprint"],
+      "icon": "fa-recycle",
+      "topicColor": "blue",
+      "creator": "Michael Chen",
+      "assignedTo": "Environmental Assessment Team",
+      "dueDate": "2024-04-25T00:00:00Z",
+      "completedAt": null,
+      "dataCompleteness": 70,
+      "responses": [
+        {
+          "questionId": "q-006",
+          "questionText": "What is the source material for recycling?",
+          "answer": "Post-consumer plastic bottles (PET) collected from municipal recycling programs across Japan",
+          "metadata": {
+            "sourceRegions": ["Tokyo", "Osaka", "Kyoto"],
+            "collectionPartners": ["Japan Recycling Association"],
+            "verificationStatus": "verified"
+          }
+        },
+        {
+          "questionId": "q-007",
+          "questionText": "What percentage of the final product is recycled content?",
+          "answer": 85,
+          "answerText": "85% recycled content",
+          "metadata": {
+            "unit": "percentage",
+            "testingMethod": "FTIR_spectroscopy",
+            "certificationBody": "GRS"
+          }
+        },
+        {
+          "questionId": "q-008",
+          "questionText": "Describe the recycling process and any chemical treatments used",
+          "answer": "PET bottles are mechanically shredded, washed with biodegradable detergents, melted and extruded into polyester fibers. Minimal chemical processing with eco-friendly catalysts.",
+          "metadata": {
+            "processSteps": [
+              "collection",
+              "sorting",
+              "shredding",
+              "washing",
+              "melting",
+              "extrusion"
+            ],
+            "chemicalsUsed": ["biodegradable_detergent", "eco_catalyst"],
+            "facilityLocation": "Osaka, Japan"
+          }
+        },
+        {
+          "questionId": "q-009",
+          "questionText": "What is the energy consumption for the recycling process (kWh per kg)?",
+          "answer": 12.5,
+          "answerText": "12.5 kWh per kg of recycled polyester",
+          "metadata": {
+            "unit": "kWh/kg",
+            "energySource": "50% renewable (solar/wind), 50% grid",
+            "measurementPeriod": "Q1 2024"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "id": "att-003",
+          "fileName": "energy-consumption-analysis.pdf",
+          "fileSize": "1.8 MB",
+          "uploadedAt": "2024-04-15T09:30:00Z",
+          "description": "Energy Consumption Analysis Report"
+        }
+      ],
+      "createdAt": "2024-03-28T00:00:00Z",
+      "updatedAt": "2024-04-15T16:45:00Z"
+    },
+    {
+      "id": "asm-003",
+      "templateId": "at-003",
+      "title": "Supply Chain Transparency - GreenTech Materials",
+      "description": "Transparency assessment for supplier verification and traceability",
+      "organizationId": "org-002",
+      "requestingOrganizationId": "org-001",
+      "productIds": ["prod-001"],
+      "componentIds": ["comp-002"],
+      "status": "completed",
+      "priority": "high",
+      "topic": "Transparency",
+      "tags": ["transparency", "traceability", "supplier-verification"],
+      "icon": "fa-search",
+      "topicColor": "purple",
+      "creator": "Emma Rodriguez",
+      "assignedTo": "Supply Chain Compliance",
+      "dueDate": "2024-04-10T00:00:00Z",
+      "completedAt": "2024-04-08T11:20:00Z",
+      "dataCompleteness": 100,
+      "responses": [
+        {
+          "questionId": "q-011",
+          "questionText": "Who are your direct suppliers for this material?",
+          "answer": "Natural Fibers Co (org-003) for organic cotton, EcoFiber Processing (org-004) for recycled components",
+          "metadata": {
+            "supplierCount": 2,
+            "contractStatus": "active",
+            "lastAudit": "2024-03-01T00:00:00Z"
+          }
+        },
+        {
+          "questionId": "q-012",
+          "questionText": "Can you provide supplier certification documents?",
+          "answer": "supplier-certifications-2024.zip",
+          "answerText": "All supplier certifications uploaded",
+          "metadata": {
+            "fileType": "zip",
+            "fileSize": "15.2 MB",
+            "documentsIncluded": ["GOTS", "OEKO-TEX", "GRS", "ISO14001"]
+          }
+        },
+        {
+          "questionId": "q-013",
+          "questionText": "What is the country of origin for this material?",
+          "answer": "India (cotton), Japan (recycled polyester processing)",
+          "metadata": {
+            "primaryOrigin": "India",
+            "processingCountries": ["India", "Japan"],
+            "tradeCompliance": "verified"
+          }
+        },
+        {
+          "questionId": "q-014",
+          "questionText": "Can you trace this material back to its source?",
+          "answer": true,
+          "answerText": "Full traceability to farm level",
+          "metadata": {
+            "traceabilityLevel": "farm_level",
+            "blockchainVerified": true,
+            "lastTraceabilityAudit": "2024-03-20T00:00:00Z"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "id": "att-004",
+          "fileName": "supplier-certifications-2024.zip",
+          "fileSize": "15.2 MB",
+          "uploadedAt": "2024-04-05T13:45:00Z",
+          "description": "Complete supplier certification package"
+        },
+        {
+          "id": "att-005",
+          "fileName": "traceability-blockchain-report.pdf",
+          "fileSize": "3.4 MB",
+          "uploadedAt": "2024-04-08T10:30:00Z",
+          "description": "Blockchain-verified traceability report"
+        }
+      ],
+      "createdAt": "2024-03-20T00:00:00Z",
+      "updatedAt": "2024-04-08T11:20:00Z"
+    },
+    {
+      "id": "asm-004",
+      "templateId": "at-001",
+      "title": "Cotton Processing Compliance Assessment",
+      "description": "Follow-up assessment for cotton processing compliance verification",
+      "organizationId": "org-002",
+      "requestingOrganizationId": "org-001",
+      "productIds": ["prod-002"],
+      "componentIds": ["comp-011"],
+      "status": "pending",
+      "priority": "medium",
+      "topic": "Compliance",
+      "tags": ["cotton", "processing", "compliance", "GOTS"],
+      "icon": "fa-clipboard-check",
+      "topicColor": "orange",
+      "creator": "James Wilson",
+      "assignedTo": "Quality Assurance Team",
+      "dueDate": "2024-05-01T00:00:00Z",
+      "completedAt": null,
+      "dataCompleteness": 0,
+      "responses": [],
+      "attachments": [],
+      "createdAt": "2024-04-18T00:00:00Z",
+      "updatedAt": "2024-04-18T00:00:00Z"
+    },
+    {
+      "id": "asm-005",
+      "templateId": "at-002",
+      "title": "Carbon Footprint Assessment - Recycled Rubber Sole",
+      "description": "Detailed carbon footprint analysis for recycled rubber sole manufacturing",
+      "organizationId": "org-004",
+      "requestingOrganizationId": "org-001",
+      "productIds": ["prod-001"],
+      "componentIds": ["comp-005"],
+      "status": "draft",
+      "priority": "low",
+      "topic": "Carbon Footprint",
+      "tags": ["carbon", "recycled-rubber", "environmental", "LCA"],
+      "icon": "fa-chart-line",
+      "topicColor": "gray",
+      "creator": "Lisa Chang",
+      "assignedTo": "Environmental Analysis Team",
+      "dueDate": "2024-05-15T00:00:00Z",
+      "completedAt": null,
+      "dataCompleteness": 25,
+      "responses": [
+        {
+          "questionId": "q-010",
+          "questionText": "What is the carbon footprint of the recycling process (kg CO2e per kg)?",
+          "answer": 2.8,
+          "answerText": "2.8 kg CO2e per kg of recycled rubber",
+          "metadata": {
+            "unit": "kg CO2e/kg",
+            "calculationMethod": "LCA_ISO14040",
+            "systemBoundary": "cradle_to_gate",
+            "dataQuality": "primary_data"
+          }
+        }
+      ],
+      "attachments": [
+        {
+          "id": "att-006",
+          "fileName": "preliminary-lca-results.xlsx",
+          "fileSize": "2.1 MB",
+          "uploadedAt": "2024-04-20T14:15:00Z",
+          "description": "Preliminary Life Cycle Assessment Results"
+        }
+      ],
+      "createdAt": "2024-04-19T00:00:00Z",
+      "updatedAt": "2024-04-20T14:15:00Z"
+    }
+  ],
   "integration": {
     "integrationMethods": [
       {
         "icon": "Upload",
         "title": "File Upload",
         "description": "Manually upload CSV or Excel files containing your supply chain data.",
-        "tags": [
-          "Manual",
-          "CSV",
-          "Excel",
-          "BOM"
-        ],
+        "tags": ["Manual", "CSV", "Excel", "BOM"],
         "action": "Upload File",
         "onClick": "onNavigateToUpload"
       },
@@ -813,12 +1015,7 @@
         "icon": "Database",
         "title": "Database Connection",
         "description": "Directly connect to your ERP or database for automated data synchronization.",
-        "tags": [
-          "Automated",
-          "ERP",
-          "API",
-          "Real-time"
-        ],
+        "tags": ["Automated", "ERP", "API", "Real-time"],
         "action": "Connect Database",
         "onClick": ""
       },
@@ -826,12 +1023,7 @@
         "icon": "Webhook",
         "title": "API & Webhooks",
         "description": "Use our powerful API or configure webhooks for seamless, event-driven integration.",
-        "tags": [
-          "Automated",
-          "Developer",
-          "API",
-          "Custom"
-        ],
+        "tags": ["Automated", "Developer", "API", "Custom"],
         "action": "View API Docs",
         "onClick": ""
       }
@@ -960,11 +1152,7 @@
       "dataQuality": {
         "completeness": 87,
         "accuracy": 92,
-        "missingFields": [
-          "water_usage",
-          "labor_hours",
-          "transport_emissions"
-        ]
+        "missingFields": ["water_usage", "labor_hours", "transport_emissions"]
       },
       "suggestedActions": [
         "Request water usage data from suppliers",
@@ -1236,20 +1424,6 @@
       "subtitle": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
       "status": "processing",
       "createdAt": "2025-07-17T08:53:11.245Z"
-    },
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "title": "File Upload",
-      "subtitle": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "status": "processing",
-      "createdAt": "2025-07-17T08:58:12.081Z"
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "title": "File Upload",
-      "subtitle": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "status": "processing",
-      "createdAt": "2025-07-21T06:12:08.765Z"
     }
   ],
   "notifications": [
@@ -1311,490 +1485,12 @@
       "lastUpdated": "2024-03-28T00:00:00Z"
     }
   ],
-  "processed-documents": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "fileName": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "description": "Processed document: PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "actors": [
-        {
-          "id": 1,
-          "title": "Supplier",
-          "description": "GreenTech Materials Ltd",
-          "color": "bg-blue-50 text-blue-900",
-          "dotColor": "bg-blue-500"
-        },
-        {
-          "id": 2,
-          "title": "Brand",
-          "description": "EcoSustain Corp",
-          "color": "bg-green-50 text-green-900",
-          "dotColor": "bg-green-500"
-        },
-        {
-          "id": 3,
-          "title": "Auditor",
-          "description": "ESG Certification Body",
-          "color": "bg-purple-50 text-purple-900",
-          "dotColor": "bg-purple-500"
-        }
-      ],
-      "available_actions": [
-        {
-          "id": 1,
-          "title": "Manufacturing",
-          "code": "MFG-2024-001",
-          "type": "manufacturing",
-          "color": "bg-green-100 text-green-800"
-        },
-        {
-          "id": 2,
-          "title": "Transportation",
-          "code": "TRN-2024-002",
-          "type": "transportation",
-          "color": "bg-yellow-100 text-yellow-800"
-        },
-        {
-          "id": 3,
-          "title": "Certification",
-          "code": "CERT-2024-003",
-          "type": "certification",
-          "color": "bg-purple-100 text-purple-800"
-        }
-      ],
-      "sections": [
-        {
-          "title": "File Preview",
-          "type": "file-preview",
-          "contentUrl": "/file-previews/d032b6b2-775e-4baa-9fb1-4d0dbd701396"
-        },
-        {
-          "title": "Key Highlights",
-          "type": "key-highlights",
-          "contentUrl": "/key-highlights-data/d032b6b2-775e-4baa-9fb1-4d0dbd701396"
-        },
-        {
-          "title": "Document Summary",
-          "type": "document-summary",
-          "contentUrl": "/document-summary/d032b6b2-775e-4baa-9fb1-4d0dbd701396"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "fileName": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "description": "Processed document: PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "actors": [
-        {
-          "id": 1,
-          "title": "Supplier",
-          "description": "GreenTech Materials Ltd",
-          "color": "bg-blue-50 text-blue-900",
-          "dotColor": "bg-blue-500"
-        },
-        {
-          "id": 2,
-          "title": "Brand",
-          "description": "EcoSustain Corp",
-          "color": "bg-green-50 text-green-900",
-          "dotColor": "bg-green-500"
-        },
-        {
-          "id": 3,
-          "title": "Auditor",
-          "description": "ESG Certification Body",
-          "color": "bg-purple-50 text-purple-900",
-          "dotColor": "bg-purple-500"
-        }
-      ],
-      "available_actions": [
-        {
-          "id": 1,
-          "title": "Manufacturing",
-          "code": "MFG-2024-001",
-          "type": "manufacturing",
-          "color": "bg-green-100 text-green-800"
-        },
-        {
-          "id": 2,
-          "title": "Transportation",
-          "code": "TRN-2024-002",
-          "type": "transportation",
-          "color": "bg-yellow-100 text-yellow-800"
-        },
-        {
-          "id": 3,
-          "title": "Certification",
-          "code": "CERT-2024-003",
-          "type": "certification",
-          "color": "bg-purple-100 text-purple-800"
-        }
-      ],
-      "sections": [
-        {
-          "title": "File Preview",
-          "type": "file-preview",
-          "contentUrl": "/file-previews/908435a3-2be0-4653-baa8-1be640e7fe7d"
-        },
-        {
-          "title": "Key Highlights",
-          "type": "key-highlights",
-          "contentUrl": "/key-highlights-data/908435a3-2be0-4653-baa8-1be640e7fe7d"
-        },
-        {
-          "title": "Document Summary",
-          "type": "document-summary",
-          "contentUrl": "/document-summary/908435a3-2be0-4653-baa8-1be640e7fe7d"
-        }
-      ]
-    }
-  ],
-  "file-previews": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "fileName": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "fileSize": "Processing...",
-      "data": [
-        {
-          "material": "Organic Cotton",
-          "origin": "India - Gujarat",
-          "supplier": "GreenTech Materials Ltd",
-          "cert": "GOTS Certified",
-          "date": "2025-07-17",
-          "qty": 2500,
-          "unit": "kg",
-          "status": "processing"
-        },
-        {
-          "material": "Recycled Polyester",
-          "origin": "Japan - Osaka",
-          "supplier": "EcoFiber Corp",
-          "cert": "GRS Certified",
-          "date": "2025-07-17",
-          "qty": 1800,
-          "unit": "kg",
-          "status": "processing"
-        },
-        {
-          "material": "Natural Dyes",
-          "origin": "Peru - Lima",
-          "supplier": "Natural Colors Ltd",
-          "cert": "OEKO-TEX",
-          "date": "2025-07-17",
-          "qty": 50,
-          "unit": "L",
-          "status": "processing"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "fileName": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf",
-      "fileSize": "Processing...",
-      "data": [
-        {
-          "material": "Organic Cotton",
-          "origin": "India - Gujarat",
-          "supplier": "GreenTech Materials Ltd",
-          "cert": "GOTS Certified",
-          "date": "2025-07-21",
-          "qty": 2500,
-          "unit": "kg",
-          "status": "processing"
-        },
-        {
-          "material": "Recycled Polyester",
-          "origin": "Japan - Osaka",
-          "supplier": "EcoFiber Corp",
-          "cert": "GRS Certified",
-          "date": "2025-07-21",
-          "qty": 1800,
-          "unit": "kg",
-          "status": "processing"
-        },
-        {
-          "material": "Natural Dyes",
-          "origin": "Peru - Lima",
-          "supplier": "Natural Colors Ltd",
-          "cert": "OEKO-TEX",
-          "date": "2025-07-21",
-          "qty": 50,
-          "unit": "L",
-          "status": "processing"
-        }
-      ]
-    }
-  ],
-  "key-highlights-data": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "highlights": [
-        {
-          "title": "Document uploaded and ready for processing",
-          "percentage": 100,
-          "status": "success",
-          "suggestion": "Process",
-          "detail": "File successfully uploaded and stored for ESG compliance analysis"
-        },
-        {
-          "title": "Supply chain data detected - 3 suppliers identified",
-          "percentage": 85,
-          "status": "info",
-          "suggestion": "Review",
-          "detail": "Found material sourcing data from GreenTech Materials, EcoFiber Corp, and Natural Colors Ltd"
-        },
-        {
-          "title": "Certification validation in progress",
-          "percentage": 60,
-          "status": "warning",
-          "suggestion": "Monitor",
-          "detail": "Validating GOTS, GRS, and OEKO-TEX certifications for compliance"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "highlights": [
-        {
-          "title": "Document uploaded and ready for processing",
-          "percentage": 100,
-          "status": "success",
-          "suggestion": "Process",
-          "detail": "File successfully uploaded and stored for ESG compliance analysis"
-        },
-        {
-          "title": "Supply chain data detected - 3 suppliers identified",
-          "percentage": 85,
-          "status": "info",
-          "suggestion": "Review",
-          "detail": "Found material sourcing data from GreenTech Materials, EcoFiber Corp, and Natural Colors Ltd"
-        },
-        {
-          "title": "Certification validation in progress",
-          "percentage": 60,
-          "status": "warning",
-          "suggestion": "Monitor",
-          "detail": "Validating GOTS, GRS, and OEKO-TEX certifications for compliance"
-        }
-      ]
-    }
-  ],
-  "document-summary": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "description": "ESG compliance report for PhạmThànhĐạt_SoftwareEngineer_CV.pdf covering supply chain traceability, material origins, and certification status. Document includes comprehensive data from 3 key suppliers across multiple regions with detailed material sourcing information.",
-      "reportingPeriod": "2024 Q1",
-      "organizationCount": 3,
-      "keyMetrics": [
-        {
-          "name": "Material Traceability",
-          "value": "85",
-          "unit": "%",
-          "category": "compliance"
-        },
-        {
-          "name": "Supplier Certifications",
-          "value": "3",
-          "unit": "active",
-          "category": "certification"
-        },
-        {
-          "name": "Carbon Footprint",
-          "value": "2.4",
-          "unit": "tCO2e",
-          "category": "environmental"
-        },
-        {
-          "name": "Processing Status",
-          "value": "In Progress",
-          "unit": "status",
-          "category": "system"
-        }
-      ],
-      "dataQuality": {
-        "completeness": 75,
-        "accuracy": 82,
-        "consistency": 78
-      }
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "description": "ESG compliance report for PhạmThànhĐạt_SoftwareEngineer_CV.pdf covering supply chain traceability, material origins, and certification status. Document includes comprehensive data from 3 key suppliers across multiple regions with detailed material sourcing information.",
-      "reportingPeriod": "2024 Q1",
-      "organizationCount": 3,
-      "keyMetrics": [
-        {
-          "name": "Material Traceability",
-          "value": "85",
-          "unit": "%",
-          "category": "compliance"
-        },
-        {
-          "name": "Supplier Certifications",
-          "value": "3",
-          "unit": "active",
-          "category": "certification"
-        },
-        {
-          "name": "Carbon Footprint",
-          "value": "2.4",
-          "unit": "tCO2e",
-          "category": "environmental"
-        },
-        {
-          "name": "Processing Status",
-          "value": "In Progress",
-          "unit": "status",
-          "category": "system"
-        }
-      ],
-      "dataQuality": {
-        "completeness": 75,
-        "accuracy": 82,
-        "consistency": 78
-      }
-    }
-  ],
-  "document-actors": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "documentId": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "actors": [
-        {
-          "id": 1,
-          "title": "Primary Supplier",
-          "description": "GreenTech Materials Ltd",
-          "color": "bg-blue-50 text-blue-900",
-          "dotColor": "bg-blue-500"
-        },
-        {
-          "id": 2,
-          "title": "Brand Owner",
-          "description": "EcoSustain Corp",
-          "color": "bg-green-50 text-green-900",
-          "dotColor": "bg-green-500"
-        },
-        {
-          "id": 3,
-          "title": "Auditor",
-          "description": "ESG Certification Body",
-          "color": "bg-purple-50 text-purple-900",
-          "dotColor": "bg-purple-500"
-        },
-        {
-          "id": 4,
-          "title": "Logistics Provider",
-          "description": "Sustainable Transport Co",
-          "color": "bg-yellow-50 text-yellow-900",
-          "dotColor": "bg-yellow-500"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "documentId": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "actors": [
-        {
-          "id": 1,
-          "title": "Primary Supplier",
-          "description": "GreenTech Materials Ltd",
-          "color": "bg-blue-50 text-blue-900",
-          "dotColor": "bg-blue-500"
-        },
-        {
-          "id": 2,
-          "title": "Brand Owner",
-          "description": "EcoSustain Corp",
-          "color": "bg-green-50 text-green-900",
-          "dotColor": "bg-green-500"
-        },
-        {
-          "id": 3,
-          "title": "Auditor",
-          "description": "ESG Certification Body",
-          "color": "bg-purple-50 text-purple-900",
-          "dotColor": "bg-purple-500"
-        },
-        {
-          "id": 4,
-          "title": "Logistics Provider",
-          "description": "Sustainable Transport Co",
-          "color": "bg-yellow-50 text-yellow-900",
-          "dotColor": "bg-yellow-500"
-        }
-      ]
-    }
-  ],
-  "document-actions": [
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "documentId": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "actions": [
-        {
-          "id": 1,
-          "title": "Sustainability Audit",
-          "code": "SUSTAIN-AUDIT-2025-996",
-          "type": "audit",
-          "color": "bg-green-100 text-green-800"
-        },
-        {
-          "id": 2,
-          "title": "Supply Chain Mapping",
-          "code": "SUPPLY-MAP-2025-249",
-          "type": "traceability",
-          "color": "bg-blue-100 text-blue-800"
-        },
-        {
-          "id": 3,
-          "title": "Carbon Footprint Assessment",
-          "code": "CARBON-ASSESS-2025-073",
-          "type": "environmental",
-          "color": "bg-purple-100 text-purple-800"
-        },
-        {
-          "id": 4,
-          "title": "Certification Verification",
-          "code": "CERT-VERIFY-2025-320",
-          "type": "certification",
-          "color": "bg-orange-100 text-orange-800"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "documentId": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "actions": [
-        {
-          "id": 1,
-          "title": "Sustainability Audit",
-          "code": "SUSTAIN-AUDIT-2025-324",
-          "type": "audit",
-          "color": "bg-green-100 text-green-800"
-        },
-        {
-          "id": 2,
-          "title": "Supply Chain Mapping",
-          "code": "SUPPLY-MAP-2025-288",
-          "type": "traceability",
-          "color": "bg-blue-100 text-blue-800"
-        },
-        {
-          "id": 3,
-          "title": "Carbon Footprint Assessment",
-          "code": "CARBON-ASSESS-2025-504",
-          "type": "environmental",
-          "color": "bg-purple-100 text-purple-800"
-        },
-        {
-          "id": 4,
-          "title": "Certification Verification",
-          "code": "CERT-VERIFY-2025-173",
-          "type": "certification",
-          "color": "bg-orange-100 text-orange-800"
-        }
-      ]
-    }
-  ],
+  "processed-documents": [],
+  "file-previews": [],
+  "key-highlights-data": [],
+  "document-summary": [],
+  "document-actors": [],
+  "document-actions": [],
   "pending-invitations": [
     {
       "id": "inv-001",
@@ -1889,288 +1585,6 @@
           "Status": "Processing"
         }
       ]
-    },
-    {
-      "id": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "documentId": "d032b6b2-775e-4baa-9fb1-4d0dbd701396",
-      "title": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf - Supply Chain Analysis",
-      "columns": [
-        "Material",
-        "Supplier",
-        "Origin",
-        "Certification",
-        "Quantity",
-        "Unit",
-        "Sustainability Score",
-        "Status"
-      ],
-      "data": [
-        {
-          "id": "row-1",
-          "Material": "Organic Cotton",
-          "Supplier": "GreenTech Materials Ltd",
-          "Origin": "India - Gujarat",
-          "Certification": "GOTS Certified",
-          "Quantity": "2500",
-          "Unit": "kg",
-          "Sustainability Score": "9.1",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-2",
-          "Material": "Recycled Polyester",
-          "Supplier": "EcoFiber Corp",
-          "Origin": "Japan - Osaka",
-          "Certification": "GRS Certified",
-          "Quantity": "1800",
-          "Unit": "kg",
-          "Sustainability Score": "8.7",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-3",
-          "Material": "Natural Dyes",
-          "Supplier": "Natural Colors Ltd",
-          "Origin": "Peru - Lima",
-          "Certification": "OEKO-TEX",
-          "Quantity": "50",
-          "Unit": "L",
-          "Sustainability Score": "9.3",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-4",
-          "Material": "Bamboo Fiber",
-          "Supplier": "Sustainable Bamboo Co",
-          "Origin": "Vietnam - Mekong Delta",
-          "Certification": "FSC Certified",
-          "Quantity": "800",
-          "Unit": "kg",
-          "Sustainability Score": "8.9",
-          "Status": "Processing"
-        }
-      ]
-    },
-    {
-      "id": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "documentId": "908435a3-2be0-4653-baa8-1be640e7fe7d",
-      "title": "PhạmThànhĐạt_SoftwareEngineer_CV.pdf - Supply Chain Analysis",
-      "columns": [
-        "Material",
-        "Supplier",
-        "Origin",
-        "Certification",
-        "Quantity",
-        "Unit",
-        "Sustainability Score",
-        "Status"
-      ],
-      "data": [
-        {
-          "id": "row-1",
-          "Material": "Organic Cotton",
-          "Supplier": "GreenTech Materials Ltd",
-          "Origin": "India - Gujarat",
-          "Certification": "GOTS Certified",
-          "Quantity": "2500",
-          "Unit": "kg",
-          "Sustainability Score": "9.1",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-2",
-          "Material": "Recycled Polyester",
-          "Supplier": "EcoFiber Corp",
-          "Origin": "Japan - Osaka",
-          "Certification": "GRS Certified",
-          "Quantity": "1800",
-          "Unit": "kg",
-          "Sustainability Score": "8.7",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-3",
-          "Material": "Natural Dyes",
-          "Supplier": "Natural Colors Ltd",
-          "Origin": "Peru - Lima",
-          "Certification": "OEKO-TEX",
-          "Quantity": "50",
-          "Unit": "L",
-          "Sustainability Score": "9.3",
-          "Status": "Processing"
-        },
-        {
-          "id": "row-4",
-          "Material": "Bamboo Fiber",
-          "Supplier": "Sustainable Bamboo Co",
-          "Origin": "Vietnam - Mekong Delta",
-          "Certification": "FSC Certified",
-          "Quantity": "800",
-          "Unit": "kg",
-          "Sustainability Score": "8.9",
-          "Status": "Processing"
-        }
-      ]
     }
-  ],
-  "assessments": [
-    {
-      "id": "asm-001",
-      "title": "China Supplier Tariff Impact 2024",
-      "description": "Assessment of potential tariff increases on Chinese textile suppliers and cost implications",
-      "topic": "Tariff Risk",
-      "creator": "Sarah Johnson",
-      "createdAt": "2024-11-15T00:00:00Z",
-      "updatedAt": "2024-11-20T00:00:00Z",
-      "status": "Complete",
-      "tags": [
-        "China",
-        "Textiles",
-        "Cost Analysis"
-      ],
-      "icon": "fa-earth-americas",
-      "topicColor": "red",
-      "sections": [
-        {
-          "id": "sec-001",
-          "title": "Tariff Overview",
-          "questions": []
-        }
-      ]
-    },
-    {
-      "id": "asm-002",
-      "title": "Cotton Material Origin Analysis",
-      "description": "Tracing cotton material sources and evaluating geopolitical supply chain risks",
-      "topic": "Origin Mapping",
-      "creator": "John Smith",
-      "createdAt": "2024-11-10T00:00:00Z",
-      "updatedAt": "2024-11-18T00:00:00Z",
-      "status": "Draft",
-      "tags": [
-        "Cotton",
-        "Origin Tracking",
-        "Supply Chain"
-      ],
-      "icon": "fa-map-location-dot",
-      "topicColor": "blue",
-      "sections": [
-        {
-          "id": "sec-002",
-          "title": "Origin Risks",
-          "questions": []
-        }
-      ]
-    },
-    {
-      "id": "asm-003",
-      "title": "Alternative Supplier Evaluation",
-      "description": "Assessment of Vietnam and Bangladesh suppliers as China alternatives",
-      "topic": "Diversification",
-      "creator": "Mike Chen",
-      "createdAt": "2024-11-05T00:00:00Z",
-      "updatedAt": "2024-11-12T00:00:00Z",
-      "status": "Draft",
-      "tags": [
-        "Vietnam",
-        "Bangladesh",
-        "Risk Mitigation"
-      ],
-      "icon": "fa-right-left",
-      "topicColor": "orange",
-      "sections": [
-        {
-          "id": "sec-003",
-          "title": "Supplier Comparison",
-          "questions": []
-        }
-      ]
-    },
-    {
-      "id": "asm-004",
-      "title": "Tariff Cost Modeling Analysis",
-      "description": "Financial impact assessment of proposed 60% tariffs on Chinese imports",
-      "topic": "Cost Impact",
-      "creator": "Sarah Johnson",
-      "createdAt": "2024-10-28T00:00:00Z",
-      "updatedAt": "2024-11-08T00:00:00Z",
-      "status": "Complete",
-      "tags": [
-        "Financial Impact",
-        "Cost Modeling"
-      ],
-      "icon": "fa-dollar-sign",
-      "topicColor": "yellow",
-      "sections": [
-        {
-          "id": "sec-004",
-          "title": "Cost Analysis",
-          "questions": []
-        }
-      ]
-    },
-    {
-      "id": "asm-005",
-      "title": "Trade Compliance Assessment",
-      "description": "Evaluation of supplier compliance with new trade regulations and documentation requirements",
-      "topic": "Compliance",
-      "creator": "John Smith",
-      "createdAt": "2024-10-20T00:00:00Z",
-      "updatedAt": "2024-10-25T00:00:00Z",
-      "status": "Draft",
-      "tags": [
-        "Trade",
-        "Regulations",
-        "Documentation"
-      ],
-      "icon": "fa-certificate",
-      "topicColor": "purple",
-      "sections": [
-        {
-          "id": "sec-005",
-          "title": "Compliance Review",
-          "questions": []
-        }
-      ]
-    },
-    {
-      "id": "asm-006",
-      "title": "Data Privacy & Security Review",
-      "description": "Assessment of data protection measures and cybersecurity protocols",
-      "topic": "Governance",
-      "creator": "Mike Chen",
-      "createdAt": "2024-02-15T00:00:00Z",
-      "updatedAt": "2024-02-22T00:00:00Z",
-      "status": "Complete",
-      "tags": [
-        "Privacy",
-        "Security",
-        "GDPR"
-      ],
-      "icon": "fa-shield-halved",
-      "topicColor": "purple",
-      "sections": [
-        {
-          "id": "sec-006",
-          "title": "Security Measures",
-          "questions": []
-        }
-      ]
-    }
-  ],
-  "assessment-filters": {
-    "topics": [
-      "Tariff Risk",
-      "Origin Mapping",
-      "Diversification",
-      "Cost Impact",
-      "Compliance",
-      "Governance"
-    ],
-    "creators": [
-      "Sarah Johnson",
-      "John Smith",
-      "Mike Chen"
-    ]
-  }
+  ]
 }

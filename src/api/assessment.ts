@@ -1,59 +1,55 @@
-'use client';
+"use client";
 
-import useSWR from 'swr';
-import useSWRMutation from 'swr/mutation';
-import axiosInstance, { endpoints } from './axios';
-import {
-  Assessment,
-  AssessmentTemplate,
-  SupplierAssessmentPageData,
-} from '../types/assessment';
-import { v4 as uuidv4 } from 'uuid';
-import { useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
+import useSWR from "swr";
+import useSWRMutation from "swr/mutation";
+import { v4 as uuidv4 } from "uuid";
+import { Assessment, AssessmentTemplate } from "../types/assessment";
+import axiosInstance, { endpoints } from "./axios";
 
 // #region RAW API
 export const getAssessments = async () => {
-  const res = await axiosInstance.get(endpoints.assessments.base);
+  const res = await axiosInstance.get(endpoints.assessment.base);
   return res.data;
 };
 
 export const getAssessmentById = async (id: string) => {
-  const res = await axiosInstance.get(endpoints.assessments.id(id));
+  const res = await axiosInstance.get(endpoints.assessment.id(id));
   return res.data;
 };
 
 export const getTemplateById = async (id: string) => {
-  const res = await axiosInstance.get(endpoints.assessmentTemplates.id(id));
+  const res = await axiosInstance.get(endpoints.assessment.template.id(id));
   return res.data;
 };
 
 export const createAssessment = async (
   url: string,
-  { arg }: { arg: AssessmentTemplate },
+  { arg }: { arg: AssessmentTemplate }
 ) => {
   const newAssessment = {
     ...arg,
     id: uuidv4(),
-    creator: 'Current User', // Replace with actual user
+    creator: "Current User", // Replace with actual user
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    status: 'Draft',
+    status: "Draft",
     // temp
-    topic: 'TBD',
+    topic: "TBD",
     tags: [],
-    icon: 'fa-file-alt',
-    topicColor: 'gray',
+    icon: "fa-file-alt",
+    topicColor: "gray",
   };
   const response = await axiosInstance.post(
-    endpoints.assessments.base,
-    newAssessment,
+    endpoints.assessment.base,
+    newAssessment
   );
   return response.data;
 };
 
 export const getAssessmentFilters = async () => {
-  const res = await axiosInstance.get(endpoints.assessmentFilters);
+  const res = await axiosInstance.get(endpoints.assessment.filter);
   return res.data;
 };
 
@@ -64,8 +60,8 @@ const fetcher = (url: string) => axiosInstance.get(url).then((res) => res.data);
 
 export function useGetAssessments() {
   const { data, error, isLoading } = useSWR<Assessment[]>(
-    endpoints.assessments.base,
-    fetcher,
+    endpoints.assessment.base,
+    fetcher
   );
 
   return {
@@ -77,19 +73,18 @@ export function useGetAssessments() {
 
 export function useSearchAssessments() {
   const searchParams = useSearchParams();
-  const title = searchParams.get('title');
-  const pageStr = searchParams.get('page');
-  const limitStr = searchParams.get('limit');
+  const title = searchParams.get("title");
+  const pageStr = searchParams.get("page");
+  const limitStr = searchParams.get("limit");
 
   const page = pageStr && /^\d+$/.test(pageStr) ? parseInt(pageStr, 10) : 1;
-  const limit =
-    limitStr && /^\d+$/.test(limitStr) ? parseInt(limitStr, 10) : 9;
+  const limit = limitStr && /^\d+$/.test(limitStr) ? parseInt(limitStr, 10) : 9;
 
   const {
     data: allAssessments,
     error,
     isLoading,
-  } = useSWR<Assessment[]>(endpoints.assessments.base, fetcher);
+  } = useSWR<Assessment[]>(endpoints.assessment.base, fetcher);
 
   const searchResult = useMemo(() => {
     if (!allAssessments) {
@@ -103,7 +98,7 @@ export function useSearchAssessments() {
     const filtered = allAssessments.filter((assessment) =>
       title
         ? assessment.title.toLowerCase().includes(title.toLowerCase())
-        : true,
+        : true
     );
 
     const totalAssessments = filtered.length;
@@ -126,8 +121,8 @@ export function useSearchAssessments() {
 
 export function useGetAssessment(id: string) {
   const { data, error, isLoading } = useSWR<Assessment>(
-    id ? endpoints.assessments.id(id) : null,
-    fetcher,
+    id ? endpoints.assessment.id(id) : null,
+    fetcher
   );
 
   return {
@@ -139,8 +134,8 @@ export function useGetAssessment(id: string) {
 
 export function useGetTemplate(id: string) {
   const { data, error, isLoading } = useSWR<AssessmentTemplate>(
-    id ? endpoints.assessmentTemplates.id(id) : null,
-    fetcher,
+    id ? endpoints.assessment.template.id(id) : null,
+    fetcher
   );
 
   return {
@@ -152,8 +147,8 @@ export function useGetTemplate(id: string) {
 
 export function useCreateAssessment(data: Assessment) {
   const { trigger, isMutating } = useSWRMutation(
-    endpoints.assessments.base,
-    createAssessment,
+    endpoints.assessment.base,
+    createAssessment
   );
 
   return {
@@ -163,10 +158,10 @@ export function useCreateAssessment(data: Assessment) {
 }
 
 export function useAssessmentFilters() {
-  const { data, error, isLoading } = useSWR<{ topics: string[]; creators: string[] }>(
-    endpoints.assessmentFilters,
-    fetcher
-  );
+  const { data, error, isLoading } = useSWR<{
+    topics: string[];
+    creators: string[];
+  }>(endpoints.assessment.filter, fetcher);
   return {
     filters: data,
     isLoading,

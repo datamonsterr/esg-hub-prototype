@@ -1,4 +1,4 @@
-export type AssessmentStatus = 'Complete' | 'Draft' | 'In Progress';
+export type AssessmentStatus = "Complete" | "Draft" | "In Progress";
 
 export interface Assessment {
   id: string;
@@ -12,7 +12,19 @@ export interface Assessment {
   tags: string[];
   icon: string;
   topicColor: string;
-  sections: AssessmentSection[];
+  sections?: AssessmentSection[]; // Made optional since we're using templateId
+  templateId?: string;
+  organizationId?: string;
+  requestingOrganizationId?: string;
+  productIds?: string[];
+  componentIds?: string[];
+  priority?: string;
+  assignedTo?: string;
+  dueDate?: string;
+  completedAt?: string | null;
+  dataCompleteness?: number;
+  responses?: AssessmentResponse[];
+  attachments?: AssessmentAttachment[];
 }
 
 export interface AssessmentTemplate {
@@ -46,13 +58,14 @@ export interface SupplierAssessmentPageData {
 export interface AssessmentSection {
   id: string;
   title: string;
+  description?: string;
   questions: AssessmentQuestion[];
 }
 
 export interface AssessmentQuestion {
   id: string;
   text: string;
-  type: 'text' | 'boolean' | 'multiple-choice' | 'file-upload' | 'number';
+  type: "text" | "boolean" | "multiple-choice" | "file-upload" | "number";
   answers?: AssessmentAnswer[];
   allowMultipleAnswers?: boolean;
   isRequired?: boolean;
@@ -82,4 +95,22 @@ export interface ValidationRule {
   type: "min" | "max" | "pattern" | "required";
   value: any;
   message: string;
+}
+
+export interface AssessmentResponse {
+  questionId: string;
+  questionText: string;
+  answer: any;
+  answerText?: string;
+  metadata?: {
+    [key: string]: any;
+  };
+}
+
+export interface AssessmentAttachment {
+  id: string;
+  fileName: string;
+  fileSize: string;
+  uploadedAt: string;
+  description?: string;
 }

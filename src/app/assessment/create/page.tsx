@@ -4,7 +4,7 @@
 import React, { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useForm, useFieldArray, SubmitHandler, Controller } from 'react-hook-form';
-import { useGetTemplate, useCreateAssessment } from '@/src/api/supplier-assessment';
+import { useGetTemplate, useCreateAssessment } from '@/src/api/assessment';
 import type { AssessmentTemplate } from '@/src/types/assessment';
 import { ArrowLeft, Bot, Plus, Save } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,7 +18,7 @@ export default function CreateAssessmentPage() {
   return (
     <Suspense fallback={<div className="bg-gray-50 font-arial text-base">
       <main className="max-w-7xl mx-auto px-5 py-8">
-        <PageHeader />
+        <PageHeader isCreating={false} />
         <div className="flex flex-col items-center justify-center h-[600px] gap-4">
           <p className="text-gray-500">Loading template...</p>
           <LoadingProgress />
@@ -64,11 +64,18 @@ function CreateAssessmentForm() {
     name: "sections",
   });
 
+  // FIX: useCreateAssessment usage
+  const { createAssessment, isCreating } = useCreateAssessment();
+
   const onSubmit: SubmitHandler<AssessmentTemplate> = async (data) => {
     try {
-      await useCreateAssessment(data);
+      await createAssessment({
+        ...data,
+        tags: data.tags || [],
+        sections: data.sections || [],
+      });
       showSuccessToast('Assessment created successfully!');
-      router.push('/supplier-assessment');
+      router.push('/assessment');
     } catch (error) {
       showErrorToast('Failed to create assessment.');
       console.error(error);
@@ -78,7 +85,7 @@ function CreateAssessmentForm() {
   if (isTemplateLoading) {
     return <div className="bg-gray-50 font-arial text-base">
       <main className="max-w-7xl mx-auto px-5 py-8">
-        <PageHeader />
+        <PageHeader isCreating={false} />
         <div className="flex flex-col items-center justify-center h-[600px] gap-4">
           <p className="text-gray-500">Loading template...</p>
           <LoadingProgress />
@@ -90,7 +97,7 @@ function CreateAssessmentForm() {
   return (
     <div className="bg-gray-50 font-arial text-base">
       <main className="max-w-7xl mx-auto px-5 py-8">
-        <PageHeader />
+        <PageHeader isCreating={isCreating} />
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-6">
           <div
             id="assessment-canvas"
@@ -119,14 +126,14 @@ function CreateAssessmentForm() {
               <span>Add Section</span>
             </Button>
           </div>
-          <RightSidebar isSubmitting={isSubmitting} />
+          <RightSidebar isSubmitting={isSubmitting || isCreating} />
         </form>
       </main>
     </div>
   );
 }
 
-function PageHeader() {
+function PageHeader({ isCreating }: { isCreating: boolean }) {
   const router = useRouter();
   return (
     <div className="flex items-center justify-between mb-8" id="page-header">
@@ -138,10 +145,16 @@ function PageHeader() {
           Build a comprehensive sustainability assessment.
         </p>
       </div>
-      <Button onClick={() => router.back()} variant="ghost">
-        <ArrowLeft size={20} />
-        <span>Back</span>
-      </Button>
+      <div className="flex items-center gap-4">
+        <Button type="submit" disabled={isCreating} className="w-fit">
+          <Save size={20} />
+          <span>{isCreating ? 'Saving...' : 'Save Assessment'}</span>
+        </Button>
+        <Button onClick={() => router.back()} variant="ghost">
+          <ArrowLeft size={20} />
+          <span>Back</span>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -155,7 +168,7 @@ function AssessmentTitleAndDescription({ control, register, errors }: any) {
         className="text-2xl font-medium text-gray-900 bg-transparent border-b-2 w-full p-2 rounded-t text-left"
       />
       {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-      
+
       <textarea
         {...register('description')}
         placeholder="Add a description for your assessment..."
@@ -164,17 +177,17 @@ function AssessmentTitleAndDescription({ control, register, errors }: any) {
       />
 
       <div className="mt-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Tags</h3>
-          <Controller
-              name="tags"
-              control={control}
-              render={({ field }) => (
-                  <TagInput
-                      {...field}
-                      placeholder="Add tags to categorize your assessment"
-                  />
-              )}
-          />
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Tags</h3>
+        <Controller
+          name="tags"
+          control={control}
+          render={({ field }) => (
+            <TagInput
+              {...field}
+              placeholder="Add tags to categorize your assessment"
+            />
+          )}
+        />
       </div>
     </div>
   );
@@ -183,25 +196,19 @@ function AssessmentTitleAndDescription({ control, register, errors }: any) {
 function RightSidebar({ isSubmitting }: { isSubmitting: boolean }) {
   return (
     <div className="w-80 flex flex-col">
-      <ActionButtons isSubmitting={isSubmitting} />
+      <Actions />
       <AiChat />
     </div>
   );
 }
 
-function ActionButtons({ isSubmitting }: { isSubmitting: boolean }) {
-    return (
-      <div id="action-buttons" className="bg-white rounded-lg border border-border p-4 mb-4">
-        <h2 className="text-lg font-medium text-gray-900 mb-4">Actions</h2>
-        <div className="space-y-3">
-          <Button type="submit" disabled={isSubmitting} className="w-full">
-            <Save size={20} />
-            <span>{isSubmitting ? 'Saving...' : 'Save Assessment'}</span>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+function Actions() {
+  return (
+    <div id="action-buttons" className="bg-white rounded-lg border border-border p-4 mb-4">
+      <h2 className="text-lg font-medium text-gray-900 mb-4">Actions</h2>
+    </div>
+  );
+}
 
 function AiChat() {
   return (

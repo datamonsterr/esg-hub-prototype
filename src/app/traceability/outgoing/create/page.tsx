@@ -213,7 +213,7 @@ export default function CreateTraceabilityRequestPage() {
                   disabled={!assessmentId}
                   onClick={() => {
                     if (assessmentId) {
-                      window.open(`/supplier-assessment/preview/${assessmentId}`, '_blank');
+                      window.open(`/assessment/preview/${assessmentId}`, '_blank');
                     }
                   }}
                 >
@@ -264,7 +264,7 @@ export default function CreateTraceabilityRequestPage() {
                   <p className="text-sm text-gray-600 mb-2">No completed assessments available</p>
                   <p className="text-xs text-gray-500 mb-4">Create a new assessment and complete it before creating traceability requests.</p>
                   <Link
-                    href="/supplier-assessment/create"
+                    href="/assessment/create"
                     className="text-brand-primary hover:text-brand-primary/80 font-medium text-sm inline-flex items-center"
                   >
                     <Plus className="h-4 w-4 mr-1" />
@@ -277,7 +277,7 @@ export default function CreateTraceabilityRequestPage() {
                 <div className="text-center py-4 border border-dashed border-gray-300 rounded-lg">
                   <p className="text-sm text-gray-600 mb-2">Don't see the assessment you need?</p>
                   <Link
-                    href="/supplier-assessment/create"
+                    href="/assessment/create"
                     className="text-brand-primary hover:text-brand-primary/80 font-medium text-sm inline-flex items-center"
                   >
                     <Plus className="h-4 w-4 mr-1" />

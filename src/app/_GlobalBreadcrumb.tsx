@@ -16,7 +16,6 @@ const labelMap: Record<string, string> = {
   "analytics": "Analytics",
   "assessment": "Assessment",
   "reports": "Reports",
-  "supplier-assessment": "Supplier Assessment",
 }
 
 const isOrganizationId = (segment: string) => { 

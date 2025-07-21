@@ -40,13 +40,14 @@ export const endpoints = {
   },
   // Assessments
   assessments: {
-    base: '/supplier-assessments',
-    id: (id: string) => `/supplier-assessments/${id}`,
+    base: '/assessments', // GET/POST for all assessments
+    id: (id: string) => `/assessments/${id}`, // GET/PUT/DELETE for a single assessment
   },
   assessmentTemplates: {
-    base: '/assessment-templates',
-    id: (id: string) => `/assessment-templates/${id}`,
+    base: '/assessment-templates', // GET/POST for all templates
+    id: (id: string) => `/assessment-templates/${id}`, // GET/PUT/DELETE for a single template
   },
+  assessmentFilters: '/assessment-filters',
   // Data Integration
   integration: {
     base: '/integration',
@@ -85,7 +86,6 @@ export const endpoints = {
     cancel: (id:string) => `/invites/${id}/cancel`,
   },
   notifications: '/notifications',
-  supplierAssessmentPage: '/supplier-assessment-page',
 };
 
 export default axiosInstance; 

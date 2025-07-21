@@ -1,6 +1,6 @@
 'use client';
 
-import { useGetAssessmentTemplate } from '@/src/api/supplier-assessment';
+import { useGetTemplate } from '@/src/api/assessment';
 import {
   AssessmentQuestion
 } from '@/src/types/assessment';
@@ -28,7 +28,7 @@ export default function TraceabilityAssessmentPage({
   searchParams
 }: TraceabilityAssessmentProps) {
   const router = useRouter();
-  const { template, isLoading, isError } = useGetAssessmentTemplate(params.id);
+  const { template, isLoading, isError } = useGetTemplate(params.id);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [activeSection, setActiveSection] = useState<string | null>(null);
 

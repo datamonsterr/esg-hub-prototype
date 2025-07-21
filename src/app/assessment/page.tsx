@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchAssessments, useSupplierAssessmentPage } from '@/src/api/assessment';
-import { Assessment, Template } from '@/src/types/assessment';
+import { useSearchAssessments, useAssessmentFilters } from '@/src/api/assessment';
+import { Assessment, AssessmentTemplate } from '@/src/types/assessment';
 import {
   Search,
   Filter,
@@ -20,48 +20,65 @@ import {
 } from '@/src/components/ui/dropdown-menu';
 import { Button } from '@/src/components/ui/button';
 import { GlobalLoading } from '@/src/components/global-loading';
-import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
 import { ErrorComponent } from '@/src/components/ui/error';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash.debounce';
+import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
 
 export default function SupplierAssessmentPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { assessments, totalPages, isLoading, isError } = useSearchAssessments();
-  const { pageData, isLoading: isLoadingPageData, isError: isErrorPageData } = useSupplierAssessmentPage();
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+  const { filters, isLoading: isLoadingFilters, isError: isErrorFilters } = useAssessmentFilters();
 
-  useEffect(() => {
-    if (pageData) {
-      setSelectedTemplate(pageData.templates[0]);
-    }
-  }, [pageData]);
+  // Modal state and template selection
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<AssessmentTemplate | null>(null);
+  // Mock templates (should be fetched from API in real app)
+  const mockTemplates: AssessmentTemplate[] = [
+    {
+      id: 'blank',
+      title: 'Blank Template',
+      description: 'Start from scratch with a blank assessment.',
+      icon: 'fa-file',
+      details: { category: 'General', sections: 0, questions: 0, time: '5 min', completion: 'N/A', sample: [] },
+    },
+    {
+      id: 'origin',
+      title: 'Origin Verification',
+      description: 'Verify product origin and documentation.',
+      icon: 'fa-globe',
+      recommended: true,
+      lastUsed: '2024-05-01',
+      details: { category: 'Compliance', sections: 3, questions: 10, time: '20 min', completion: '85%', sample: ['What is the country of origin?', 'Is there a certificate of origin?'] },
+    },
+  ];
 
-  if (isLoading || isLoadingPageData) {
+  if (isLoading || isLoadingFilters) {
     return <GlobalLoading />;
   }
 
-  if (isError || isErrorPageData) {
-    return <ErrorComponent title="Error Loading Data" description="There was an error loading the supplier assessment data. Please try again later." />;
+  if (isError ) {
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the assessment data. Please try again later." />;
+  }
+  
+  if (isErrorFilters) {
+    return <ErrorComponent title="Error Loading Data" description="There was an error loading the assessment filters. Please try again later." />;
   }
   
   return (
     <div className="bg-gray-50 font-arial text-base">
       <main className="max-w-7xl mx-auto px-5 py-8">
         <PageHeader onOpenModal={() => setIsModalOpen(true)} />
-        {pageData && <SearchAndFilter filters={pageData.FILTERS} />}
+        {filters && <SearchAndFilter filters={filters} />}
         <AssessmentGrid assessments={assessments || []} />
         <Pagination totalPages={totalPages} />
-      </main>
-      {pageData && selectedTemplate && (
         <CreateAssessmentModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          templates={pageData.templates}
+          templates={mockTemplates}
           selectedTemplate={selectedTemplate}
           onSelectTemplate={setSelectedTemplate}
         />
-      )}
+      </main>
     </div>
   );
 }
@@ -255,7 +272,7 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
           >
             {status}
           </span>
-          <Link href={`/supplier-assessment/preview/${assessment.id}`}>
+          <Link href={`/assessments/preview/${assessment.id}`}>
             <span className="text-primary text-sm font-medium hover:underline">
               View Details →
             </span>

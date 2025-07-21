@@ -33,7 +33,7 @@ export function Navbar() {
     { href: "/traceability/analytics", label: "Analytics", match: "/traceability/analytics" },
       ],
     },
-    { href: "/assessments", label: "Assessments", match: "/assessments" },
+    { href: "/assessment", label: "Assessment", match: "/assessment" },
   ];
 
   const linkClasses = (active: boolean) =>

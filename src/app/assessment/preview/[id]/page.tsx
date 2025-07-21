@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useGetAssessment } from '@/src/api/supplier-assessment';
+import { useGetAssessment } from '@/src/api/assessment';
 import { ArrowLeft, Download } from 'lucide-react';
 import { Button } from '@/src/components/ui/button';
 import { GlobalLoading } from '@/src/components/global-loading';

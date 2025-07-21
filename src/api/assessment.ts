@@ -28,11 +28,6 @@ export const getTemplateById = async (id: string) => {
   return res.data;
 };
 
-export const getSupplierAssessmentPage = async () => {
-  const res = await axiosInstance.get(endpoints.supplierAssessmentPage);
-  return res.data;
-};
-
 export const createAssessment = async (
   url: string,
   { arg }: { arg: AssessmentTemplate },
@@ -56,6 +51,12 @@ export const createAssessment = async (
   );
   return response.data;
 };
+
+export const getAssessmentFilters = async () => {
+  const res = await axiosInstance.get(endpoints.assessmentFilters);
+  return res.data;
+};
+
 // #endregion
 
 // #region SWR
@@ -149,7 +150,7 @@ export function useGetTemplate(id: string) {
   };
 }
 
-export function useCreateAssessment() {
+export function useCreateAssessment(data: Assessment) {
   const { trigger, isMutating } = useSWRMutation(
     endpoints.assessments.base,
     createAssessment,
@@ -161,16 +162,14 @@ export function useCreateAssessment() {
   };
 }
 
-export function useSupplierAssessmentPage() {
-  const { data, error, isLoading } = useSWR<SupplierAssessmentPageData>(
-    endpoints.supplierAssessmentPage,
-    fetcher,
+export function useAssessmentFilters() {
+  const { data, error, isLoading } = useSWR<{ topics: string[]; creators: string[] }>(
+    endpoints.assessmentFilters,
+    fetcher
   );
-
   return {
-    pageData: data,
+    filters: data,
     isLoading,
     isError: error,
   };
 }
-// #endregion 

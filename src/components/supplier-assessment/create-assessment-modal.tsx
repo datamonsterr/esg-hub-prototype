@@ -8,7 +8,7 @@ import {
   DialogFooter,
 } from '@/src/components/ui/dialog';
 import { Button } from '@/src/components/ui/button';
-import { Template } from '@/src/types/assessment';
+import { AssessmentTemplate } from '@/src/types';
 import Link from 'next/link';
 import Icon from '@/src/components/ui/icon';
 
@@ -21,9 +21,9 @@ function CreateAssessmentModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  templates: Template[];
-  selectedTemplate: Template | null;
-  onSelectTemplate: (template: Template) => void;
+  templates: AssessmentTemplate[];
+  selectedTemplate: AssessmentTemplate | null;
+  onSelectTemplate: (template: AssessmentTemplate) => void;
 }) {
   if (!templates) return null;
   return (
@@ -56,7 +56,7 @@ function CreateAssessmentModal({
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-secondary/50 rounded-lg flex items-center justify-center">
-                      <Icon icon={template.icon} className="text-primary text-lg" />
+                      <Icon icon={template.icon || ''} className="text-primary text-lg" />
                     </div>
                     <div>
                       <h4 className="font-medium text-gray-900">
@@ -90,7 +90,7 @@ function CreateAssessmentModal({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Link href="/supplier-assessment/create">
+          <Link href="/assessment/create">
             <Button>Create Assessment</Button>
           </Link>
         </DialogFooter>
@@ -99,14 +99,14 @@ function CreateAssessmentModal({
   );
 }
   
-function TemplatePreview({ template }: { template: Template | null }) {
+function TemplatePreview({ template }: { template: AssessmentTemplate | null }) {
   if (!template) return null;
 
   if (template.id === 'blank') {
     return (
       <div className="text-center py-12">
         <div className="w-16 h-16 bg-secondary/50 rounded-lg flex items-center justify-center mx-auto mb-4">
-          <Icon icon={template.icon} className="text-primary text-2xl" />
+          <Icon icon={template.icon || ''} className="text-primary text-2xl" />
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">
           {template.title}
@@ -145,10 +145,10 @@ function TemplatePreview({ template }: { template: Template | null }) {
       <div className="bg-white rounded-lg p-4 mb-4">
         <div className="flex items-center space-x-2 mb-3">
           <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
-            {template.details.category}
+            {template.details?.category}
           </span>
           <span className="text-sm text-gray-500">
-            {template.details.questions} Questions
+            {template.details?.questions} Questions
           </span>
         </div>
         <p className="text-sm text-gray-600 mb-4">
@@ -159,22 +159,22 @@ function TemplatePreview({ template }: { template: Template | null }) {
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Sections:</span>
-            <span className="text-gray-900">{template.details.sections}</span>
+            <span className="text-gray-900">{template.details?.sections}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Estimated time:</span>
-            <span className="text-gray-900">{template.details.time}</span>
+            <span className="text-gray-900">{template.details?.time}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-500">Completion rate:</span>
-            <span className="text-gray-900">{template.details.completion}</span>
+            <span className="text-gray-900">{template.details?.completion}</span>
           </div>
         </div>
       </div>
       <div className="bg-white rounded-lg p-4">
         <h4 className="font-medium text-gray-900 mb-2">Sample Questions:</h4>
         <ul className="text-sm text-gray-600 space-y-1">
-          {template.details.sample.map((q: string, i: number) => (
+          {template.details?.sample.map((q: string, i: number) => (
             <li key={i}>• {q}</li>
           ))}
         </ul>

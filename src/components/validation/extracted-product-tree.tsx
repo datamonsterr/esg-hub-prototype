@@ -11,7 +11,109 @@ interface ExtractedProductTreeProps {
   onChange?: (updated: Product) => void
 }
 
-export function ExtractedProductTree({ tree, onChange }: ExtractedProductTreeProps) {
+// MOCK DATA FOR LOCAL DEVELOPMENT
+const mockProductTree: Product = {
+  id: "prod-mock-001",
+  organizationId: "org-001",
+  name: "Mock Eco-Friendly Running Shoe",
+  sku: "MOCK-ERS-001",
+  description: "A mock high-performance running shoe made from sustainable materials",
+  category: "footwear",
+  componentTreeId: "comp-mock-001",
+  metadata: {
+    sustainabilityScore: 8.5,
+    certifications: ["GOTS", "Carbon Neutral"],
+    originCountry: "Vietnam",
+    carbonFootprint: 12.5,
+    weightKg: 0.285,
+    dimensions: { length: 290, width: 110, height: 95 },
+    brand: "MockBrand"
+  },
+  dataCompleteness: 85,
+  missingDataFields: ["water_usage", "energy_consumption", "waste_generation"],
+  createdAt: "2024-02-15T00:00:00Z",
+  updatedAt: "2024-03-20T00:00:00Z",
+  children: [
+    {
+      id: "comp-mock-001",
+      organizationId: "org-001",
+      productId: "prod-mock-001",
+      parentId: undefined,
+      name: "Mock Shoe Assembly",
+      type: "final_product",
+      sku: "MOCK-ERS-001",
+      description: "Complete running shoe assembly (mock)",
+      quantity: 1,
+      unit: "piece",
+      supplierOrganizationId: "org-005",
+      metadata: {
+        materialType: "composite",
+        originCountry: "Vietnam",
+        certifications: ["GOTS", "Carbon Neutral"],
+        sustainabilityScore: 8.5,
+        carbonFootprint: 12.5
+      },
+      dataCompleteness: 85,
+      missingDataFields: ["assembly_energy", "packaging_impact"],
+      createdAt: "2024-02-15T00:00:00Z",
+      updatedAt: "2024-03-20T00:00:00Z",
+      children: [
+        {
+          id: "comp-mock-002",
+          organizationId: "org-001",
+          productId: "prod-mock-001",
+          parentId: "comp-mock-001",
+          name: "Mock Upper Material",
+          type: "component",
+          description: "Shoe upper made from organic cotton and recycled polyester (mock)",
+          quantity: 1,
+          unit: "piece",
+          supplierOrganizationId: "org-002",
+          metadata: {
+            materialType: "textile_composite",
+            originCountry: "India",
+            certifications: ["GOTS"],
+            sustainabilityScore: 8.8,
+            carbonFootprint: 4.2,
+            recycledContent: 40
+          },
+          dataCompleteness: 88,
+          missingDataFields: ["dyeing_process", "finishing_chemicals"],
+          createdAt: "2024-02-15T00:00:00Z",
+          updatedAt: "2024-03-18T00:00:00Z",
+          children: []
+        },
+        {
+          id: "comp-mock-003",
+          organizationId: "org-001",
+          productId: "prod-mock-001",
+          parentId: "comp-mock-001",
+          name: "Mock Sole",
+          type: "component",
+          description: "Sole made from recycled rubber compounds (mock)",
+          quantity: 1,
+          unit: "piece",
+          supplierOrganizationId: "org-004",
+          metadata: {
+            materialType: "recycled_rubber",
+            originCountry: "Japan",
+            certifications: ["Environmental Choice"],
+            sustainabilityScore: 7.5,
+            carbonFootprint: 6.8,
+            recycledContent: 75
+          },
+          dataCompleteness: 72,
+          missingDataFields: ["vulcanization_process", "chemical_composition", "durability_testing"],
+          createdAt: "2024-02-15T00:00:00Z",
+          updatedAt: "2024-03-10T00:00:00Z",
+          children: []
+        }
+      ]
+    }
+  ]
+};
+
+export function ExtractedProductTree({ tree = mockProductTree, onChange }: ExtractedProductTreeProps) {
   const [product, setProduct] = useState<Product>(tree)
   const [orgs, setOrgs] = useState<{ id: string; name: string }[]>([])
 

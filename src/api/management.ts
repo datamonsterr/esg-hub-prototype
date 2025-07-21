@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { Activity } from '../types/integration';
+import { IntegrationActivity } from '../types/integration';
 import axiosInstance, { endpoints } from './axios';
 
 export const getActivities = async (limit?: number) => {
@@ -10,7 +10,7 @@ export const getActivities = async (limit?: number) => {
   const activities = res.data
     ? [...res.data]
         .sort(
-          (a: Activity, b: Activity) =>
+          (a: IntegrationActivity, b: IntegrationActivity) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         )
         .slice(0, limit)
@@ -22,7 +22,7 @@ export const createActivity = async (
   url: string,
   { arg }: { arg: { id: string; title: string; subtitle: string } },
 ) => {
-  const newActivity: Activity = {
+  const newActivity: IntegrationActivity = {
     ...arg,
     status: 'processing',
     createdAt: new Date().toISOString(),
@@ -35,7 +35,7 @@ export const createActivity = async (
 };
 
 export function useGetActivities(limit?: number) {
-  const { data, error, isLoading } = useSWR<Activity[]>(
+  const { data, error, isLoading } = useSWR<IntegrationActivity[]>(
     endpoints.integration.activities,
     () => getActivities(limit),
   );

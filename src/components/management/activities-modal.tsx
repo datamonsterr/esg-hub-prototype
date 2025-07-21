@@ -14,7 +14,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { ErrorComponent } from "@/src/components/ui/error"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
-import { Activity } from "@/src/types"
+import { IntegrationActivity } from "@/src/types/integration"
 import { format } from "date-fns"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
 import { useMemo, useState } from "react"
@@ -106,7 +106,7 @@ export function ActivitiesModal({ isOpen, onClose }: ActivitiesModalProps) {
         <div className="space-y-4 max-h-96 overflow-y-auto">
           {isLoading && <GlobalLoading />}
           {isError && <ErrorComponent title="Error" description="Could not load activities." />}
-          {filteredAndSortedActivities.map((activity: Activity) => (
+          {filteredAndSortedActivities.map((activity: IntegrationActivity) => (
             <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-brand">
               {getStatusIcon(activity.status)}
               <div className="flex-1">

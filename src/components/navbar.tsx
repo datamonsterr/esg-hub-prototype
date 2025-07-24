@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell } from "lucide-react"
+import { Bell, Settings } from "lucide-react"
 import { useUser } from "@clerk/nextjs"
 import { Button } from "./ui/button"
 import { UserAccountNav } from "./user-account-nav"
@@ -19,7 +19,11 @@ import { formatDistanceToNow } from 'date-fns';
 
 export function Navbar() {
   const pathname = usePathname()
+  const { user } = useUser()
   const { notifications } = useGetNotifications();
+
+  // Check if user is admin
+  const isAdmin = user?.publicMetadata?.organizationRole === "admin";
 
   const navItems = [
     { href: "/management", label: "Management", match: "/management" },
@@ -30,7 +34,7 @@ export function Navbar() {
       subItems: [
         { href: "/traceability/incoming", label: "Incoming Requests", match: "/traceability/incoming" },
         { href: "/traceability/outgoing", label: "Outgoing Requests", match: "/traceability/outgoing" },
-    { href: "/traceability/analytics", label: "Analytics", match: "/traceability/analytics" },
+        { href: "/traceability/analytics", label: "Analytics", match: "/traceability/analytics" },
       ],
     },
     { href: "/assessment", label: "Assessment", match: "/assessment" },
@@ -87,6 +91,16 @@ export function Navbar() {
           </div>
         </div>
         <div className="flex items-center space-x-4">
+          {/* Admin Button for admin users */}
+          {isAdmin && (
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/admin" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Admin
+              </Link>
+            </Button>
+          )}
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">

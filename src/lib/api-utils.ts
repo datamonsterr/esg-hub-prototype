@@ -51,8 +51,8 @@ export function applyFilters(
   let filtered = [...data];
 
   for (const [key, value] of searchParams.entries()) {
-    // Skip pagination and sorting params
-    if (["_limit", "_page", "_sort", "_order"].includes(key)) {
+    // Skip pagination, sorting params, and email (used for invitation matching, not filtering)
+    if (["_limit", "_page", "_sort", "_order", "email"].includes(key)) {
       continue;
     }
 

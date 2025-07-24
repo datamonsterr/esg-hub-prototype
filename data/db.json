@@ -6,8 +6,17 @@
       "type": "brand",
       "address": "123 Sustainability Ave, San Francisco, CA 94102",
       "contactEmail": "contact@ecosustain.com",
-      "capabilities": ["design", "marketing", "retail", "quality_assurance"],
-      "certifications": ["B-Corp", "Carbon Neutral", "Fair Trade"],
+      "capabilities": [
+        "design",
+        "marketing",
+        "retail",
+        "quality_assurance"
+      ],
+      "certifications": [
+        "B-Corp",
+        "Carbon Neutral",
+        "Fair Trade"
+      ],
       "verificationStatus": "verified",
       "createdAt": "2024-01-15T00:00:00Z",
       "updatedAt": "2024-03-20T00:00:00Z"
@@ -18,8 +27,17 @@
       "type": "supplier",
       "address": "456 Industrial Park, Mumbai, India 400001",
       "contactEmail": "info@greentech-materials.in",
-      "capabilities": ["manufacturing", "sourcing", "testing", "certification"],
-      "certifications": ["GOTS", "ISO 14001", "OEKO-TEX"],
+      "capabilities": [
+        "manufacturing",
+        "sourcing",
+        "testing",
+        "certification"
+      ],
+      "certifications": [
+        "GOTS",
+        "ISO 14001",
+        "OEKO-TEX"
+      ],
       "verificationStatus": "verified",
       "createdAt": "2024-01-10T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
@@ -30,8 +48,16 @@
       "type": "raw_material_supplier",
       "address": "789 Farm Road, Gujarat, India 380001",
       "contactEmail": "sales@naturalfibers.in",
-      "capabilities": ["farming", "fiber_processing", "organic_certification"],
-      "certifications": ["Organic India", "Fair Trade", "Rainforest Alliance"],
+      "capabilities": [
+        "farming",
+        "fiber_processing",
+        "organic_certification"
+      ],
+      "certifications": [
+        "Organic India",
+        "Fair Trade",
+        "Rainforest Alliance"
+      ],
       "verificationStatus": "verified",
       "createdAt": "2024-01-08T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
@@ -42,8 +68,16 @@
       "type": "manufacturer",
       "address": "321 Processing Lane, Osaka, Japan 530-0001",
       "contactEmail": "contact@ecofiber.jp",
-      "capabilities": ["fiber_processing", "recycling", "manufacturing"],
-      "certifications": ["GRS", "ISO 9001", "OEKO-TEX"],
+      "capabilities": [
+        "fiber_processing",
+        "recycling",
+        "manufacturing"
+      ],
+      "certifications": [
+        "GRS",
+        "ISO 9001",
+        "OEKO-TEX"
+      ],
       "verificationStatus": "verified",
       "createdAt": "2024-01-12T00:00:00Z",
       "updatedAt": "2024-03-22T00:00:00Z"
@@ -54,11 +88,70 @@
       "type": "manufacturer",
       "address": "654 Green Street, Ho Chi Minh City, Vietnam 700000",
       "contactEmail": "info@sustainmfg.vn",
-      "capabilities": ["cutting", "sewing", "assembly", "packaging"],
-      "certifications": ["WRAP", "SA8000", "ISO 14001"],
+      "capabilities": [
+        "cutting",
+        "sewing",
+        "assembly",
+        "packaging"
+      ],
+      "certifications": [
+        "WRAP",
+        "SA8000",
+        "ISO 14001"
+      ],
       "verificationStatus": "pending",
       "createdAt": "2024-02-01T00:00:00Z",
       "updatedAt": "2024-03-10T00:00:00Z"
+    },
+    {
+      "id": "org-nuoa",
+      "name": "Nuoa.io",
+      "type": "platform",
+      "description": "Leading ESG technology company focused on supply chain transparency and sustainability tracking.",
+      "industry": "Technology",
+      "location": "San Francisco, CA",
+      "website": "https://nuoa.io",
+      "size": "51-100",
+      "foundedYear": "2020",
+      "address": "123 Tech Avenue, San Francisco, CA 94105",
+      "contactEmail": "contact@nuoa.io",
+      "capabilities": [
+        "Carbon Footprint Tracking",
+        "Supply Chain Transparency",
+        "Renewable Energy",
+        "Social Impact Measurement"
+      ],
+      "certifications": [
+        "B Corp",
+        "ISO 14001",
+        "Energy Star"
+      ],
+      "settings": {
+        "notifications": {
+          "emailNotifications": true,
+          "traceabilityUpdates": true,
+          "membershipChanges": true,
+          "systemAlerts": false
+        },
+        "privacy": {
+          "allowDataSharing": false,
+          "publicProfile": true,
+          "allowAnalytics": true
+        },
+        "security": {
+          "requireTwoFactor": false,
+          "sessionTimeout": 24,
+          "allowApiAccess": true
+        },
+        "collaboration": {
+          "allowGuestAccess": false,
+          "autoApproveRequests": false,
+          "shareTraceabilityData": true
+        }
+      },
+      "verificationStatus": "verified",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-07-23T00:00:00Z"
     }
   ],
   "products": [
@@ -72,7 +165,10 @@
       "componentTreeId": "comp-001",
       "metadata": {
         "sustainabilityScore": 8.5,
-        "certifications": ["GOTS", "Carbon Neutral"],
+        "certifications": [
+          "GOTS",
+          "Carbon Neutral"
+        ],
         "originCountry": "Vietnam",
         "carbonFootprint": 12.5,
         "weightKg": 0.285,
@@ -101,7 +197,10 @@
       "componentTreeId": "comp-010",
       "metadata": {
         "sustainabilityScore": 9.2,
-        "certifications": ["GOTS", "Fair Trade"],
+        "certifications": [
+          "GOTS",
+          "Fair Trade"
+        ],
         "originCountry": "India",
         "carbonFootprint": 5.8,
         "weightKg": 0.15,
@@ -112,7 +211,10 @@
         }
       },
       "dataCompleteness": 92,
-      "missingDataFields": ["dyeing_chemicals", "packaging_materials"],
+      "missingDataFields": [
+        "dyeing_chemicals",
+        "packaging_materials"
+      ],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -126,7 +228,10 @@
       "componentTreeId": "comp-020",
       "metadata": {
         "sustainabilityScore": 7.8,
-        "certifications": ["GRS", "OEKO-TEX"],
+        "certifications": [
+          "GRS",
+          "OEKO-TEX"
+        ],
         "originCountry": "Japan",
         "carbonFootprint": 8.2,
         "weightKg": 0.22,
@@ -181,12 +286,18 @@
       "metadata": {
         "materialType": "composite",
         "originCountry": "Vietnam",
-        "certifications": ["GOTS", "Carbon Neutral"],
+        "certifications": [
+          "GOTS",
+          "Carbon Neutral"
+        ],
         "sustainabilityScore": 8.5,
         "carbonFootprint": 12.5
       },
       "dataCompleteness": 85,
-      "missingDataFields": ["assembly_energy", "packaging_impact"],
+      "missingDataFields": [
+        "assembly_energy",
+        "packaging_impact"
+      ],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-20T00:00:00Z"
     },
@@ -204,13 +315,18 @@
       "metadata": {
         "materialType": "textile_composite",
         "originCountry": "India",
-        "certifications": ["GOTS"],
+        "certifications": [
+          "GOTS"
+        ],
         "sustainabilityScore": 8.8,
         "carbonFootprint": 4.2,
         "recycledContent": 40
       },
       "dataCompleteness": 88,
-      "missingDataFields": ["dyeing_process", "finishing_chemicals"],
+      "missingDataFields": [
+        "dyeing_process",
+        "finishing_chemicals"
+      ],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -228,12 +344,17 @@
       "metadata": {
         "materialType": "organic_cotton",
         "originCountry": "India",
-        "certifications": ["GOTS", "Fair Trade"],
+        "certifications": [
+          "GOTS",
+          "Fair Trade"
+        ],
         "sustainabilityScore": 9.5,
         "carbonFootprint": 2.1
       },
       "dataCompleteness": 95,
-      "missingDataFields": ["water_footprint"],
+      "missingDataFields": [
+        "water_footprint"
+      ],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
     },
@@ -251,13 +372,18 @@
       "metadata": {
         "materialType": "recycled_polyester",
         "originCountry": "Japan",
-        "certifications": ["GRS"],
+        "certifications": [
+          "GRS"
+        ],
         "sustainabilityScore": 8.2,
         "carbonFootprint": 1.8,
         "recycledContent": 100
       },
       "dataCompleteness": 85,
-      "missingDataFields": ["chemical_additives", "dyeing_process"],
+      "missingDataFields": [
+        "chemical_additives",
+        "dyeing_process"
+      ],
       "createdAt": "2024-02-15T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
     },
@@ -275,7 +401,9 @@
       "metadata": {
         "materialType": "recycled_rubber",
         "originCountry": "Japan",
-        "certifications": ["Environmental Choice"],
+        "certifications": [
+          "Environmental Choice"
+        ],
         "sustainabilityScore": 7.5,
         "carbonFootprint": 6.8,
         "recycledContent": 75
@@ -303,7 +431,9 @@
       "metadata": {
         "materialType": "natural_cork",
         "originCountry": "Portugal",
-        "certifications": ["FSC"],
+        "certifications": [
+          "FSC"
+        ],
         "sustainabilityScore": 9.1,
         "carbonFootprint": 1.2
       },
@@ -331,12 +461,18 @@
       "metadata": {
         "materialType": "organic_cotton",
         "originCountry": "India",
-        "certifications": ["GOTS", "Fair Trade"],
+        "certifications": [
+          "GOTS",
+          "Fair Trade"
+        ],
         "sustainabilityScore": 9.2,
         "carbonFootprint": 5.8
       },
       "dataCompleteness": 92,
-      "missingDataFields": ["packaging_materials", "transport_impact"],
+      "missingDataFields": [
+        "packaging_materials",
+        "transport_impact"
+      ],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-18T00:00:00Z"
     },
@@ -354,12 +490,17 @@
       "metadata": {
         "materialType": "organic_cotton_yarn",
         "originCountry": "India",
-        "certifications": ["GOTS", "Organic India"],
+        "certifications": [
+          "GOTS",
+          "Organic India"
+        ],
         "sustainabilityScore": 9.8,
         "carbonFootprint": 4.2
       },
       "dataCompleteness": 95,
-      "missingDataFields": ["spinning_energy"],
+      "missingDataFields": [
+        "spinning_energy"
+      ],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-15T00:00:00Z"
     },
@@ -377,12 +518,17 @@
       "metadata": {
         "materialType": "natural_dye",
         "originCountry": "India",
-        "certifications": ["Organic"],
+        "certifications": [
+          "Organic"
+        ],
         "sustainabilityScore": 9.5,
         "carbonFootprint": 0.8
       },
       "dataCompleteness": 88,
-      "missingDataFields": ["extraction_method", "mordant_used"],
+      "missingDataFields": [
+        "extraction_method",
+        "mordant_used"
+      ],
       "createdAt": "2024-02-20T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
     }
@@ -392,8 +538,13 @@
       "id": "tr-inc-001",
       "requestingOrganizationId": "org-001",
       "targetOrganizationId": "org-002",
-      "productIds": ["prod-001"],
-      "componentIds": ["comp-002", "comp-003"],
+      "productIds": [
+        "prod-001"
+      ],
+      "componentIds": [
+        "comp-002",
+        "comp-003"
+      ],
       "assessmentTemplateId": "at-001",
       "status": "pending",
       "priority": "high",
@@ -401,7 +552,10 @@
       "message": "We need detailed information about the organic cotton fabric used in our running shoe upper material for our upcoming sustainability report.",
       "cascadeSettings": {
         "enableCascade": true,
-        "targetTiers": ["tier-2", "tier-3"],
+        "targetTiers": [
+          "tier-2",
+          "tier-3"
+        ],
         "cascadeScope": "material-specific",
         "cascadeTiming": "after-response",
         "autoReminder": true
@@ -414,7 +568,10 @@
       "requestingOrganizationId": "org-001",
       "targetOrganizationId": "org-004",
       "productIds": [],
-      "componentIds": ["comp-004", "comp-005"],
+      "componentIds": [
+        "comp-004",
+        "comp-005"
+      ],
       "assessmentTemplateId": "at-002",
       "status": "in_progress",
       "priority": "medium",
@@ -437,7 +594,10 @@
       "requestingOrganizationId": "org-002",
       "targetOrganizationId": "org-003",
       "productIds": [],
-      "componentIds": ["comp-003", "comp-011"],
+      "componentIds": [
+        "comp-003",
+        "comp-011"
+      ],
       "assessmentTemplateId": "at-003",
       "status": "completed",
       "priority": "medium",
@@ -445,7 +605,9 @@
       "message": "We need detailed farming practices and certification documentation for the organic cotton supplied to us.",
       "cascadeSettings": {
         "enableCascade": true,
-        "targetTiers": ["tier-2"],
+        "targetTiers": [
+          "tier-2"
+        ],
         "cascadeScope": "material-specific",
         "cascadeTiming": "immediate",
         "autoReminder": true
@@ -678,12 +840,22 @@
       "description": "Assessment of organic cotton farming practices for Natural Fibers Co",
       "organizationId": "org-003",
       "requestingOrganizationId": "org-001",
-      "productIds": ["prod-002"],
-      "componentIds": ["comp-003", "comp-011"],
+      "productIds": [
+        "prod-002"
+      ],
+      "componentIds": [
+        "comp-003",
+        "comp-011"
+      ],
       "status": "completed",
       "priority": "high",
       "topic": "Material Sourcing",
-      "tags": ["organic", "cotton", "farming", "sustainability"],
+      "tags": [
+        "organic",
+        "cotton",
+        "farming",
+        "sustainability"
+      ],
       "icon": "fa-leaf",
       "topicColor": "green",
       "creator": "Sarah Johnson",
@@ -700,7 +872,9 @@
           "metadata": {
             "confidence": "high",
             "verificationStatus": "verified",
-            "supportingDocuments": ["cert-organic-2024.pdf"]
+            "supportingDocuments": [
+              "cert-organic-2024.pdf"
+            ]
           }
         },
         {
@@ -770,12 +944,22 @@
       "description": "Environmental impact assessment for recycled polyester production",
       "organizationId": "org-004",
       "requestingOrganizationId": "org-001",
-      "productIds": ["prod-001"],
-      "componentIds": ["comp-004", "comp-005"],
+      "productIds": [
+        "prod-001"
+      ],
+      "componentIds": [
+        "comp-004",
+        "comp-005"
+      ],
       "status": "in_progress",
       "priority": "medium",
       "topic": "Environmental Impact",
-      "tags": ["recycled", "polyester", "environmental", "carbon-footprint"],
+      "tags": [
+        "recycled",
+        "polyester",
+        "environmental",
+        "carbon-footprint"
+      ],
       "icon": "fa-recycle",
       "topicColor": "blue",
       "creator": "Michael Chen",
@@ -789,8 +973,14 @@
           "questionText": "What is the source material for recycling?",
           "answer": "Post-consumer plastic bottles (PET) collected from municipal recycling programs across Japan",
           "metadata": {
-            "sourceRegions": ["Tokyo", "Osaka", "Kyoto"],
-            "collectionPartners": ["Japan Recycling Association"],
+            "sourceRegions": [
+              "Tokyo",
+              "Osaka",
+              "Kyoto"
+            ],
+            "collectionPartners": [
+              "Japan Recycling Association"
+            ],
             "verificationStatus": "verified"
           }
         },
@@ -818,7 +1008,10 @@
               "melting",
               "extrusion"
             ],
-            "chemicalsUsed": ["biodegradable_detergent", "eco_catalyst"],
+            "chemicalsUsed": [
+              "biodegradable_detergent",
+              "eco_catalyst"
+            ],
             "facilityLocation": "Osaka, Japan"
           }
         },
@@ -853,12 +1046,20 @@
       "description": "Transparency assessment for supplier verification and traceability",
       "organizationId": "org-002",
       "requestingOrganizationId": "org-001",
-      "productIds": ["prod-001"],
-      "componentIds": ["comp-002"],
+      "productIds": [
+        "prod-001"
+      ],
+      "componentIds": [
+        "comp-002"
+      ],
       "status": "completed",
       "priority": "high",
       "topic": "Transparency",
-      "tags": ["transparency", "traceability", "supplier-verification"],
+      "tags": [
+        "transparency",
+        "traceability",
+        "supplier-verification"
+      ],
       "icon": "fa-search",
       "topicColor": "purple",
       "creator": "Emma Rodriguez",
@@ -885,7 +1086,12 @@
           "metadata": {
             "fileType": "zip",
             "fileSize": "15.2 MB",
-            "documentsIncluded": ["GOTS", "OEKO-TEX", "GRS", "ISO14001"]
+            "documentsIncluded": [
+              "GOTS",
+              "OEKO-TEX",
+              "GRS",
+              "ISO14001"
+            ]
           }
         },
         {
@@ -894,7 +1100,10 @@
           "answer": "India (cotton), Japan (recycled polyester processing)",
           "metadata": {
             "primaryOrigin": "India",
-            "processingCountries": ["India", "Japan"],
+            "processingCountries": [
+              "India",
+              "Japan"
+            ],
             "tradeCompliance": "verified"
           }
         },
@@ -936,12 +1145,21 @@
       "description": "Follow-up assessment for cotton processing compliance verification",
       "organizationId": "org-002",
       "requestingOrganizationId": "org-001",
-      "productIds": ["prod-002"],
-      "componentIds": ["comp-011"],
+      "productIds": [
+        "prod-002"
+      ],
+      "componentIds": [
+        "comp-011"
+      ],
       "status": "pending",
       "priority": "medium",
       "topic": "Compliance",
-      "tags": ["cotton", "processing", "compliance", "GOTS"],
+      "tags": [
+        "cotton",
+        "processing",
+        "compliance",
+        "GOTS"
+      ],
       "icon": "fa-clipboard-check",
       "topicColor": "orange",
       "creator": "James Wilson",
@@ -961,12 +1179,21 @@
       "description": "Detailed carbon footprint analysis for recycled rubber sole manufacturing",
       "organizationId": "org-004",
       "requestingOrganizationId": "org-001",
-      "productIds": ["prod-001"],
-      "componentIds": ["comp-005"],
+      "productIds": [
+        "prod-001"
+      ],
+      "componentIds": [
+        "comp-005"
+      ],
       "status": "draft",
       "priority": "low",
       "topic": "Carbon Footprint",
-      "tags": ["carbon", "recycled-rubber", "environmental", "LCA"],
+      "tags": [
+        "carbon",
+        "recycled-rubber",
+        "environmental",
+        "LCA"
+      ],
       "icon": "fa-chart-line",
       "topicColor": "gray",
       "creator": "Lisa Chang",
@@ -1007,7 +1234,12 @@
         "icon": "Upload",
         "title": "File Upload",
         "description": "Manually upload CSV or Excel files containing your supply chain data.",
-        "tags": ["Manual", "CSV", "Excel", "BOM"],
+        "tags": [
+          "Manual",
+          "CSV",
+          "Excel",
+          "BOM"
+        ],
         "action": "Upload File",
         "onClick": "onNavigateToUpload"
       },
@@ -1015,7 +1247,12 @@
         "icon": "Database",
         "title": "Database Connection",
         "description": "Directly connect to your ERP or database for automated data synchronization.",
-        "tags": ["Automated", "ERP", "API", "Real-time"],
+        "tags": [
+          "Automated",
+          "ERP",
+          "API",
+          "Real-time"
+        ],
         "action": "Connect Database",
         "onClick": ""
       },
@@ -1023,7 +1260,12 @@
         "icon": "Webhook",
         "title": "API & Webhooks",
         "description": "Use our powerful API or configure webhooks for seamless, event-driven integration.",
-        "tags": ["Automated", "Developer", "API", "Custom"],
+        "tags": [
+          "Automated",
+          "Developer",
+          "API",
+          "Custom"
+        ],
         "action": "View API Docs",
         "onClick": ""
       }
@@ -1152,7 +1394,11 @@
       "dataQuality": {
         "completeness": 87,
         "accuracy": 92,
-        "missingFields": ["water_usage", "labor_hours", "transport_emissions"]
+        "missingFields": [
+          "water_usage",
+          "labor_hours",
+          "transport_emissions"
+        ]
       },
       "suggestedActions": [
         "Request water usage data from suppliers",
@@ -1485,6 +1731,42 @@
       "lastUpdated": "2024-03-28T00:00:00Z"
     }
   ],
+  "users": [
+    {
+      "id": "user-admin-001",
+      "email": "dat.pham@nuoa.io",
+      "firstName": "Dat",
+      "lastName": "Pham",
+      "fullName": "Dat Pham",
+      "imageUrl": null,
+      "organizationId": "org-nuoa",
+      "organizationRole": "admin",
+      "isActive": true,
+      "joinedAt": "2024-01-01T00:00:00Z",
+      "lastLoginAt": "2024-07-23T00:00:00Z",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-07-23T00:00:00Z"
+    }
+  ],
+  "organization-members": [
+    {
+      "id": "member-001",
+      "userId": "user-admin-001",
+      "organizationId": "org-nuoa",
+      "role": "admin",
+      "status": "active",
+      "joinedAt": "2024-01-01T00:00:00Z",
+      "permissions": [
+        "admin",
+        "user_management",
+        "organization_settings",
+        "invite_users"
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-07-23T00:00:00Z"
+    }
+  ],
+  "invites": [],
   "processed-documents": [],
   "file-previews": [],
   "key-highlights-data": [],
@@ -1494,13 +1776,13 @@
   "pending-invitations": [
     {
       "id": "inv-001",
-      "email": "new.user@example.com",
+      "email": "phamdat17092004@gmail.com",
       "organizationId": "org-001",
-      "organizationName": "EcoSustain Corp",
+      "organizationName": "Nuoa",
       "organizationRole": "employee",
       "invitedBy": {
         "name": "Jane Doe",
-        "email": "jane.doe@ecosustain.com"
+        "email": "dat.pham@nuoa.io"
       },
       "status": "accepted",
       "token": "a-secure-token-string-1",
@@ -1509,19 +1791,144 @@
       "acceptedAt": "2025-07-17T05:40:01.668Z"
     },
     {
-      "id": "inv-002",
-      "email": "another.user@example.com",
-      "organizationId": "org-002",
-      "organizationName": "GreenTech Materials Ltd",
-      "organizationRole": "admin",
+      "id": "pending-inv-mdflt2e8",
+      "email": "dat.pham@nuoa.io",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
       "invitedBy": {
-        "name": "John Smith",
-        "email": "john.smith@greentech.com"
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
       },
       "status": "pending",
-      "token": "a-secure-token-string-2",
-      "expiresAt": "2024-08-20T00:00:00Z",
-      "createdAt": "2024-07-15T00:00:00Z"
+      "token": "invite-token-mdflt2e8",
+      "expiresAt": "2025-08-22T06:50:01.184Z",
+      "createdAt": "2025-07-23T06:50:01.184Z"
+    },
+    {
+      "id": "inv-nuoa-001",
+      "email": "newuser@example.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-001",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-002",
+      "email": "demo@gmail.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-002",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-003",
+      "email": "test@test.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-003",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-004",
+      "email": "user@company.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-004",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-005",
+      "email": "employee@nuoa.io",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-005",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-manager-001",
+      "email": "manager@nuoa.io",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "admin",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "pending",
+      "token": "nuoa-invite-token-manager-001",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z"
+    },
+    {
+      "id": "inv-nuoa-wildcard",
+      "email": "*@gmail.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "accepted",
+      "token": "nuoa-invite-token-wildcard",
+      "expiresAt": "2025-12-31T23:59:59Z",
+      "createdAt": "2025-07-23T00:00:00Z",
+      "description": "Auto-invitation for all @gmail.com accounts",
+      "acceptedAt": "2025-07-23T07:48:48.955Z",
+      "acceptedBy": "user_2zZsQWcpLHMd4C9sg93rnlu91dI"
+    },
+    {
+      "id": "pending-inv-mdfnzmas",
+      "email": "phamthanhdat17092004@gmail.com",
+      "organizationId": "org-nuoa",
+      "organizationName": "Nuoa.io",
+      "organizationRole": "employee",
+      "invitedBy": {
+        "name": "Dat Pham",
+        "email": "dat.pham@nuoa.io"
+      },
+      "status": "accepted",
+      "token": "invite-token-mdfnzmas",
+      "expiresAt": "2025-08-22T07:51:06.148Z",
+      "createdAt": "2025-07-23T07:51:06.149Z",
+      "acceptedAt": "2025-07-23T07:51:08.182Z",
+      "acceptedBy": "user_30GbonhPVz9iIwAkyVrKDaQgWs4"
     }
   ],
   "document-tables": [

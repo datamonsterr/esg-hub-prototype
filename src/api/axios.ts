@@ -78,8 +78,13 @@ export const endpoints = {
     id: (id: string) => `/users/${id}`,
     profile: "/users/profile",
     updateRole: (id: string) => `/users/${id}/role`,
-    pendingInvitations: "/pending-invitations",
-    acceptInvitation: "/accepted-invitations",
+  },
+  onboard: {
+    accept: (id: string) => `/onboard/accept/${id}`,
+    pendingInvitations: "/onboard/pending-invitations",
+    invite: "/onboard/invite",
+    inviteByEmail: (email: string) =>
+      `/onboard/invite/${encodeURIComponent(email)}`,
   },
   invites: {
     base: "/invites",

@@ -1,62 +1,103 @@
-'use client';
+"use client";
 
-import { PendingInvitation } from '@/src/types/user';
-import useSWR from 'swr';
-import axiosInstance, { endpoints } from './axios';
+import { PendingInvitation } from "@/src/types/user";
+import useSWR from "swr";
+import axiosInstance, { endpoints } from "./axios";
 
 interface AcceptInvitationResponse {
-    organizationId: string;
-    organizationRole: 'admin' | 'employee';
+  organizationId: string;
+  organizationRole: "admin" | "employee";
+  organizationName?: string;
+  message?: string;
+}
+
+interface SendInvitationRequest {
+  email: string;
+  organizationRole?: "admin" | "employee";
+  expiresInDays?: number;
+}
+
+interface SendInvitationResponse {
+  id: string;
+  email: string;
+  organizationName: string;
+  organizationRole: string;
+  expiresAt: string;
+  message: string;
 }
 
 // #region RAW API
 export const getPendingInvitations = async (): Promise<PendingInvitation[]> => {
-    const res = await axiosInstance.get(endpoints.users.pendingInvitations);
-    return res.data;
+  const res = await axiosInstance.get(endpoints.onboard.pendingInvitations);
+  return res.data;
 };
 
-export const acceptInvitation = async (token: string): Promise<AcceptInvitationResponse> => {
-    // In a real app, the backend would validate the token, find the invitation,
-    // associate the user with the organization, and return the new org details.
-    // Here, we'll find the mock invitation and return its details.
-    const { data: invitations } = await axiosInstance.get<PendingInvitation[]>(endpoints.users.pendingInvitations);
-    const invitation = invitations.find(inv => inv.token === token);
+export const acceptInvitation = async (
+  invitationId: string
+): Promise<AcceptInvitationResponse> => {
+  const response = await axiosInstance.post(
+    endpoints.onboard.accept(invitationId)
+  );
+  return response.data;
+};
 
-    if (!invitation) {
-        throw new Error("Invitation not found");
+export const sendInvitation = async (
+  invitationData: SendInvitationRequest
+): Promise<SendInvitationResponse> => {
+  const response = await axiosInstance.post(
+    endpoints.onboard.inviteByEmail(invitationData.email),
+    {
+      organizationRole: invitationData.organizationRole,
+      expiresInDays: invitationData.expiresInDays,
     }
-    
-    // This is a mock response. The backend would handle the logic.
-    // Instead of POSTing to a new collection, we'll PATCH the existing invitation.
-    await axiosInstance.patch(`${endpoints.users.pendingInvitations}/${invitation.id}`, { status: 'accepted', acceptedAt: new Date().toISOString() });
+  );
+  return response.data;
+};
 
-    return {
-        organizationId: invitation.organizationId,
-        organizationRole: invitation.organizationRole,
-    };
+export const getInvitationsByEmail = async (
+  email: string
+): Promise<PendingInvitation[]> => {
+  const res = await axiosInstance.get(endpoints.onboard.inviteByEmail(email));
+  return res.data;
+};
+
+export const revokeInvitation = async (
+  email: string
+): Promise<{ message: string }> => {
+  const res = await axiosInstance.delete(
+    endpoints.onboard.inviteByEmail(email)
+  );
+  return res.data;
+};
+
+export const getOrganizationInvitations = async (): Promise<
+  PendingInvitation[]
+> => {
+  const res = await axiosInstance.get(endpoints.onboard.invite);
+  return res.data;
 };
 // #endregion
 
 // #region SWR
 export function useGetPendingInvitations() {
-    const { data, error, isLoading, mutate } = useSWR<PendingInvitation[]>(
-        endpoints.users.pendingInvitations,
-        getPendingInvitations
-    );
+  const { data, error, isLoading, mutate } = useSWR<PendingInvitation[]>(
+    endpoints.onboard.pendingInvitations,
+    getPendingInvitations
+  );
 
-    return {
-        invitations: data,
-        isLoading,
-        isError: error,
-        mutate,
-    };
+  return {
+    invitations: data,
+    isLoading,
+    isError: error,
+    mutate,
+  };
 }
 
 export function useAcceptInvitation() {
-    const acceptInvite = async (token: string) => {
-        return await acceptInvitation(token);
-    };
+  const acceptInvite = async (invitationId: string) => {
+    return await acceptInvitation(invitationId);
+  };
 
-    return { acceptInvitation: acceptInvite };
+  return { acceptInvitation: acceptInvite };
 }
 // #endregion

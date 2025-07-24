@@ -67,7 +67,7 @@ export function ProductList({
   const [sortField, setSortField] = useState<SortField>('name')
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
 
-  const organizationId = user?.unsafeMetadata?.organizationId as string
+  const organizationId = user?.publicMetadata?.organizationId as string
 
   const { products, isLoading, isError, mutate } = useGetProducts({
     organizationId,

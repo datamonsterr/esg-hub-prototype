@@ -6,6 +6,7 @@ import { ModalProvider } from '@/src/context/modal/modal-provider';
 import { Navbar } from '@/src/components/navbar';
 import GlobalBreadcrumb from '@/src/app/_GlobalBreadcrumb';
 import { Toaster } from '@/src/components/ui/sonner';
+import { ConditionalOrganizationGuard } from '@/src/components/conditional-organization-guard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,11 +34,13 @@ export default function RootLayout({
         </head>
         <body className={inter.className}>
           <ModalProvider>
-            <Navbar />
-            <GlobalBreadcrumb />
-            <main className="h-full max-w-[1200px] mx-auto px-4">
-              {children}
-            </main>
+            <ConditionalOrganizationGuard>
+              <Navbar />
+              <GlobalBreadcrumb />
+              <main className="h-full max-w-[1200px] mx-auto px-4">
+                {children}
+              </main>
+            </ConditionalOrganizationGuard>
             <Toaster />
           </ModalProvider>
         </body>

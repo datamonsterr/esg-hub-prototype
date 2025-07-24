@@ -15,7 +15,7 @@ export default function SupplierTraceabilityLayout({
   useEffect(() => {
     if (isLoaded && user) {
       // Check if user belongs to an organization
-      const organizationId = user.publicMetadata?.organizationId;
+      const organizationId = user.unsafeMetadata?.organizationId;
 
       if (!organizationId) {
         // Redirect users without organization to onboarding
@@ -35,7 +35,7 @@ export default function SupplierTraceabilityLayout({
   }
 
   // Don't render content if user is not part of an organization
-  if (user && !user.publicMetadata?.organizationId) {
+  if (user && !user.unsafeMetadata?.organizationId) {
     return null;
   }
 

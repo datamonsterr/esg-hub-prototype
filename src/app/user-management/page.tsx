@@ -36,8 +36,8 @@ export default function UserManagementPage() {
   const [inviteRole, setInviteRole] = useState<"admin" | "employee">("employee")
   const [isLoading, setIsLoading] = useState(false)
 
-  const organizationId = user?.publicMetadata?.organizationId as string
-  const organizationRole = user?.publicMetadata?.organizationRole as "admin" | "employee"
+  const organizationId = user?.unsafeMetadata?.organizationId as string
+  const organizationRole = user?.unsafeMetadata?.organizationRole as "admin" | "employee"
 
   const { data: members, mutate: mutateMembers } = useGetOrganizationMembers(organizationId)
   const { data: invites, mutate: mutateInvites } = useGetOrganizationInvites(organizationId)

@@ -9,7 +9,7 @@ export default function OrganizationRootPage() {
     const router = useRouter();
 
     useEffect(() => {
-        const organizationId = user?.publicMetadata?.organizationId as string;
+        const organizationId = user?.unsafeMetadata?.organizationId as string;
         if (organizationId) {
             router.replace(`/organization/${organizationId}`);
         }

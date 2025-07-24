@@ -19,8 +19,8 @@ export default function AdminPage() {
     const [showInviteDialog, setShowInviteDialog] = useState(false);
 
     // Get user role from metadata
-    const userRole = user?.publicMetadata?.organizationRole as "admin" | "employee";
-    const organizationId = user?.publicMetadata?.organizationId as string;
+    const userRole = user?.unsafeMetadata?.organizationRole as "admin" | "employee";
+    const organizationId = user?.unsafeMetadata?.organizationId as string;
 
     // Check if user is admin
     const isAdmin = userRole === "admin";

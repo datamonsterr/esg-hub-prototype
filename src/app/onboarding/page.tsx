@@ -23,7 +23,7 @@ export default function OnboardingPage() {
     useEffect(() => {
         if (isLoaded && user) {
             // Check if user already has organization assignment
-            const userOrgId = user.publicMetadata?.organizationId as string;
+            const userOrgId = user.unsafeMetadata?.organizationId as string;
             const userEmail = user.emailAddresses?.[0]?.emailAddress;
 
             if (userOrgId) {

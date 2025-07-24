@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     // Verify the user is an admin
     const clerk = await clerkClient();
     const user = await clerk.users.getUser(userId);
-    const userMetadata = user.publicMetadata || {};
+    const userMetadata = user.unsafeMetadata || {};
 
     if (userMetadata.organizationRole !== "admin") {
       return createErrorResponse(

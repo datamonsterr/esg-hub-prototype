@@ -26,7 +26,7 @@ export function OrganizationGuard({
     useEffect(() => {
         const handleAutoAssignment = async () => {
             if (isLoaded && !isOrgLoading) {
-                const userOrgId = user?.publicMetadata?.organizationId as string;
+                const userOrgId = user?.unsafeMetadata?.organizationId as string;
                 const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
                 console.log("Organization Guard - User email:", userEmail);
@@ -50,9 +50,9 @@ export function OrganizationGuard({
                         });
 
                         // Then update Clerk metadata
-                        await user?.updateUserMetadata({
-                            publicMetadata: {
-                                ...user.publicMetadata,
+                        await user?.update({
+                            unsafeMetadata: {
+                                ...user.unsafeMetadata,
                                 organizationId: "org-nuoa",
                                 organizationRole: "admin"
                             }
@@ -88,7 +88,7 @@ export function OrganizationGuard({
     }
 
     // If organization is required but user doesn't have one
-    const userOrgId = user?.publicMetadata?.organizationId as string;
+    const userOrgId = user?.unsafeMetadata?.organizationId as string;
     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
     // Show special auto-assignment message for dat.pham@nuoa.io during processing

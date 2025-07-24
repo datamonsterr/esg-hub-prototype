@@ -140,7 +140,7 @@ export const useGetUserProfile = () => {
 
 export const useGetUserOrg = () => {
   const { user } = useUser();
-  const organizationId = user?.publicMetadata?.organizationId as string;
+  const organizationId = user?.unsafeMetadata?.organizationId as string;
   const { data, error, isLoading, mutate } = useSWR(
     organizationId ? `/organizations/${organizationId}` : null,
     () => getOrganizationById(organizationId)

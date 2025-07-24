@@ -23,7 +23,7 @@ export function Navbar() {
   const { notifications } = useGetNotifications();
 
   // Check if user is admin
-  const isAdmin = user?.publicMetadata?.organizationRole === "admin";
+  const isAdmin = user?.unsafeMetadata?.organizationRole === "admin";
 
   const navItems = [
     { href: "/management", label: "Management", match: "/management" },

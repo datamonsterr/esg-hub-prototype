@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
     try {
       const clerk = await clerkClient();
       const user = await clerk.users.getUser(userId);
-      const currentMetadata = user.publicMetadata || {};
+      const currentMetadata = user.unsafeMetadata || {};
 
       // Add organization info to user metadata
       const updatedMetadata = {
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       };
 
       await clerk.users.updateUserMetadata(userId, {
-        publicMetadata: updatedMetadata,
+        unsafeMetadata: updatedMetadata,
       });
     } catch (clerkError) {
       console.error("Error updating Clerk metadata:", clerkError);

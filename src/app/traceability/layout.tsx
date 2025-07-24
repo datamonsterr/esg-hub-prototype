@@ -11,7 +11,7 @@ export default function TraceabilityLayout({ children }: { children: ReactNode }
 
   useEffect(() => {
     if (isLoaded && user) {
-      const organizationId = user.publicMetadata.organizationId as string
+      const organizationId = user.unsafeMetadata.organizationId as string
 
       // Check if user belongs to an organization
       if (!organizationId) {
@@ -36,7 +36,7 @@ export default function TraceabilityLayout({ children }: { children: ReactNode }
     return null
   }
 
-  const organizationId = user.publicMetadata.organizationId as string
+  const organizationId = user.unsafeMetadata.organizationId as string
 
   // Redirect if not part of an organization
   if (!organizationId) {

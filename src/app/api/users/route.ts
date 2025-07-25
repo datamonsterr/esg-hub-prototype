@@ -1,25 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
-  writeDbData,
   createErrorResponse,
   createSuccessResponse,
-  addTimestamps,
-  generateId,
+  getCurrentUserContext,
   processQueryParams,
-} from "@/src/lib/api-utils";
-import { UserProfile } from "@/src/types/user";
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addCreateTimestamps,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
+    const searchParams = request.nextUrl.searchParams;
 
-    if (!db.users) {
-      db.users = [];
+    // Only allow admins to list all users, otherwise only return current user
+    let query = supabaseAdmin
+      .from('users')
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email
+        )
+      `);
+
+    // If not admin, only show users from same organization
+    if (userContext.organizationRole !== 'admin') {
+      query = query.eq('organization_id', userContext.organizationId);
     }
 
-    const users = processQueryParams(db.users, searchParams);
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['organization_role', 'is_active'];
+    query = processQueryParams(query, searchParams, allowedFilters);
+
+    const { data: users, error } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
     return createSuccessResponse(users);
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -29,31 +56,51 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const userContext = await getCurrentUserContext();
+    
+    // Only admins can create users
+    if (userContext.organizationRole !== 'admin') {
+      return createErrorResponse("Access denied: Admin role required", 403);
+    }
+
     const userData = await request.json();
-    const db = await getDbData();
 
-    if (!db.users) {
-      db.users = [];
+    // Validate required fields
+    validateRequiredFields(userData, ['id', 'organization_id']);
+
+    // Set default values
+    if (!userData.organization_role) {
+      userData.organization_role = 'employee';
+    }
+    if (userData.is_active === undefined) {
+      userData.is_active = true;
     }
 
-    // Check if user already exists
-    const existingUser = db.users.find(
-      (user: UserProfile) => user.email === userData.email
-    );
-    if (existingUser) {
-      return createErrorResponse("User already exists", 409);
+    // Sanitize data
+    const userToCreate = sanitizeData(userData);
+
+    const { data: user, error } = await supabaseAdmin
+      .from('users')
+      .insert(userToCreate)
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    const newUser: UserProfile = addTimestamps({
-      id: generateId("user"),
-      ...userData,
-      isActive: userData.isActive ?? true,
-    });
-
-    db.users.push(newUser);
-    await writeDbData(db);
-
-    return createSuccessResponse(newUser, 201);
+    return createSuccessResponse(user, 201);
   } catch (error) {
     console.error("Error creating user:", error);
     return createErrorResponse("Failed to create user");

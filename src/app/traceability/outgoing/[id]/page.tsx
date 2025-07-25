@@ -139,11 +139,14 @@ export default function TraceabilityRequestDetailPage() {
               Due Date
             </label>
             <span className="text-gray-900">
-              {new Date(request.dueDate).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}
+              {
+                request.dueDate ?
+                  new Date(request.dueDate).toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }) :
+                  'No due date set'}
             </span>
           </div>
           <div>
@@ -152,7 +155,7 @@ export default function TraceabilityRequestDetailPage() {
             </label>
             <div className="flex items-center space-x-2">
               <span className="text-gray-900">
-                {request.assessmentTemplate.title}
+                {request.assessmentId}
               </span>
               <Button variant="ghost" size="sm">
                 <Eye className="h-4 w-4" />
@@ -257,12 +260,12 @@ export default function TraceabilityRequestDetailPage() {
                   <span className="text-xs text-gray-500">
                     {response.submittedAt
                       ? `Responded on ${new Date(
-                          response.submittedAt
-                        ).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}`
+                        response.submittedAt
+                      ).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}`
                       : 'No response yet'}
                   </span>
                 </div>

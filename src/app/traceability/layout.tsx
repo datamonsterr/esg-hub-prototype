@@ -4,25 +4,25 @@ import type { ReactNode } from "react"
 import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { useUserContext } from "@/src/hooks/useUserContext"
 
 export default function TraceabilityLayout({ children }: { children: ReactNode }) {
   const { user, isLoaded } = useUser()
+  const { organizationId, isLoading } = useUserContext()
   const router = useRouter()
 
   useEffect(() => {
-    if (isLoaded && user) {
-      const organizationId = user.unsafeMetadata.organizationId as string
-
+    if (isLoaded && !isLoading && user) {
       // Check if user belongs to an organization
       if (!organizationId) {
         router.replace("/onboarding")
         return
       }
     }
-  }, [isLoaded, user, router])
+  }, [isLoaded, isLoading, organizationId, user, router])
 
   // Show loading while checking auth
-  if (!isLoaded) {
+  if (!isLoaded || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -35,8 +35,6 @@ export default function TraceabilityLayout({ children }: { children: ReactNode }
     router.replace("/sign-in")
     return null
   }
-
-  const organizationId = user.unsafeMetadata.organizationId as string
 
   // Redirect if not part of an organization
   if (!organizationId) {

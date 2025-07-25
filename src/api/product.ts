@@ -2,7 +2,7 @@
 
 import useSWR from 'swr';
 import { CreateProductRequest, Product } from '@/src/types/product';
-import axiosInstance from './axios';
+import axiosInstance, { endpoints } from './axios';
 
 // #region RAW API
 export const getProducts = async (params?: {
@@ -10,12 +10,12 @@ export const getProducts = async (params?: {
   category?: string;
   search?: string;
 }): Promise<Product[]> => {
-  const res = await axiosInstance.get('/products', { params });
+  const res = await axiosInstance.get(endpoints.products.base, { params });
   return res.data;
 };
 
 export const getProductById = async (id: string): Promise<Product> => {
-  const res = await axiosInstance.get(`/products/${id}`);
+  const res = await axiosInstance.get(endpoints.products.id(id));
   return res.data;
 };
 
@@ -23,17 +23,17 @@ export const createProduct = async (data: CreateProductRequest): Promise<Product
   if (!data.organizationId) {
     throw new Error('organizationId is required to create a product');
   }
-  const res = await axiosInstance.post('/products', data);
+  const res = await axiosInstance.post(endpoints.products.base, data);
   return res.data;
 };
 
 export const updateProduct = async (id: string, data: Partial<Product>): Promise<Product> => {
-  const res = await axiosInstance.put(`/products/${id}`, data);
+  const res = await axiosInstance.put(endpoints.products.id(id), data);
   return res.data;
 };
 
 export const deleteProduct = async (id: string): Promise<void> => {
-  await axiosInstance.delete(`/products/${id}`);
+  await axiosInstance.delete(endpoints.products.id(id));
 };
 
 export const getProductsWithComponent = async (params?: {
@@ -41,8 +41,8 @@ export const getProductsWithComponent = async (params?: {
   category?: string;
   search?: string;
 }): Promise<Product[]> => {
-  const { data: products } = await axiosInstance.get('/products', { params });
-  const { data: components } = await axiosInstance.get('/components', { params });
+  const { data: products } = await axiosInstance.get(endpoints.products.base, { params });
+  const { data: components } = await axiosInstance.get(endpoints.components.base, { params });
 
   const componentMap = components.reduce((acc: any, component: any) => {
     acc[component.id] = { ...component, children: [] };
@@ -72,13 +72,13 @@ export const attachDocumentToProduct = async (
   productId: string,
   documentId: string
 ): Promise<Product> => {
-  const res = await axiosInstance.post(`/products/${productId}/documents`, { documentId });
+  const res = await axiosInstance.post(`${endpoints.products.id(productId)}/documents`, { documentId });
   return res.data;
 };
 
 // --- NEW: Get unique material codes from components ---
 export const getMaterialCodes = async (): Promise<{ id: string; code: string; name: string }[]> => {
-  const { data: components } = await axiosInstance.get('/components');
+  const { data: components } = await axiosInstance.get(endpoints.components.base);
   // Extract unique material codes from components
   const seen = new Set();
   const codes: { id: string; code: string; name: string }[] = [];
@@ -100,13 +100,13 @@ export const getSuppliers = async (organizationId?: string): Promise<{ id: strin
   const allComponentIds = products.map(p => p.componentTreeId).filter(Boolean);
   let allComponents: any[] = [];
   for (const compId of allComponentIds) {
-    const { data: components } = await axiosInstance.get(`/components?parentId=${compId}`);
+    const { data: components } = await axiosInstance.get(`${endpoints.components.base}?parentId=${compId}`);
     allComponents = allComponents.concat(components);
   }
   // Extract unique supplier org IDs from components
   const supplierOrgIds = Array.from(new Set(allComponents.map(c => c.supplierOrganizationId).filter(Boolean)));
   // Get all organizations (mocked from /organizations)
-  const { data: orgs } = await axiosInstance.get('/organizations');
+  const { data: orgs } = await axiosInstance.get(endpoints.organizations.base);
   // Map supplier org IDs to org info
   const suppliers = supplierOrgIds.map((id: string) => {
     const org = orgs.find((o: any) => o.id === id);

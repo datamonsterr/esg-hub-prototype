@@ -10,9 +10,11 @@ import { Building2, CheckCircle, Clock, Mail } from "lucide-react";
 import { acceptInvitation } from "@/src/api/onboarding";
 import { PendingInvitation } from "@/src/types/user";
 import { useToast } from "@/src/hooks/use-toast";
+import { useUserContext } from "@/src/hooks/useUserContext";
 
 export default function OnboardingPage() {
     const { user, isLoaded } = useUser();
+    const { organizationId, isLoading: userContextLoading } = useUserContext();
     const router = useRouter();
     const { showSuccessToast, showErrorToast } = useToast();
 
@@ -21,12 +23,11 @@ export default function OnboardingPage() {
     const [acceptingId, setAcceptingId] = useState<string | null>(null);
 
     useEffect(() => {
-        if (isLoaded && user) {
+        if (isLoaded && !userContextLoading && user) {
             // Check if user already has organization assignment
-            const userOrgId = user.unsafeMetadata?.organizationId as string;
             const userEmail = user.emailAddresses?.[0]?.emailAddress;
 
-            if (userOrgId) {
+            if (organizationId) {
                 // User is already assigned to an organization, redirect to home
                 router.push('/');
                 return;
@@ -176,11 +177,11 @@ export default function OnboardingPage() {
 
                                         <div className="flex gap-3">
                                             <Button
-                                                onClick={() => handleAcceptInvitation(invitation.id)}
-                                                disabled={acceptingId === invitation.id}
+                                                onClick={() => handleAcceptInvitation(invitation.id.toString())}
+                                                disabled={acceptingId === invitation.id.toString()}
                                                 className="flex items-center gap-2"
                                             >
-                                                {acceptingId === invitation.id ? (
+                                                {acceptingId === invitation.id.toString() ? (
                                                     <>
                                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                                                         Accepting...

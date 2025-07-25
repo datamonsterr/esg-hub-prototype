@@ -3,13 +3,13 @@ import { Product, Component, ComponentNode } from "./product";
 export type UserRole = "brand" | "supplier" | "admin";
 
 export interface UserProfile {
-  id: string;
+  id: string; // Clerk user ID
   email: string;
   firstName?: string;
   lastName?: string;
   fullName?: string;
   imageUrl?: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   organizationRole: "admin" | "employee";
   isActive: boolean;
   invitedAt?: string;
@@ -22,7 +22,7 @@ export interface UserProfile {
 export interface OrganizationMember {
   id: string;
   userId: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   role: "admin" | "employee";
   status: "active" | "pending" | "suspended";
   invitedBy?: string;
@@ -34,11 +34,11 @@ export interface OrganizationMember {
 }
 
 export interface InviteRequest {
-  id: string;
+  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
   email: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   organizationRole: "admin" | "employee";
-  invitedBy: string;
+  invitedBy: string; // Clerk user ID
   status: "pending" | "sent" | "accepted" | "expired";
   token: string;
   expiresAt: string;
@@ -46,9 +46,9 @@ export interface InviteRequest {
 }
 
 export interface PendingInvitation {
-  id: string;
+  id: number; // Changed to number to match schema
   email: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   organizationName: string;
   organizationRole: "admin" | "employee";
   invitedBy: {
@@ -68,23 +68,23 @@ export interface AuthUser {
   lastName?: string;
   fullName?: string;
   imageUrl?: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   organizationRole: "admin" | "employee";
   organization: Organization;
   permissions: string[];
 }
 
 export interface Organization {
-  id: string;
+  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
   name: string;
-  type: string; // "manufacturer", "supplier", "brand", etc.
-  address: string;
-  contactEmail: string;
-  capabilities: string[]; // ["manufacturing", "sourcing", "testing"]
-  certifications: string[];
-  verificationStatus: "verified" | "pending" | "unverified";
+  type?: string; // Made optional since not in schema
+  address?: string; // Made optional to match schema
+  contactEmail?: string; // Renamed from email and made optional
+  capabilities?: string[]; // Made optional since not in schema
+  certifications?: string[]; // Made optional since not in schema
+  verificationStatus?: "verified" | "pending" | "unverified"; // Made optional since not in schema
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string; // Made optional since not in schema
 }
 
 
@@ -159,7 +159,7 @@ export interface AuthUser {
   id: string;
   email: string;
   name: string;
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   organization: Organization;
   permissions: string[];
 }

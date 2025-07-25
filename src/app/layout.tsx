@@ -34,13 +34,11 @@ export default function RootLayout({
         </head>
         <body className={inter.className}>
           <ModalProvider>
-            <ConditionalOrganizationGuard>
               <Navbar />
               <GlobalBreadcrumb />
               <main className="h-full max-w-[1200px] mx-auto px-4">
                 {children}
               </main>
-            </ConditionalOrganizationGuard>
             <Toaster />
           </ModalProvider>
         </body>

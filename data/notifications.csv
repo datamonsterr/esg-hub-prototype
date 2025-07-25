@@ -1,0 +1,7 @@
+id,organization_id,type,title,message,is_read,priority,action_url,created_at
+1,1,"traceability_request","New Traceability Request","You have received a new traceability request from EcoFashion Brands for Environmental Impact Assessment",false,"high","/traceability/requests/1","2024-07-24 10:30:00+00"
+2,2,"assessment_response","Assessment Response Submitted","Your environmental impact assessment response has been submitted successfully",true,"medium","/assessments/responses/1","2024-07-22 09:15:00+00"
+3,3,"supplier_verification","Supplier Verification Complete","GreenTech Suppliers has completed verification for your supply chain transparency request",true,"medium","/suppliers/verification","2024-07-25 08:45:00+00"
+4,4,"data_integration","Document Processing Complete","Your uploaded sustainability report has been processed and data extracted",false,"low","/integration/documents/1","2024-07-23 16:20:00+00"
+5,5,"system_update","System Maintenance Scheduled","Scheduled maintenance on July 28th from 2-4 AM UTC",false,"low","/system/maintenance","2024-07-25 12:00:00+00"
+6,1,"invite_accepted","Team Member Joined","Tom Wilson has accepted your invitation and joined the team",false,"medium","/team/members","2024-07-25 10:45:00+00"

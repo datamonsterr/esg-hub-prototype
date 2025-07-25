@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
-  writeDbData,
   createErrorResponse,
   createSuccessResponse,
-  addTimestamps,
-} from "@/src/lib/api-utils";
+  getCurrentUserContext,
+  checkOrganizationAccess,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addUpdateTimestamp,
+} from "@/src/lib/supabase-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -14,76 +18,195 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
 
-    // In db.json, supplier assessments are stored as 'assessments'
-    const assessment = db.assessments?.find(
-      (assessment: any) => assessment.id === id
-    );
+    const { data: assessment, error } = await supabaseAdmin
+      .from('assessments')
+      .select(`
+        id,
+        template_id,
+        organization_id,
+        requesting_organization_id,
+        title,
+        description,
+        topic,
+        status,
+        priority,
+        product_ids,
+        created_by,
+        due_date,
+        completed_at,
+        data_completeness,
+        created_at,
+        updated_at,
+        assessment_templates:template_id (
+          id,
+          title,
+          description,
+          icon,
+          tags,
+          schema
+        ),
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email
+        ),
+        requesting_organizations:requesting_organization_id (
+          id,
+          name
+        )
+      `)
+      .eq('id', parseInt(id))
+      .single();
 
-    if (!assessment) {
-      return createErrorResponse("Supplier assessment not found", 404);
+    if (error && error.code === 'PGRST116') {
+      return createErrorResponse("Assessment not found", 404);
+    }
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    // Check if user has access to this assessment
+    if (assessment.organization_id !== userContext.organizationId && 
+        assessment.requesting_organization_id !== userContext.organizationId) {
+      return createErrorResponse("Access denied", 403);
     }
 
     return createSuccessResponse(assessment);
   } catch (error) {
-    console.error("Error fetching supplier assessment:", error);
-    return createErrorResponse("Failed to fetch supplier assessment");
+    console.error("Error fetching assessment:", error);
+    return createErrorResponse("Failed to fetch assessment");
   }
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const updatedData = await request.json();
 
-    const assessmentIndex = db.assessments?.findIndex(
-      (assessment: any) => assessment.id === id
-    );
+    // First, get the assessment to check ownership
+    const { data: existingAssessment, error: fetchError } = await supabaseAdmin
+      .from('assessments')
+      .select('id, organization_id, requesting_organization_id')
+      .eq('id', parseInt(id))
+      .single();
 
-    if (assessmentIndex === -1 || assessmentIndex === undefined) {
-      return createErrorResponse("Supplier assessment not found", 404);
+    if (fetchError && fetchError.code === 'PGRST116') {
+      return createErrorResponse("Assessment not found", 404);
     }
 
-    // Update the assessment while preserving original data
-    db.assessments[assessmentIndex] = addTimestamps({
-      ...db.assessments[assessmentIndex],
-      ...updatedData,
-      id, // Ensure ID doesn't change
-    });
+    if (fetchError) {
+      return handleDatabaseError(fetchError);
+    }
 
-    await writeDbData(db);
+    // Check if user has access to update this assessment
+    if (existingAssessment.organization_id !== userContext.organizationId && 
+        existingAssessment.requesting_organization_id !== userContext.organizationId) {
+      return createErrorResponse("Access denied", 403);
+    }
 
-    return createSuccessResponse(db.assessments[assessmentIndex]);
+    // Remove fields that shouldn't be updated directly
+    const { id: _, created_at, created_by, organization_id, ...updateData } = updatedData;
+
+    // Sanitize and add update timestamp
+    const assessmentToUpdate = addUpdateTimestamp(sanitizeData(updateData));
+
+    const { data: assessment, error } = await supabaseAdmin
+      .from('assessments')
+      .update(assessmentToUpdate)
+      .eq('id', parseInt(id))
+      .select(`
+        id,
+        template_id,
+        organization_id,
+        requesting_organization_id,
+        title,
+        description,
+        topic,
+        status,
+        priority,
+        product_ids,
+        created_by,
+        due_date,
+        completed_at,
+        data_completeness,
+        created_at,
+        updated_at,
+        assessment_templates:template_id (
+          id,
+          title,
+          description,
+          icon,
+          tags
+        ),
+        organizations:organization_id (
+          id,
+          name
+        ),
+        requesting_organizations:requesting_organization_id (
+          id,
+          name
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(assessment);
   } catch (error) {
-    console.error("Error updating supplier assessment:", error);
-    return createErrorResponse("Failed to update supplier assessment");
+    console.error("Error updating assessment:", error);
+    return createErrorResponse("Failed to update assessment");
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
 
-    const assessmentIndex = db.assessments?.findIndex(
-      (assessment: any) => assessment.id === id
-    );
+    // First, get the assessment to check ownership
+    const { data: existingAssessment, error: fetchError } = await supabaseAdmin
+      .from('assessments')
+      .select('id, organization_id, created_by')
+      .eq('id', parseInt(id))
+      .single();
 
-    if (assessmentIndex === -1 || assessmentIndex === undefined) {
-      return createErrorResponse("Supplier assessment not found", 404);
+    if (fetchError && fetchError.code === 'PGRST116') {
+      return createErrorResponse("Assessment not found", 404);
     }
 
-    const deletedAssessment = db.assessments.splice(assessmentIndex, 1)[0];
-    await writeDbData(db);
+    if (fetchError) {
+      return handleDatabaseError(fetchError);
+    }
+
+    // Check if user has access to delete this assessment
+    // Only assessment creator or org admin can delete
+    if (existingAssessment.organization_id !== userContext.organizationId || 
+        (existingAssessment.created_by !== userContext.userId && userContext.organizationRole !== 'admin')) {
+      return createErrorResponse("Access denied", 403);
+    }
+
+    const { error } = await supabaseAdmin
+      .from('assessments')
+      .delete()
+      .eq('id', parseInt(id));
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
 
     return createSuccessResponse({
-      message: "Supplier assessment deleted successfully",
-      assessment: deletedAssessment,
+      message: "Assessment deleted successfully",
+      id: parseInt(id),
     });
   } catch (error) {
-    console.error("Error deleting supplier assessment:", error);
-    return createErrorResponse("Failed to delete supplier assessment");
+    console.error("Error deleting assessment:", error);
+    return createErrorResponse("Failed to delete assessment");
   }
 }

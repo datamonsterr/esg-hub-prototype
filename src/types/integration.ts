@@ -20,11 +20,30 @@ export interface DataIntegrationsData {
   }
   
   export interface IntegrationActivity {
-    id: string;
+    id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+    organizationId: number; // Added to match schema
     title: string;
-    subtitle: string;
+    subtitle?: string | null; // Made nullable to match schema
     status: 'success' | 'processing' | 'completed' | 'failed';
     createdAt: string;
+  }
+
+  export interface FileUpload {
+    id: number; // SERIAL PRIMARY KEY
+    organizationId: number;
+    originalFilename: string;
+    storedFilename: string;
+    filePath: string;
+    fileSize: number;
+    mimeType?: string | null;
+    description?: string | null;
+    uploadStatus: string; // "uploaded", "processing", "processed", "failed"
+    processingStatus: string; // "pending", "processing", "completed", "failed"
+    extractedData: any; // JSONB
+    metadata: any; // JSONB
+    uploadedBy?: string | null; // Clerk user ID
+    createdAt: string;
+    updatedAt: string;
   }
 
   export interface ProcessedDocument {

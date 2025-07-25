@@ -22,7 +22,7 @@ import { useToast } from "@/src/hooks/use-toast";
 import axiosInstance from "@/src/api/axios";
 
 interface OrganizationSettingsProps {
-    organizationId: string;
+    organizationId: number;
 }
 
 interface SettingsData {

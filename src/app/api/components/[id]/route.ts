@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-
-const dbPath = path.join(process.cwd(), "data/db.json");
-
-async function getDbData() {
-  const data = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeDbData(data: any) {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
+import { supabaseAdmin } from "@/src/lib/supabase";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  getCurrentUserContext,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addUpdateTimestamp,
+} from "@/src/lib/supabase-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -20,92 +17,107 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const componentId = parseInt(id);
 
-    const component = db.components?.find((comp: any) => comp.id === id);
-
-    if (!component) {
-      return NextResponse.json(
-        { error: "Component not found" },
-        { status: 404 }
-      );
+    if (isNaN(componentId)) {
+      return createErrorResponse("Invalid component ID", 400);
     }
 
-    return NextResponse.json(component);
+    const userContext = await getCurrentUserContext();
+
+    // Components are stored in products table with type != 'final_product'
+    const { data: component, error } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('id', componentId)
+      .eq('organization_id', userContext.organizationId)
+      .neq('type', 'final_product')
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return createErrorResponse("Component not found", 404);
+      }
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(component);
   } catch (error) {
     console.error("Error fetching component:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch component" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to fetch component");
   }
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
-    const updatedData = await request.json();
+    const componentId = parseInt(id);
 
-    const componentIndex = db.components?.findIndex(
-      (comp: any) => comp.id === id
-    );
-
-    if (componentIndex === -1 || componentIndex === undefined) {
-      return NextResponse.json(
-        { error: "Component not found" },
-        { status: 404 }
-      );
+    if (isNaN(componentId)) {
+      return createErrorResponse("Invalid component ID", 400);
     }
 
-    // Update the component while preserving original data
-    db.components[componentIndex] = {
-      ...db.components[componentIndex],
-      ...updatedData,
-      id, // Ensure ID doesn't change
-      updatedAt: new Date().toISOString(),
-    };
+    const userContext = await getCurrentUserContext();
+    const updatedData = await request.json();
 
-    await writeDbData(db);
+    // Don't allow changing organization_id or making it a final product
+    delete updatedData.organization_id;
+    delete updatedData.id;
+    if (updatedData.type === 'final_product') {
+      updatedData.type = 'component';
+    }
 
-    return NextResponse.json(db.components[componentIndex]);
+    // Sanitize and add update timestamp
+    const componentData = addUpdateTimestamp(sanitizeData(updatedData));
+
+    const { data: component, error } = await supabaseAdmin
+      .from('products')
+      .update(componentData)
+      .eq('id', componentId)
+      .eq('organization_id', userContext.organizationId)
+      .neq('type', 'final_product')
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return createErrorResponse("Component not found", 404);
+      }
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(component);
   } catch (error) {
     console.error("Error updating component:", error);
-    return NextResponse.json(
-      { error: "Failed to update component" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to update component");
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const componentId = parseInt(id);
 
-    const componentIndex = db.components?.findIndex(
-      (comp: any) => comp.id === id
-    );
-
-    if (componentIndex === -1 || componentIndex === undefined) {
-      return NextResponse.json(
-        { error: "Component not found" },
-        { status: 404 }
-      );
+    if (isNaN(componentId)) {
+      return createErrorResponse("Invalid component ID", 400);
     }
 
-    const deletedComponent = db.components.splice(componentIndex, 1)[0];
-    await writeDbData(db);
+    const userContext = await getCurrentUserContext();
 
-    return NextResponse.json({
-      message: "Component deleted successfully",
-      component: deletedComponent,
-    });
+    const { error } = await supabaseAdmin
+      .from('products')
+      .delete()
+      .eq('id', componentId)
+      .eq('organization_id', userContext.organizationId)
+      .neq('type', 'final_product');
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse({ message: "Component deleted successfully" });
   } catch (error) {
     console.error("Error deleting component:", error);
-    return NextResponse.json(
-      { error: "Failed to delete component" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to delete component");
   }
 }

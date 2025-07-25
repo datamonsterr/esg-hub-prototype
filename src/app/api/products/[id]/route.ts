@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-import { Product } from "@/src/types/product";
-
-const dbPath = path.join(process.cwd(), "data/db.json");
-
-async function getDbData() {
-  const data = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeDbData(data: any) {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
+import { supabaseAdmin } from "@/src/lib/supabase";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  getCurrentUserContext,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addUpdateTimestamp,
+} from "@/src/lib/supabase-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -21,83 +17,100 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const productId = parseInt(id);
 
-    const product = db.products?.find((prod: Product) => prod.id === id);
-
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (isNaN(productId)) {
+      return createErrorResponse("Invalid product ID", 400);
     }
 
-    return NextResponse.json(product);
+    const userContext = await getCurrentUserContext();
+
+    const { data: product, error } = await supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .eq('organization_id', userContext.organizationId)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return createErrorResponse("Product not found", 404);
+      }
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(product);
   } catch (error) {
     console.error("Error fetching product:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch product" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to fetch product");
   }
 }
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
-    const updatedData = await request.json();
+    const productId = parseInt(id);
 
-    const productIndex = db.products?.findIndex(
-      (prod: Product) => prod.id === id
-    );
-
-    if (productIndex === -1 || productIndex === undefined) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (isNaN(productId)) {
+      return createErrorResponse("Invalid product ID", 400);
     }
 
-    // Update the product while preserving original data
-    db.products[productIndex] = {
-      ...db.products[productIndex],
-      ...updatedData,
-      id, // Ensure ID doesn't change
-      updatedAt: new Date().toISOString(),
-    };
+    const userContext = await getCurrentUserContext();
+    const updatedData = await request.json();
 
-    await writeDbData(db);
+    // Don't allow changing organization_id
+    delete updatedData.organization_id;
+    delete updatedData.id;
 
-    return NextResponse.json(db.products[productIndex]);
+    // Sanitize and add update timestamp
+    const productData = addUpdateTimestamp(sanitizeData(updatedData));
+
+    const { data: product, error } = await supabaseAdmin
+      .from('products')
+      .update(productData)
+      .eq('id', productId)
+      .eq('organization_id', userContext.organizationId)
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return createErrorResponse("Product not found", 404);
+      }
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(product);
   } catch (error) {
     console.error("Error updating product:", error);
-    return NextResponse.json(
-      { error: "Failed to update product" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to update product");
   }
 }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const db = await getDbData();
+    const productId = parseInt(id);
 
-    const productIndex = db.products?.findIndex(
-      (prod: Product) => prod.id === id
-    );
-
-    if (productIndex === -1 || productIndex === undefined) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (isNaN(productId)) {
+      return createErrorResponse("Invalid product ID", 400);
     }
 
-    const deletedProduct = db.products.splice(productIndex, 1)[0];
-    await writeDbData(db);
+    const userContext = await getCurrentUserContext();
 
-    return NextResponse.json({
-      message: "Product deleted successfully",
-      product: deletedProduct,
-    });
+    const { error } = await supabaseAdmin
+      .from('products')
+      .delete()
+      .eq('id', productId)
+      .eq('organization_id', userContext.organizationId);
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("Error deleting product:", error);
-    return NextResponse.json(
-      { error: "Failed to delete product" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to delete product");
   }
 }

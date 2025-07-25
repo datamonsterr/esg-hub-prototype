@@ -1,16 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
-  writeDbData,
   createErrorResponse,
   createSuccessResponse,
-} from "@/src/lib/api-utils";
+  getCurrentUserContext,
+  handleDatabaseError,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
 
-    const filters = db["assessment-filters"] || {};
+    // Get assessment filter preferences from organization metadata
+    const { data: organization, error } = await supabaseAdmin
+      .from('organizations')
+      .select('metadata')
+      .eq('id', userContext.organizationId)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    const filters = organization?.metadata?.assessmentFilters || {};
 
     return createSuccessResponse(filters);
   } catch (error) {
@@ -21,18 +33,51 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const updatedFilters = await request.json();
 
-    // Update the entire assessment-filters object
-    db["assessment-filters"] = {
-      ...db["assessment-filters"],
-      ...updatedFilters,
+    // Only allow admins to update organization filter preferences
+    if (userContext.organizationRole !== 'admin') {
+      return createErrorResponse("Access denied: Admin role required", 403);
+    }
+
+    // Get current organization metadata
+    const { data: organization, error: fetchError } = await supabaseAdmin
+      .from('organizations')
+      .select('metadata')
+      .eq('id', userContext.organizationId)
+      .single();
+
+    if (fetchError) {
+      return handleDatabaseError(fetchError);
+    }
+
+    const currentMetadata = organization?.metadata || {};
+    
+    // Update the assessment filters in metadata
+    const updatedMetadata = {
+      ...currentMetadata,
+      assessmentFilters: {
+        ...currentMetadata.assessmentFilters,
+        ...updatedFilters,
+      },
     };
 
-    await writeDbData(db);
+    const { data: updatedOrg, error } = await supabaseAdmin
+      .from('organizations')
+      .update({ 
+        metadata: updatedMetadata,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', userContext.organizationId)
+      .select('metadata')
+      .single();
 
-    return createSuccessResponse(db["assessment-filters"]);
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(updatedOrg.metadata.assessmentFilters);
   } catch (error) {
     console.error("Error updating assessment filters:", error);
     return createErrorResponse("Failed to update assessment filters");

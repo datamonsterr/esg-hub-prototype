@@ -11,19 +11,12 @@ import { OrganizationProfile } from "@/src/components/admin/organization-profile
 import { OrganizationSettings } from "@/src/components/admin/organization-settings";
 import { OrganizationAnalytics } from "@/src/components/admin/organization-analytics";
 import { useGetUserOrg } from "@/src/api/user";
-import { useUser } from "@clerk/nextjs";
+import { useUserContext, useIsAdmin } from "@/src/hooks/useUserContext";
 
 export default function AdminPage() {
-    const { user } = useUser();
-    const { organization, mutate: refreshOrganization } = useGetUserOrg();
+    const { organizationId, organizationRole, organization, userId } = useUserContext();
+    const isAdmin = useIsAdmin();
     const [showInviteDialog, setShowInviteDialog] = useState(false);
-
-    // Get user role from metadata
-    const userRole = user?.unsafeMetadata?.organizationRole as "admin" | "employee";
-    const organizationId = user?.unsafeMetadata?.organizationId as string;
-
-    // Check if user is admin
-    const isAdmin = userRole === "admin";
 
     if (!organizationId || !organization) {
         return (
@@ -100,9 +93,9 @@ export default function AdminPage() {
                         </CardHeader>
                         <CardContent>
                             <UserManagementTable
-                                organizationId={organizationId}
-                                currentUserRole={userRole}
-                                currentUserId={user?.id || ""}
+                                organizationId={organizationId || 0}
+                                currentUserRole={organizationRole === "admin" ? "admin" : "employee"}
+                                currentUserId={userId || ""}
                             />
                         </CardContent>
                     </Card>
@@ -110,18 +103,23 @@ export default function AdminPage() {
 
                 <TabsContent value="profile" className="space-y-6">
                     <OrganizationProfile
-                        organizationId={organizationId}
+                        organizationId={organizationId || 0}
                     />
                 </TabsContent>
 
                 <TabsContent value="settings" className="space-y-6">
-                    <OrganizationSettings organizationId={organizationId} />
+                    <OrganizationSettings organizationId={organizationId || 0} />
                 </TabsContent>
 
                 <TabsContent value="analytics" className="space-y-6">
                     <OrganizationAnalytics
-                        organization={organization}
-                        organizationId={organizationId}
+                        organization={{
+                            id: organizationId || 0,
+                            name: organization?.name || "",
+                            address: organization?.address || "",
+                            createdAt: organization?.created_at || ""
+                        }}
+                        organizationId={organizationId?.toString() || "0"}
                     />
                 </TabsContent>
             </Tabs>
@@ -130,7 +128,7 @@ export default function AdminPage() {
             <InviteUserDialog
                 isOpen={showInviteDialog}
                 onClose={() => setShowInviteDialog(false)}
-                organizationId={organizationId}
+                organizationId={organizationId?.toString() || "0"}
                 onInviteSuccess={() => {
                     // Refresh data if needed
                     window.location.reload();

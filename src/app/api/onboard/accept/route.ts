@@ -1,94 +1,77 @@
 import { NextRequest } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import {
   getDbData,
   writeDbData,
   createErrorResponse,
   createSuccessResponse,
 } from "../../../../lib/api-utils";
+import { PendingInvitation } from "@/src/types";
 
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
-
+    
     if (!userId) {
       return createErrorResponse("Unauthorized", 401);
     }
 
-    const body = await request.json();
-    const { token } = body;
+    const { token } = await request.json();
 
     if (!token) {
-      return createErrorResponse("Invitation token is required", 400);
+      return createErrorResponse("Token is required", 400);
     }
 
-    // Get database data
     const db = await getDbData();
-    const invitations = db["pending-invitations"] || [];
 
-    // Find the invitation by token
-    const invitationIndex = invitations.findIndex(
-      (inv: any) => inv.token === token
+    if (!db["pending-invitations"]) {
+      db["pending-invitations"] = [];
+    }
+
+    // Find invitation by token - skip email matching
+    const invitation = db["pending-invitations"].find(
+      (inv: PendingInvitation) => inv.token === token && inv.status === "pending"
     );
 
-    if (invitationIndex === -1) {
-      return createErrorResponse("Invitation not found", 404);
-    }
-
-    const invitation = invitations[invitationIndex];
-
-    // Check if invitation is already accepted
-    if (invitation.status === "accepted") {
-      return createErrorResponse("Invitation already accepted", 400);
+    if (!invitation) {
+      return createErrorResponse("Invalid or expired invitation", 404);
     }
 
     // Check if invitation has expired
-    if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) {
+    if (new Date(invitation.expiresAt) < new Date()) {
       return createErrorResponse("Invitation has expired", 400);
     }
 
-    // Update invitation status
-    invitations[invitationIndex] = {
-      ...invitation,
-      status: "accepted",
-      acceptedAt: new Date().toISOString(),
-      acceptedBy: userId,
-    };
-
-    // Update user's Clerk metadata to assign them to the organization
+    // Auto-assign organization details to all users
     try {
-      const clerk = await clerkClient();
-      const user = await clerk.users.getUser(userId);
-      const currentMetadata = user.unsafeMetadata || {};
-
-      // Add organization info to user metadata
-      const updatedMetadata = {
-        ...currentMetadata,
-        organizationId: invitation.organizationId,
-        organizationRole: invitation.organizationRole,
-        organizationName: invitation.organizationName,
-      };
-
-      await clerk.users.updateUserMetadata(userId, {
-        unsafeMetadata: updatedMetadata,
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(userId, {
+        unsafeMetadata: {
+          organizationId: invitation.organizationId,
+          organizationRole: invitation.organizationRole,
+        },
       });
     } catch (clerkError) {
-      console.error("Error updating Clerk metadata:", clerkError);
-      return createErrorResponse("Failed to assign user to organization", 500);
+      console.error("Failed to update user metadata:", clerkError);
+      return createErrorResponse("Failed to update user profile", 500);
     }
 
-    // Save updated data
+    // Mark invitation as accepted
+    invitation.status = "accepted";
+    invitation.acceptedAt = new Date().toISOString();
+    invitation.acceptedBy = userId;
+
     await writeDbData(db);
 
-    // Return response matching the AcceptInvitationResponse interface
     return createSuccessResponse({
-      organizationId: invitation.organizationId,
-      organizationRole: invitation.organizationRole,
-      organizationName: invitation.organizationName,
       message: "Invitation accepted successfully",
+      organizationId: invitation.organizationId,
+      organizationName: invitation.organizationName,
+      role: invitation.organizationRole,
     });
   } catch (error) {
     console.error("Error accepting invitation:", error);
-    return createErrorResponse("Internal server error", 500);
+    return createErrorResponse("Failed to accept invitation", 500);
   }
 }

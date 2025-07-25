@@ -1,11 +1,11 @@
 export interface Notification {
-  id: string;
-  organizationId: string;
+  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+  organizationId: number; // Changed to number to match schema
   type: string;
   title: string;
   message: string;
   isRead: boolean;
   priority: "low" | "medium" | "high";
-  actionUrl?: string;
+  actionUrl?: string | null; // Made nullable to match schema
   createdAt: string;
 } 

@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Building2, UserPlus } from "lucide-react";
-import { useGetUserOrg } from "@/src/api/user";
-import axiosInstance from "@/src/api/axios";
+import { useUserContext } from "@/src/hooks/useUserContext";
 
 interface OrganizationGuardProps {
     children: React.ReactNode;
@@ -19,67 +18,58 @@ export function OrganizationGuard({
     requiresOrganization = true
 }: OrganizationGuardProps) {
     const { user, isLoaded } = useUser();
-    const { organization, isLoading: isOrgLoading } = useGetUserOrg();
+    const { organizationId, isLoading, error } = useUserContext();
     const router = useRouter();
-    const [isCheckingOrg, setIsCheckingOrg] = useState(true);
+    const [isAutoAssigning, setIsAutoAssigning] = useState(false);
 
     useEffect(() => {
         const handleAutoAssignment = async () => {
-            if (isLoaded && !isOrgLoading) {
-                const userOrgId = user?.unsafeMetadata?.organizationId as string;
+            if (isLoaded && !isLoading && !organizationId) {
                 const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
                 console.log("Organization Guard - User email:", userEmail);
-                console.log("Organization Guard - User org ID:", userOrgId);
 
                 // Auto-assign dat.pham@nuoa.io as admin of Nuoa organization
-                if (userEmail === "dat.pham@nuoa.io" && !userOrgId) {
+                if (userEmail === "dat.pham@nuoa.io") {
                     console.log("Auto-assigning admin access for dat.pham@nuoa.io");
+                    setIsAutoAssigning(true);
+                    
                     try {
-                        // First sync to our database
-                        await axiosInstance.post('/users/sync', {
-                            email: userEmail,
-                            organizationId: "org-nuoa",
-                            organizationRole: "admin",
-                            userData: {
-                                firstName: user?.firstName,
-                                lastName: user?.lastName,
-                                fullName: user?.fullName,
-                                imageUrl: user?.imageUrl
-                            }
+                        // Create user record in database with organization assignment
+                        const response = await fetch('/api/users', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                id: user?.id,
+                                organization_id: 1, // Assuming Nuoa is organization ID 1
+                                organization_role: 'admin',
+                                is_active: true,
+                            }),
                         });
 
-                        // Then update Clerk metadata
-                        await user?.update({
-                            unsafeMetadata: {
-                                ...user.unsafeMetadata,
-                                organizationId: "org-nuoa",
-                                organizationRole: "admin"
-                            }
-                        });
-
-                        console.log("Auto-assignment successful, reloading page");
-                        // Refresh the page to reflect the changes
-                        window.location.reload();
-                        return;
+                        if (response.ok) {
+                            console.log("Auto-assignment successful, reloading page");
+                            // Refresh the page to reflect the changes
+                            window.location.reload();
+                        } else {
+                            console.error("Failed to auto-assign user");
+                            setIsAutoAssigning(false);
+                        }
                     } catch (error) {
                         console.error("Error auto-assigning admin:", error);
+                        setIsAutoAssigning(false);
                     }
-                }
-
-                if (requiresOrganization && !userOrgId) {
-                    setIsCheckingOrg(false);
-                } else {
-                    setIsCheckingOrg(false);
                 }
             }
         };
 
         handleAutoAssignment();
-    }, [isLoaded, isOrgLoading, user, organization, requiresOrganization]);
+    }, [isLoaded, isLoading, organizationId, user]);
 
     // Show loading while checking
-    if (!isLoaded || isOrgLoading || isCheckingOrg) {
+    if (!isLoaded || isLoading || isAutoAssigning) {
         return (
             <div className="flex items-center justify-center min-h-screen">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -87,12 +77,9 @@ export function OrganizationGuard({
         );
     }
 
-    // If organization is required but user doesn't have one
-    const userOrgId = user?.unsafeMetadata?.organizationId as string;
+    // If there's an error and user is dat.pham@nuoa.io, show auto-assignment in progress
     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
-
-    // Show special auto-assignment message for dat.pham@nuoa.io during processing
-    if (requiresOrganization && !userOrgId && userEmail === "dat.pham@nuoa.io") {
+    if (requiresOrganization && !organizationId && userEmail === "dat.pham@nuoa.io") {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
                 <Card className="w-full max-w-md border-0 shadow-lg">
@@ -117,7 +104,7 @@ export function OrganizationGuard({
         );
     }
 
-    if (requiresOrganization && !userOrgId) {
+    if (requiresOrganization && !organizationId) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <Card className="w-full max-w-md">

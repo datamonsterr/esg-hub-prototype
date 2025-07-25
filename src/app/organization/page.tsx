@@ -1,19 +1,18 @@
 "use client";
 
-import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useUserContext } from '@/src/hooks/useUserContext';
 
 export default function OrganizationRootPage() {
-    const { user } = useUser();
+    const { organizationId, isLoading } = useUserContext();
     const router = useRouter();
 
     useEffect(() => {
-        const organizationId = user?.unsafeMetadata?.organizationId as string;
-        if (organizationId) {
+        if (!isLoading && organizationId) {
             router.replace(`/organization/${organizationId}`);
         }
-    }, [user, router]);
+    }, [organizationId, isLoading, router]);
 
     return (
         <div>

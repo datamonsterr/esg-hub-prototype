@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
-  writeDbData,
   createErrorResponse,
   createSuccessResponse,
-  addTimestamps,
-  generateId,
+  getCurrentUserContext,
+  checkOrganizationAccess,
   processQueryParams,
-} from "@/src/lib/api-utils";
-import { OrganizationMember } from "@/src/types/user";
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+} from "@/src/lib/supabase-utils";
+import { createUser, updateUser } from "@/src/lib/user-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -16,21 +18,33 @@ type RouteParams = {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationId } = await params;
-    const { searchParams } = new URL(request.url);
-    const db = await getDbData();
+    const { id: organizationIdParam } = await params;
+    const organizationId = parseInt(organizationIdParam);
+    const userContext = await checkOrganizationAccess(organizationId);
+    const searchParams = request.nextUrl.searchParams;
 
-    if (!db["organization-members"]) {
-      db["organization-members"] = [];
+    // Get organization members from users table
+    let query = supabaseAdmin
+      .from('users')
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active
+      `)
+      .eq('organization_id', organizationId);
+
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['organization_role', 'is_active'];
+    query = processQueryParams(query, searchParams, allowedFilters);
+
+    const { data: members, error } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    // Filter members by organization
-    const organizationMembers = db["organization-members"].filter(
-      (member: OrganizationMember) => member.organizationId === organizationId
-    );
-
-    const members = processQueryParams(organizationMembers, searchParams);
-    return createSuccessResponse(members);
+    return createSuccessResponse(members || []);
   } catch (error) {
     console.error("Error fetching organization members:", error);
     return createErrorResponse("Failed to fetch organization members");
@@ -39,40 +53,46 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationId } = await params;
+    const { id: organizationIdParam } = await params;
+    const organizationId = parseInt(organizationIdParam);
+    const userContext = await checkOrganizationAccess(organizationId);
     const memberData = await request.json();
-    const db = await getDbData();
 
-    if (!db["organization-members"]) {
-      db["organization-members"] = [];
+    // Only admins can add members
+    if (userContext.organizationRole !== 'admin') {
+      return createErrorResponse("Access denied: Admin role required", 403);
     }
 
+    // Validate required fields
+    validateRequiredFields(memberData, ['clerkId']);
+
     // Check if member already exists
-    const existingMember = db["organization-members"].find(
-      (member: OrganizationMember) =>
-        member.userId === memberData.userId &&
-        member.organizationId === organizationId
-    );
+    const { data: existingMember, error: checkError } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('id', memberData.clerkId)
+      .single();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      return handleDatabaseError(checkError);
+    }
 
     if (existingMember) {
       return createErrorResponse(
-        "User is already a member of this organization",
+        "User is already a member of an organization",
         409
       );
     }
 
-    const newMember: OrganizationMember = addTimestamps({
-      id: generateId("member"),
-      organizationId,
-      ...memberData,
-      status: memberData.status || "active",
-      permissions: memberData.permissions || [],
+    // Create new user record
+    const newUser = await createUser({
+      clerkId: memberData.clerkId,
+      organizationId: organizationId,
+      organizationRole: memberData.organizationRole || 'employee',
+      isActive: memberData.isActive !== false, // Default to true
     });
 
-    db["organization-members"].push(newMember);
-    await writeDbData(db);
-
-    return createSuccessResponse(newMember, 201);
+    return createSuccessResponse(newUser, 201);
   } catch (error) {
     console.error("Error adding organization member:", error);
     return createErrorResponse("Failed to add organization member");

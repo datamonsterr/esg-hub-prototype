@@ -16,14 +16,15 @@ import {
 } from "./ui/dropdown-menu"
 import { useGetNotifications } from "../api/notification"
 import { formatDistanceToNow } from 'date-fns';
+import { useIsAdmin } from "@/src/hooks/useUserContext"
 
 export function Navbar() {
   const pathname = usePathname()
   const { user } = useUser()
   const { notifications } = useGetNotifications();
 
-  // Check if user is admin
-  const isAdmin = user?.unsafeMetadata?.organizationRole === "admin";
+  // Check if user is admin using new hook
+  const isAdmin = useIsAdmin();
 
   const navItems = [
     { href: "/management", label: "Management", match: "/management" },
@@ -121,7 +122,7 @@ export function Navbar() {
                         <p className="text-sm font-medium text-gray-900">{notification.title}</p>
                         <p className="text-xs text-gray-600 mt-1">{notification.message}</p>
                         <p className="text-xs text-gray-400 mt-1">
-                          {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                          {/* {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })} */}
                         </p>
                       </div>
                       {!notification.isRead && (

@@ -11,7 +11,7 @@ export const endpoints = {
     id: (id: string) => `/organizations/${id}`,
     members: (id: string) => `/organizations/${id}/members`,
     invites: (id: string) => `/organizations/${id}/invites`,
-    memberById: (orgId: string, memberId: string) =>
+    memberById: (orgId: number, memberId: string) =>
       `/organizations/${orgId}/members/${memberId}`,
     inviteById: (orgId: string, inviteId: string) =>
       `/organizations/${orgId}/invites/${inviteId}`,
@@ -58,7 +58,6 @@ export const endpoints = {
     csvImport: "/csv-import",
     productLink: "/product-link",
     validation: (id: string) => `/integration/validation/${id}`,
-    extractedProductTree: (id: string) => `/extracted-product-tree`,
   },
   dataValidation: {
     base: "/data-validation",
@@ -80,7 +79,7 @@ export const endpoints = {
     updateRole: (id: string) => `/users/${id}/role`,
   },
   onboard: {
-    accept: (id: string) => `/onboard/accept/${id}`,
+    accept: (id: number) => `/onboard/accept/${id}`,
     pendingInvitations: "/onboard/pending-invitations",
     invite: "/onboard/invite",
     inviteByEmail: (email: string) =>
@@ -89,8 +88,8 @@ export const endpoints = {
   invites: {
     base: "/invites",
     send: "/invites/send",
-    resend: (id: string) => `/invites/${id}/resend`,
-    cancel: (id: string) => `/invites/${id}/cancel`,
+    resend: (id: number) => `/invites/${id}/resend`,
+    cancel: (id: number) => `/invites/${id}/cancel`,
   },
   notifications: "/notifications",
   supplierAssessmentPage: "/supplier-assessment-page",

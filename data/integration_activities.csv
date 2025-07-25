@@ -1,0 +1,8 @@
+id,organization_id,title,subtitle,status,created_at
+1,1,"CSV Import - Product Data","Imported 150 products from sustainability_report_2024.csv","completed","2024-07-20 14:30:00+00"
+2,2,"Document Processing","Processing supplier_certificates.pdf","processing","2024-07-24 11:15:00+00"
+3,3,"API Integration - SAP","Syncing product data with SAP ERP system","completed","2024-07-22 09:45:00+00"
+4,4,"File Upload","Uploaded cotton_sourcing_report.xlsx","success","2024-07-23 16:20:00+00"
+5,5,"Data Validation","Validating component traceability data","processing","2024-07-25 08:30:00+00"
+6,1,"Bulk Import - Components","Imported 75 components from BOM_laptop_assembly.csv","completed","2024-07-21 13:10:00+00"
+7,3,"Document Extraction","Extracting data from sustainability_audit_2024.pdf","failed","2024-07-24 15:45:00+00"

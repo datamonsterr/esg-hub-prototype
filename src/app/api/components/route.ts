@@ -1,97 +1,110 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-
-const dbPath = path.join(process.cwd(), "data/db.json");
-
-async function getDbData() {
-  const data = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeDbData(data: any) {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
+import { supabaseAdmin } from "@/src/lib/supabase";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  getCurrentUserContext,
+  processQueryParams,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addCreateTimestamps,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const searchParams = request.nextUrl.searchParams;
 
-    let components = db.components || [];
+    // Components are stored in the products table with type != 'final_product'
+    let query = supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('organization_id', userContext.organizationId)
+      .neq('type', 'final_product'); // Filter for components only
 
-    // Filter by query parameters if provided
+    // Apply additional filters
     const productId = searchParams.get("productId");
-    const organizationId = searchParams.get("organizationId");
     const parentId = searchParams.get("parentId");
     const type = searchParams.get("type");
 
-    if (productId) {
-      components = components.filter(
-        (comp: any) => comp.productId === productId
-      );
-    }
-
-    if (organizationId) {
-      components = components.filter(
-        (comp: any) => comp.organizationId === organizationId
-      );
-    }
-
     if (parentId) {
-      components = components.filter((comp: any) => comp.parentId === parentId);
+      query = query.eq('parent_id', parseInt(parentId));
     }
 
     if (type) {
-      components = components.filter((comp: any) => comp.type === type);
+      query = query.eq('type', type);
     }
 
-    return NextResponse.json(components);
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['name', 'sku', 'category', 'type', 'status'];
+    query = processQueryParams(query, searchParams, allowedFilters);
+
+    const { data: components, error } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(components);
   } catch (error) {
     console.error("Error fetching components:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch components" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to fetch components");
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const newComponent = await request.json();
 
-    // Generate ID if not provided
-    if (!newComponent.id) {
-      newComponent.id = `comp-${Date.now().toString(36)}`;
+    // Validate required fields
+    validateRequiredFields(newComponent, ['name']);
+
+    // Set organization_id from user context
+    newComponent.organization_id = userContext.organizationId;
+
+    // Set component-specific defaults
+    if (!newComponent.type) {
+      newComponent.type = 'component';
+    }
+    if (!newComponent.quantity) {
+      newComponent.quantity = 1.0;
+    }
+    if (!newComponent.unit) {
+      newComponent.unit = 'pcs';
+    }
+    if (!newComponent.status) {
+      newComponent.status = 'active';
+    }
+    if (!newComponent.data_completeness) {
+      newComponent.data_completeness = 0.0;
+    }
+    if (!newComponent.metadata) {
+      newComponent.metadata = {};
     }
 
-    // Add timestamps
-    newComponent.createdAt = new Date().toISOString();
-    newComponent.updatedAt = new Date().toISOString();
-
-    // Set default data completeness if not provided
-    if (!newComponent.dataCompleteness) {
-      newComponent.dataCompleteness = 0;
+    // Ensure it's not a final product
+    if (newComponent.type === 'final_product') {
+      newComponent.type = 'component';
     }
 
-    if (!newComponent.missingDataFields) {
-      newComponent.missingDataFields = [];
+    // Sanitize and add timestamps
+    const componentData = addCreateTimestamps(sanitizeData(newComponent));
+
+    const { data: component, error } = await supabaseAdmin
+      .from('products')
+      .insert(componentData)
+      .select()
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    if (!db.components) {
-      db.components = [];
-    }
-
-    db.components.push(newComponent);
-    await writeDbData(db);
-
-    return NextResponse.json(newComponent, { status: 201 });
+    return createSuccessResponse(component, 201);
   } catch (error) {
     console.error("Error creating component:", error);
-    return NextResponse.json(
-      { error: "Failed to create component" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to create component");
   }
 }

@@ -1,67 +1,64 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
-  writeDbData,
   createErrorResponse,
   createSuccessResponse,
-  addTimestamps,
-  generateId,
-} from "@/src/lib/api-utils";
-import { UserProfile, OrganizationMember } from "@/src/types/user";
+  getCurrentUserContext,
+  handleDatabaseError,
+  sanitizeData,
+} from "@/src/lib/supabase-utils";
+import { createUser } from "@/src/lib/user-utils";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, firstName, lastName, clerkUserId } = await request.json();
-    const db = await getDbData();
-
-    if (!db.users) {
-      db.users = [];
+    const userContext = await getCurrentUserContext();
+    
+    // Only admins can create users manually
+    if (userContext.organizationRole !== 'admin') {
+      return createErrorResponse("Access denied: Admin role required", 403);
     }
-    if (!db["organization-members"]) {
-      db["organization-members"] = [];
+
+    const { clerkId, organizationId, organizationRole = 'member' } = await request.json();
+
+    if (!clerkId) {
+      return createErrorResponse("Clerk ID is required", 400);
     }
 
     // Check if user already exists
-    const existingUser = db.users.find(
-      (user: UserProfile) => user.email === email
-    );
+    const { data: existingUser } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('clerk_id', clerkId)
+      .single();
+
     if (existingUser) {
-      return createSuccessResponse(existingUser);
+      return createErrorResponse("User already exists", 409);
     }
 
-    // Create user profile
-    const newUser: UserProfile = addTimestamps({
-      id: generateId("user"),
-      email,
-      firstName,
-      lastName,
-      fullName: `${firstName} ${lastName}`.trim(),
-      imageUrl: null,
-      organizationId: "org-nuoa", // Auto-assign to Nuoa
-      organizationRole: "employee",
-      isActive: true,
-      joinedAt: new Date().toISOString(),
-      lastLoginAt: new Date().toISOString(),
+    // Validate organization exists if provided
+    let targetOrgId = organizationId;
+    if (!targetOrgId) {
+      targetOrgId = userContext.organizationId; // Default to current user's org
+    } else {
+      const { data: org } = await supabaseAdmin
+        .from('organizations')
+        .select('id')
+        .eq('id', targetOrgId)
+        .single();
+
+      if (!org) {
+        return createErrorResponse("Organization not found", 404);
+      }
+    }
+
+    // Create the user
+    const newUser = await createUser({
+      clerkId,
+      organizationId: targetOrgId,
+      organizationRole,
     });
 
-    // Create organization membership
-    const newMember: OrganizationMember = addTimestamps({
-      id: generateId("member"),
-      userId: newUser.id,
-      organizationId: "org-nuoa",
-      role: "employee",
-      status: "active",
-      joinedAt: new Date().toISOString(),
-      permissions: ["read", "write"],
-    });
-
-    // Add to database
-    db.users.push(newUser);
-    db["organization-members"].push(newMember);
-
-    await writeDbData(db);
-
-    return createSuccessResponse({ user: newUser, member: newMember }, 201);
+    return createSuccessResponse(newUser, 201);
   } catch (error) {
     console.error("Error creating user:", error);
     return createErrorResponse("Failed to create user");

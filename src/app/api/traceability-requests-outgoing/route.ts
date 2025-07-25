@@ -1,95 +1,124 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-
-const dbPath = path.join(process.cwd(), "data/db.json");
-
-async function getDbData() {
-  const data = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeDbData(data: any) {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
+import { supabaseAdmin } from "@/src/lib/supabase";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  getCurrentUserContext,
+  processQueryParams,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addCreateTimestamps,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const searchParams = request.nextUrl.searchParams;
 
-    let requests = db["traceability-requests-outgoing"] || [];
+    // Get outgoing traceability requests (where current org is the requester)
+    let query = supabaseAdmin
+      .from('trace_requests')
+      .select(`
+        *,
+        requesting_organization:requesting_organization_id (
+          id,
+          name,
+          email,
+          address
+        ),
+        target_organization:target_organization_id (
+          id,
+          name,
+          email,
+          address
+        ),
+        assessment:assessment_id (
+          id,
+          title,
+          description,
+          status,
+          priority
+        )
+      `)
+      .eq('requesting_organization_id', userContext.organizationId);
 
-    // Filter by query parameters if provided
-    const status = searchParams.get("status");
-    const priority = searchParams.get("priority");
-    const targetOrganizationId = searchParams.get("targetOrganizationId");
-    const requestingOrganizationId = searchParams.get(
-      "requestingOrganizationId"
-    );
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['status', 'priority', 'target_organization_id'];
+    query = processQueryParams(query, searchParams, allowedFilters);
 
-    if (status) {
-      requests = requests.filter((req: any) => req.status === status);
+    const { data: requests, error } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    if (priority) {
-      requests = requests.filter((req: any) => req.priority === priority);
-    }
-
-    if (targetOrganizationId) {
-      requests = requests.filter(
-        (req: any) => req.targetOrganizationId === targetOrganizationId
-      );
-    }
-
-    if (requestingOrganizationId) {
-      requests = requests.filter(
-        (req: any) => req.requestingOrganizationId === requestingOrganizationId
-      );
-    }
-
-    return NextResponse.json(requests);
+    return createSuccessResponse(requests);
   } catch (error) {
     console.error("Error fetching outgoing traceability requests:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch outgoing traceability requests" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to fetch outgoing traceability requests");
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const newRequest = await request.json();
 
-    // Generate ID if not provided
-    if (!newRequest.id) {
-      newRequest.id = `tr-out-${Date.now().toString(36)}`;
-    }
+    // Validate required fields
+    validateRequiredFields(newRequest, ['target_organization_id', 'assessment_id']);
 
-    // Add timestamps
-    newRequest.createdAt = new Date().toISOString();
-    newRequest.updatedAt = new Date().toISOString();
+    // Set requesting organization from user context
+    newRequest.requesting_organization_id = userContext.organizationId;
 
-    // Set default status if not provided
+    // Set default values
     if (!newRequest.status) {
-      newRequest.status = "pending";
+      newRequest.status = 'pending';
+    }
+    if (!newRequest.priority) {
+      newRequest.priority = 'medium';
+    }
+    if (!newRequest.cascade_settings) {
+      newRequest.cascade_settings = {};
     }
 
-    if (!db["traceability-requests-outgoing"]) {
-      db["traceability-requests-outgoing"] = [];
+    // Sanitize and add timestamps
+    const requestData = addCreateTimestamps(sanitizeData(newRequest));
+
+    const { data: traceRequest, error } = await supabaseAdmin
+      .from('trace_requests')
+      .insert(requestData)
+      .select(`
+        *,
+        requesting_organization:requesting_organization_id (
+          id,
+          name,
+          email,
+          address
+        ),
+        target_organization:target_organization_id (
+          id,
+          name,
+          email,
+          address
+        ),
+        assessment:assessment_id (
+          id,
+          title,
+          description,
+          status,
+          priority
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    db["traceability-requests-outgoing"].push(newRequest);
-    await writeDbData(db);
-
-    return NextResponse.json(newRequest, { status: 201 });
+    return createSuccessResponse(traceRequest, 201);
   } catch (error) {
-    console.error("Error creating outgoing traceability request:", error);
-    return NextResponse.json(
-      { error: "Failed to create outgoing traceability request" },
-      { status: 500 }
-    );
+    console.error("Error creating traceability request:", error);
+    return createErrorResponse("Failed to create traceability request");
   }
 }

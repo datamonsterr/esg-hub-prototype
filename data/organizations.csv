@@ -1,0 +1,6 @@
+id,name,address,email,created_at
+1,"Acme Manufacturing Corp","123 Industrial Blvd, Detroit, MI 48201","contact@acmemfg.com","2024-01-15 10:00:00+00"
+2,"GreenTech Suppliers Inc","456 Supply Chain Ave, Austin, TX 78701","info@greentech.com","2024-01-20 14:30:00+00"
+3,"EcoFashion Brands","789 Fashion District, New York, NY 10018","hello@ecofashion.com","2024-02-01 09:15:00+00"
+4,"Sustainable Materials Co","321 Green Valley Rd, Portland, OR 97205","orders@sustainmats.com","2024-01-25 11:45:00+00"
+5,"Global Electronics Ltd","654 Tech Park Dr, San Jose, CA 95110","procurement@globalelec.com","2024-02-10 16:20:00+00"

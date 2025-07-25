@@ -1,39 +1,48 @@
-export type AssessmentStatus = "Complete" | "Draft" | "In Progress";
+export type AssessmentStatus = "complete" | "draft" | "in_progress"; // Updated to match schema values
 
 export interface Assessment {
-  id: string;
+  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+  templateId: number; // Changed to number and made required to match schema
+  organizationId: number; // Changed to number and made required to match schema
+  requestingOrganizationId?: number | null; // Changed to number to match schema
   title: string;
-  description: string;
-  topic: string;
-  creator: string;
+  description?: string | null; // Made nullable to match schema
+  topic?: string | null; // Made nullable to match schema
+  createdBy: string; // Required Clerk user ID to match schema
   createdAt: string;
   updatedAt: string;
-  status: AssessmentStatus;
-  tags: string[];
-  icon: string;
-  topicColor: string;
-  sections?: AssessmentSection[]; // Made optional since we're using templateId
-  templateId?: string;
-  organizationId?: string;
-  requestingOrganizationId?: string;
-  productIds?: string[];
-  componentIds?: string[];
-  priority?: string;
-  assignedTo?: string;
-  dueDate?: string;
+  status: "draft" | "in_progress" | "complete"; // Updated to match schema values
+  priority: "low" | "medium" | "high" | "urgent"; // Added to match schema
+  productIds?: number[] | null; // Changed to number array to match schema
+  dueDate?: string | null; // Made nullable to match schema
   completedAt?: string | null;
-  dataCompleteness?: number;
+  dataCompleteness: number;
+  
+  // Additional fields for UI compatibility (not in schema)
+  tags?: string[];
+  icon?: string;
+  topicColor?: string;
+  sections?: AssessmentSection[]; // Made optional since we're using templateId
+  componentIds?: string[];
+  assignedTo?: string;
   responses?: AssessmentResponse[];
   attachments?: AssessmentAttachment[];
 }
 
 export interface AssessmentTemplate {
-  id: string;
+  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+  createdByOrganizationId: number; // Added to match schema
   title: string;
-  description: string;
-  icon?: string;
-  recommended?: boolean;
-  lastUsed?: string;
+  description?: string | null; // Made nullable to match schema
+  icon?: string | null; // Made nullable to match schema
+  recommended: boolean; // Made required to match schema
+  lastUsed?: string | null; // Made nullable to match schema
+  tags?: string[] | null; // Made nullable to match schema
+  schema: any; // Required JSONB field to match schema
+  createdAt: string;
+  updatedAt: string;
+  
+  // Additional fields for UI compatibility (not in schema)
   details?: {
     category?: string;
     sections: number;
@@ -42,7 +51,6 @@ export interface AssessmentTemplate {
     completion: string;
     sample: string[];
   };
-  tags?: string[];
   sections?: AssessmentSection[];
 }
 

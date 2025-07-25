@@ -23,27 +23,25 @@ import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { InviteRequest, OrganizationMember } from "@/src/types"
-import { useUser } from "@clerk/nextjs"
+import { useUserContext, useIsAdmin, useOrganizationId } from "@/src/hooks/useUserContext"
 import { CheckCircle, Clock, Mail, MoreHorizontal, Plus, Shield, User, UserMinus, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function UserManagementPage() {
-  const { user, isLoaded } = useUser()
+  const { userId, organizationId, organizationRole, isLoading: isLoadingContext } = useUserContext()
+  const isAdmin = useIsAdmin()
   const router = useRouter()
   const [showInviteDialog, setShowInviteDialog] = useState(false)
   const [inviteEmail, setInviteEmail] = useState("")
   const [inviteRole, setInviteRole] = useState<"admin" | "employee">("employee")
   const [isLoading, setIsLoading] = useState(false)
 
-  const organizationId = user?.unsafeMetadata?.organizationId as string
-  const organizationRole = user?.unsafeMetadata?.organizationRole as "admin" | "employee"
-
-  const { data: members, mutate: mutateMembers } = useGetOrganizationMembers(organizationId)
-  const { data: invites, mutate: mutateInvites } = useGetOrganizationInvites(organizationId)
+  const { data: members, mutate: mutateMembers } = useGetOrganizationMembers(organizationId?.toString() || "")
+  const { data: invites, mutate: mutateInvites } = useGetOrganizationInvites(organizationId?.toString() || "")
 
   useEffect(() => {
-    if (isLoaded && user) {
+    if (!isLoadingContext && userId) {
       if (!organizationId) {
         router.replace("/onboarding")
         return
@@ -54,7 +52,7 @@ export default function UserManagementPage() {
         return
       }
     }
-  }, [isLoaded, user, organizationId, organizationRole, router])
+  }, [isLoadingContext, userId, organizationId, organizationRole, router])
 
   const handleSendInvite = async () => {
     if (!inviteEmail || !organizationId) return
@@ -65,7 +63,7 @@ export default function UserManagementPage() {
         email: inviteEmail,
         organizationId,
         organizationRole: inviteRole,
-        invitedBy: user!.id,
+        invitedBy: userId!,
       })
 
       setInviteEmail("")
@@ -80,8 +78,9 @@ export default function UserManagementPage() {
   }
 
   const handleUpdateRole = async (memberId: string, newRole: "admin" | "employee") => {
+    if (!organizationId) return
     try {
-      await updateMemberRole(organizationId, memberId, newRole)
+      await updateMemberRole(organizationId, memberId,newRole)
       mutateMembers()
     } catch (error) {
       console.error("Failed to update role:", error)
@@ -89,6 +88,7 @@ export default function UserManagementPage() {
   }
 
   const handleRemoveMember = async (memberId: string) => {
+    if (!organizationId) return
     try {
       await removeMember(organizationId, memberId)
       mutateMembers()
@@ -97,7 +97,7 @@ export default function UserManagementPage() {
     }
   }
 
-  const handleCancelInvite = async (inviteId: string) => {
+  const handleCancelInvite = async (inviteId: number) => {
     try {
       await cancelInvite(inviteId)
       mutateInvites()
@@ -106,7 +106,7 @@ export default function UserManagementPage() {
     }
   }
 
-  const handleResendInvite = async (inviteId: string) => {
+  const handleResendInvite = async (inviteId:number) => {
     try {
       await resendInvite(inviteId)
       mutateInvites()
@@ -116,7 +116,7 @@ export default function UserManagementPage() {
   }
 
   // Show loading while checking auth
-  if (!isLoaded) {
+  if (isLoadingContext) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -125,7 +125,7 @@ export default function UserManagementPage() {
   }
 
   // Redirect if not authenticated or not admin
-  if (!user || !organizationId || organizationRole !== "admin") {
+  if (!userId || !organizationId || organizationRole !== "admin") {
     return null
   }
 

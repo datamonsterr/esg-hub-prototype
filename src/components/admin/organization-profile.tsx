@@ -14,7 +14,7 @@ import axiosInstance from "@/src/api/axios";
 import useSWR from "swr";
 
 interface OrganizationProfileProps {
-    organizationId: string;
+    organizationId: number;
 }
 
 const industryOptions = [

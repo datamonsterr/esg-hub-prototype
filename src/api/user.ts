@@ -3,6 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import useSWR from "swr";
 import axiosInstance, { endpoints } from "./axios";
 import { getOrganizationById } from "./organization";
+import { useOrganizationId } from "@/src/hooks/useUserContext";
 
 // User Management API Handlers
 
@@ -30,7 +31,7 @@ export const addOrganizationMember = async (
 
 // Update member role
 export const updateMemberRole = async (
-  organizationId: string,
+  organizationId: number,
   memberId: string,
   role: "admin" | "employee"
 ): Promise<OrganizationMember> => {
@@ -43,7 +44,7 @@ export const updateMemberRole = async (
 
 // Remove member from organization
 export const removeMember = async (
-  organizationId: string,
+  organizationId: number,
   memberId: string
 ): Promise<void> => {
   await axiosInstance.delete(
@@ -74,14 +75,14 @@ export const sendInvite = async (
 
 // Resend invite
 export const resendInvite = async (
-  inviteId: string
+  inviteId:number 
 ): Promise<InviteRequest> => {
   const response = await axiosInstance.post(endpoints.invites.resend(inviteId));
   return response.data;
 };
 
 // Cancel invite
-export const cancelInvite = async (inviteId: string): Promise<void> => {
+export const cancelInvite = async (inviteId: number): Promise<void> => {
   await axiosInstance.delete(endpoints.invites.cancel(inviteId));
 };
 
@@ -139,11 +140,10 @@ export const useGetUserProfile = () => {
 };
 
 export const useGetUserOrg = () => {
-  const { user } = useUser();
-  const organizationId = user?.unsafeMetadata?.organizationId as string;
+  const organizationId = useOrganizationId();
   const { data, error, isLoading, mutate } = useSWR(
     organizationId ? `/organizations/${organizationId}` : null,
-    () => getOrganizationById(organizationId)
+    () => getOrganizationById(organizationId!.toString())
   );
 
   return {

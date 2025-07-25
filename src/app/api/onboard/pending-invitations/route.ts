@@ -19,32 +19,14 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const userEmail = searchParams.get("email") || "";
 
     // Get database data
     const db = await getDbData();
     const allInvitations = db["pending-invitations"] || [];
 
-    // Helper function to check if email matches pattern (including wildcards)
-    const emailMatches = (inviteEmail: string, userEmail: string) => {
-      if (inviteEmail === userEmail) return true;
-
-      // Handle wildcard patterns like "*@gmail.com"
-      if (inviteEmail.includes("*")) {
-        const pattern = inviteEmail.replace("*", ".*");
-        const regex = new RegExp(`^${pattern}$`, "i");
-        return regex.test(userEmail);
-      }
-
-      return false;
-    };
-
-    // Filter invitations for the current user
+    // Filter invitations - all users get the same pending invitations
     const userInvitations = allInvitations.filter((inv: any) => {
-      return (
-        inv.status === "pending" &&
-        (inv.invitedUserId === userId || emailMatches(inv.email, userEmail))
-      );
+      return inv.status === "pending";
     });
 
     // Apply query parameters (sorting, pagination, etc.)
@@ -80,10 +62,10 @@ export async function POST(request: NextRequest) {
       return createSuccessResponse(existingInvite);
     }
 
-    // Auto-create invitation to Nuoa.io for testing
-    const nuoaOrg = db.organizations.find((org: any) => org.id === "org-nuoa");
-    if (!nuoaOrg) {
-      return createErrorResponse("Nuoa organization not found", 404);
+    // Auto-create invitation to EcoSustain Corp for testing
+    const testOrg = db.organizations.find((org: any) => org.id === "org-001");
+    if (!testOrg) {
+      return createErrorResponse("Test organization not found", 404);
     }
 
     const token = generateId("invite-token");
@@ -93,8 +75,8 @@ export async function POST(request: NextRequest) {
     const newInvitation: PendingInvitation = {
       id: generateId("pending-inv"),
       email,
-      organizationId: "org-nuoa",
-      organizationName: "Nuoa.io",
+      organizationId: "org-001",
+      organizationName: "EcoSustain Corp",
       organizationRole: "employee",
       invitedBy: {
         name: "Dat Pham",

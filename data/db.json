@@ -1767,44 +1767,121 @@
     }
   ],
   "invites": [],
-  "processed-documents": [],
+  "processed-documents": [
+    {
+      "id": "b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453",
+      "fileName": "test.xlsx",
+      "description": "Processed document: test.xlsx",
+      "actors": [
+        {
+          "id": 1,
+          "title": "Supplier",
+          "description": "GreenTech Materials Ltd",
+          "color": "bg-blue-50 text-blue-900",
+          "dotColor": "bg-blue-500"
+        },
+        {
+          "id": 2,
+          "title": "Brand",
+          "description": "EcoSustain Corp",
+          "color": "bg-green-50 text-green-900",
+          "dotColor": "bg-green-500"
+        },
+        {
+          "id": 3,
+          "title": "Auditor",
+          "description": "ESG Certification Body",
+          "color": "bg-purple-50 text-purple-900",
+          "dotColor": "bg-purple-500"
+        }
+      ],
+      "available_actions": [
+        {
+          "id": 1,
+          "title": "Manufacturing",
+          "code": "MFG-2024-001",
+          "type": "manufacturing",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Transportation",
+          "code": "TRN-2024-002",
+          "type": "transportation",
+          "color": "bg-yellow-100 text-yellow-800"
+        },
+        {
+          "id": 3,
+          "title": "Certification",
+          "code": "CERT-2024-003",
+          "type": "certification",
+          "color": "bg-purple-100 text-purple-800"
+        }
+      ],
+      "sections": [
+        {
+          "title": "File Preview",
+          "type": "file-preview",
+          "contentUrl": "/file-previews/b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453"
+        },
+        {
+          "title": "Key Highlights",
+          "type": "key-highlights",
+          "contentUrl": "/key-highlights-data/b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453"
+        },
+        {
+          "title": "Document Summary",
+          "type": "document-summary",
+          "contentUrl": "/document-summary/b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453"
+        }
+      ],
+      "createdAt": "2025-07-24T08:22:31.717Z",
+      "updatedAt": "2025-07-24T08:22:31.717Z"
+    }
+  ],
   "file-previews": [],
   "key-highlights-data": [],
   "document-summary": [],
   "document-actors": [],
-  "document-actions": [],
+  "document-actions": [
+    {
+      "id": "b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453",
+      "documentId": "b3b8f05e-d31c-4bf6-a8fd-1c04aa4d3453",
+      "actions": [
+        {
+          "id": 1,
+          "title": "Sustainability Audit",
+          "code": "SUSTAIN-AUDIT-2025-207",
+          "type": "audit",
+          "color": "bg-green-100 text-green-800"
+        },
+        {
+          "id": 2,
+          "title": "Supply Chain Mapping",
+          "code": "SUPPLY-MAP-2025-364",
+          "type": "traceability",
+          "color": "bg-blue-100 text-blue-800"
+        },
+        {
+          "id": 3,
+          "title": "Carbon Footprint Assessment",
+          "code": "CARBON-ASSESS-2025-615",
+          "type": "environmental",
+          "color": "bg-purple-100 text-purple-800"
+        },
+        {
+          "id": 4,
+          "title": "Certification Verification",
+          "code": "CERT-VERIFY-2025-358",
+          "type": "certification",
+          "color": "bg-orange-100 text-orange-800"
+        }
+      ],
+      "createdAt": "2025-07-24T08:22:31.783Z",
+      "updatedAt": "2025-07-24T08:22:31.783Z"
+    }
+  ],
   "pending-invitations": [
-    {
-      "id": "inv-001",
-      "email": "phamdat17092004@gmail.com",
-      "organizationId": "org-001",
-      "organizationName": "Nuoa",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Jane Doe",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "accepted",
-      "token": "a-secure-token-string-1",
-      "expiresAt": "2024-08-15T00:00:00Z",
-      "createdAt": "2024-07-16T00:00:00Z",
-      "acceptedAt": "2025-07-17T05:40:01.668Z"
-    },
-    {
-      "id": "pending-inv-mdflt2e8",
-      "email": "dat.pham@nuoa.io",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "invite-token-mdflt2e8",
-      "expiresAt": "2025-08-22T06:50:01.184Z",
-      "createdAt": "2025-07-23T06:50:01.184Z"
-    },
     {
       "id": "inv-nuoa-001",
       "email": "newuser@example.com",
@@ -1815,107 +1892,16 @@
         "name": "Dat Pham",
         "email": "dat.pham@nuoa.io"
       },
-      "status": "pending",
+      "status": "accepted",
       "token": "nuoa-invite-token-001",
       "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-002",
-      "email": "demo@gmail.com",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "nuoa-invite-token-002",
-      "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-003",
-      "email": "test@test.com",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "nuoa-invite-token-003",
-      "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-004",
-      "email": "user@company.com",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "nuoa-invite-token-004",
-      "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-005",
-      "email": "employee@nuoa.io",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "nuoa-invite-token-005",
-      "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-manager-001",
-      "email": "manager@nuoa.io",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "admin",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "pending",
-      "token": "nuoa-invite-token-manager-001",
-      "expiresAt": "2025-12-31T23:59:59Z",
-      "createdAt": "2025-07-23T00:00:00Z"
-    },
-    {
-      "id": "inv-nuoa-wildcard",
-      "email": "*@gmail.com",
-      "organizationId": "org-nuoa",
-      "organizationName": "Nuoa.io",
-      "organizationRole": "employee",
-      "invitedBy": {
-        "name": "Dat Pham",
-        "email": "dat.pham@nuoa.io"
-      },
-      "status": "accepted",
-      "token": "nuoa-invite-token-wildcard",
-      "expiresAt": "2025-12-31T23:59:59Z",
       "createdAt": "2025-07-23T00:00:00Z",
-      "description": "Auto-invitation for all @gmail.com accounts",
-      "acceptedAt": "2025-07-23T07:48:48.955Z",
+      "acceptedAt": "2025-07-24T07:57:56.628Z",
       "acceptedBy": "user_2zZsQWcpLHMd4C9sg93rnlu91dI"
     },
     {
-      "id": "pending-inv-mdfnzmas",
-      "email": "phamthanhdat17092004@gmail.com",
+      "id": "pending-inv-mdh3o4l9",
+      "email": "phamdat17092004@gmail.com",
       "organizationId": "org-nuoa",
       "organizationName": "Nuoa.io",
       "organizationRole": "employee",
@@ -1924,11 +1910,11 @@
         "email": "dat.pham@nuoa.io"
       },
       "status": "accepted",
-      "token": "invite-token-mdfnzmas",
-      "expiresAt": "2025-08-22T07:51:06.148Z",
-      "createdAt": "2025-07-23T07:51:06.149Z",
-      "acceptedAt": "2025-07-23T07:51:08.182Z",
-      "acceptedBy": "user_30GbonhPVz9iIwAkyVrKDaQgWs4"
+      "token": "invite-token-mdh3o4l9",
+      "expiresAt": "2025-08-23T07:57:50.013Z",
+      "createdAt": "2025-07-24T07:57:50.013Z",
+      "acceptedAt": "2025-07-24T07:58:03.743Z",
+      "acceptedBy": "user_2zZsQWcpLHMd4C9sg93rnlu91dI"
     }
   ],
   "document-tables": [
@@ -1994,4 +1980,4 @@
       ]
     }
   ]
-}
+}  

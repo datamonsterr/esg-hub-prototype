@@ -4,6 +4,7 @@ import { useState, useMemo } from "react"
 import { useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { Product } from "@/src/types"
+import { useUserContext } from "@/src/hooks/useUserContext"
 import {
   Table,
   TableBody,
@@ -67,10 +68,9 @@ export function ProductList({
   const [sortField, setSortField] = useState<SortField>('name')
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
 
-  const organizationId = user?.unsafeMetadata?.organizationId as string
+  const { organizationId } = useUserContext()
 
   const { products, isLoading, isError, mutate } = useGetProducts({
-    organizationId,
     search: searchQuery || undefined,
     category: categoryFilter !== "all" ? categoryFilter : undefined
   })
@@ -211,7 +211,7 @@ export function ProductList({
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
                 {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
+                  <SelectItem key={category} value={category || "unknown"}>
                     {category}
                   </SelectItem>
                 ))}
@@ -380,7 +380,7 @@ export function ProductList({
                               Edit Product
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleDeleteProduct(product.id)}
+                              onClick={() => handleDeleteProduct(product.id.toString())}
                               className="text-red-600"
                             >
                               <Trash className="h-4 w-4 mr-2" />

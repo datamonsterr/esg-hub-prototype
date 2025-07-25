@@ -4,8 +4,8 @@ alwaysApply: true
 This project is a frontend project use:
 - Next 15 
 - TailwindCss v3 with Postcss
-- Pnpm for package management
+- Pnpm for package management. use pnpm over yarn and all
 - Typescript + eslint
 - Clerk for authentication
 - Recharts for drawing charts
-- json-server for mocking the server
+- We are using supabase table and data schema is in db.json

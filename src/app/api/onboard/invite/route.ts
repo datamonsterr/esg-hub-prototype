@@ -1,49 +1,57 @@
 import { NextRequest } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import {
-  getDbData,
   createErrorResponse,
   createSuccessResponse,
-} from "../../../../lib/api-utils";
+  getCurrentUserContext,
+  processQueryParams,
+  handleDatabaseError,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const { userId } = await auth();
-
-    if (!userId) {
-      return createErrorResponse("Unauthorized", 401);
-    }
+    const userContext = await getCurrentUserContext();
 
     // Verify the user is an admin
-    const clerk = await clerkClient();
-    const user = await clerk.users.getUser(userId);
-    const userMetadata = user.unsafeMetadata || {};
-
-    if (userMetadata.organizationRole !== "admin") {
+    if (userContext.organizationRole !== "admin") {
       return createErrorResponse(
         "Forbidden: Only organization admins can view invitations",
         403
       );
     }
 
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
 
-    // Get database data
-    const db = await getDbData();
-    const allInvitations = db["pending-invitations"] || [];
+    // Get organization invites from Supabase
+    let query = supabaseAdmin
+      .from('organization_invites')
+      .select(`
+        id,
+        email,
+        organization_id,
+        organization_role,
+        invited_by,
+        status,
+        expires_at,
+        created_at,
+        organizations:organization_id (
+          id,
+          name
+        )
+      `)
+      .eq('organization_id', userContext.organizationId);
 
-    // Filter invitations for the admin's organization
-    const organizationInvitations = allInvitations.filter(
-      (inv: any) => inv.organizationId === userMetadata.organizationId
-    );
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['status', 'organization_role', 'email'];
+    query = processQueryParams(query, searchParams, allowedFilters);
 
-    // Apply query parameters (sorting, pagination, etc.)
-    const processedInvitations = organizationInvitations.map((inv: any) => ({
-      ...inv,
-      token: undefined, // Don't expose tokens in list responses
-    }));
+    const { data: invitations, error } = await query;
 
-    return createSuccessResponse(processedInvitations);
+    if (error) {
+      return handleDatabaseError(error);
+    }
+
+    return createSuccessResponse(invitations || []);
   } catch (error) {
     console.error("Error fetching invitations:", error);
     return createErrorResponse("Internal server error", 500);

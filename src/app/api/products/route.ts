@@ -1,95 +1,91 @@
 import { NextRequest, NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
-import { Product } from "@/src/types/product";
-
-const dbPath = path.join(process.cwd(), "data/db.json");
-
-async function getDbData() {
-  const data = await fs.readFile(dbPath, "utf8");
-  return JSON.parse(data);
-}
-
-async function writeDbData(data: any) {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-}
+import { supabaseAdmin } from "@/src/lib/supabase";
+import {
+  createErrorResponse,
+  createSuccessResponse,
+  getCurrentUserContext,
+  processQueryParams,
+  validateRequiredFields,
+  handleDatabaseError,
+  sanitizeData,
+  addCreateTimestamps,
+} from "@/src/lib/supabase-utils";
 
 export async function GET(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const searchParams = request.nextUrl.searchParams;
 
-    let products = db.products || [];
+    // Start with base query - users can only see their organization's products
+    let query = supabaseAdmin
+      .from('products')
+      .select('*')
+      .eq('organization_id', userContext.organizationId);
 
-    // Filter by query parameters if provided
-    const organizationId = searchParams.get("organizationId");
-    const category = searchParams.get("category");
-    const sku = searchParams.get("sku");
+    // Apply filters, sorting, and pagination
+    const allowedFilters = ['name', 'sku', 'category', 'type', 'status'];
+    query = processQueryParams(query, searchParams, allowedFilters);
 
-    if (organizationId) {
-      products = products.filter(
-        (product: Product) => product.organizationId === organizationId
-      );
+    const { data: products, error } = await query;
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    if (category) {
-      products = products.filter(
-        (product: Product) => product.category === category
-      );
-    }
-
-    if (sku) {
-      products = products.filter((product: Product) =>
-        product.sku?.toLowerCase().includes(sku.toLowerCase())
-      );
-    }
-
-    return NextResponse.json(products);
+    return createSuccessResponse(products);
   } catch (error) {
     console.error("Error fetching products:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to fetch products");
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const db = await getDbData();
+    const userContext = await getCurrentUserContext();
     const newProduct = await request.json();
 
-    // Generate ID if not provided
-    if (!newProduct.id) {
-      newProduct.id = `prod-${Date.now().toString(36)}`;
+    // Validate required fields
+    validateRequiredFields(newProduct, ['name']);
+
+    // Set organization_id from user context
+    newProduct.organization_id = userContext.organizationId;
+
+    // Set default values
+    if (!newProduct.type) {
+      newProduct.type = 'final_product';
+    }
+    if (!newProduct.quantity) {
+      newProduct.quantity = 1.0;
+    }
+    if (!newProduct.unit) {
+      newProduct.unit = 'pcs';
+    }
+    if (!newProduct.status) {
+      newProduct.status = 'active';
+    }
+    if (!newProduct.data_completeness) {
+      newProduct.data_completeness = 0.0;
+    }
+    if (!newProduct.metadata) {
+      newProduct.metadata = {};
     }
 
-    // Add timestamps
-    newProduct.createdAt = new Date().toISOString();
-    newProduct.updatedAt = new Date().toISOString();
+    // Sanitize and add timestamps
+    const productData = addCreateTimestamps(sanitizeData(newProduct));
 
-    // Set default data completeness if not provided
-    if (!newProduct.dataCompleteness) {
-      newProduct.dataCompleteness = 0;
+    const { data: product, error } = await supabaseAdmin
+      .from('products')
+      .insert(productData)
+      .select()
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
-    if (!newProduct.missingDataFields) {
-      newProduct.missingDataFields = [];
-    }
-
-    if (!db.products) {
-      db.products = [];
-    }
-
-    db.products.push(newProduct);
-    await writeDbData(db);
-
-    return NextResponse.json(newProduct, { status: 201 });
+    return createSuccessResponse(product, 201);
   } catch (error) {
     console.error("Error creating product:", error);
-    return NextResponse.json(
-      { error: "Failed to create product" },
-      { status: 500 }
-    );
+    return createErrorResponse("Failed to create product");
   }
 }

@@ -41,29 +41,31 @@ export const getProductsWithComponent = async (params?: {
   category?: string;
   search?: string;
 }): Promise<Product[]> => {
-  const { data: products } = await axiosInstance.get(endpoints.products.base, { params });
-  const { data: components } = await axiosInstance.get(endpoints.components.base, { params });
+  // Get all products from the unified products table
+  const { data: allProducts } = await axiosInstance.get(endpoints.products.base, { params });
 
-  const componentMap = components.reduce((acc: any, component: any) => {
-    acc[component.id] = { ...component, children: [] };
+  // Separate root products (no parentId) from child products/components
+  const rootProducts = allProducts.filter((p: any) => !p.parentId);
+  const childProducts = allProducts.filter((p: any) => p.parentId);
+
+  // Create a map for building hierarchical structure
+  const productMap = allProducts.reduce((acc: any, product: any) => {
+    acc[product.id] = { ...product, children: [] };
     return acc;
   }, {});
 
-  for (const componentId in componentMap) {
-    const component = componentMap[componentId];
-    if (component.parentId && componentMap[component.parentId]) {
-      componentMap[component.parentId].children.push(component);
+  // Build hierarchical relationships
+  for (const product of childProducts) {
+    if (productMap[product.parentId]) {
+      productMap[product.parentId].children.push(productMap[product.id]);
     }
   }
 
-  const productTree = products.map((product: any) => {
-    const rootComponent = componentMap[product.componentTreeId];
-    return {
-      ...product,
-      children: rootComponent ? rootComponent.children : [],
-      status: 'Verified'
-    };
-  });
+  // Return root products with their hierarchical children
+  const productTree = rootProducts.map((product: any) => ({
+    ...productMap[product.id],
+    status: 'Verified'
+  }));
 
   return productTree;
 }
@@ -76,44 +78,52 @@ export const attachDocumentToProduct = async (
   return res.data;
 };
 
-// --- NEW: Get unique material codes from components ---
+// --- Get unique material codes from products/components ---
 export const getMaterialCodes = async (): Promise<{ id: string; code: string; name: string }[]> => {
-  const { data: components } = await axiosInstance.get(endpoints.components.base);
-  // Extract unique material codes from components
+  // Get all products from unified table, filter for materials/components
+  const { data: allProducts } = await axiosInstance.get(endpoints.products.base);
+  const materialProducts = allProducts.filter((p: any) => 
+    p.type === 'raw_material' || p.type === 'component'
+  );
+  
+  // Extract unique material codes
   const seen = new Set();
   const codes: { id: string; code: string; name: string }[] = [];
-  for (const comp of components) {
-    const code = comp.sku || comp.id;
+  for (const product of materialProducts) {
+    const code = product.sku || product.id.toString();
     if (!seen.has(code)) {
       seen.add(code);
-      codes.push({ id: comp.id, code, name: comp.name });
+      codes.push({ id: product.id.toString(), code, name: product.name });
     }
   }
   return codes;
 };
 
-// --- NEW: Get unique suppliers from products/components for an organization ---
+// --- Get unique suppliers from products/components for an organization ---
 export const getSuppliers = async (organizationId?: string): Promise<{ id: string; name: string; category: string; location: string }[]> => {
-  // Get all products for the org
+  // Get all products for the org from unified products table
   const products = await getProducts({ organizationId });
-  // Get all components for these products
-  const allComponentIds = products.map(p => p.componentTreeId).filter(Boolean);
-  let allComponents: any[] = [];
-  for (const compId of allComponentIds) {
-    const { data: components } = await axiosInstance.get(`${endpoints.components.base}?parentId=${compId}`);
-    allComponents = allComponents.concat(components);
-  }
-  // Extract unique supplier org IDs from components
-  const supplierOrgIds = Array.from(new Set(allComponents.map(c => c.supplierOrganizationId).filter(Boolean)));
-  // Get all organizations (mocked from /organizations)
+  
+  // Extract unique supplier org IDs from all products/components
+  const allProducts = products.flatMap(p => [p, ...(p.children || [])]);
+  const supplierOrgIds = Array.from(new Set(
+    allProducts
+      .map(p => p.supplierOrganizationId)
+      .filter(Boolean)
+  ));
+  
+  // Get all organizations
   const { data: orgs } = await axiosInstance.get(endpoints.organizations.base);
+  
   // Map supplier org IDs to org info
-  const suppliers = supplierOrgIds.map((id: string) => {
+  const suppliers = supplierOrgIds.map((id: number | null | undefined) => {
+    if (!id) return null;
     const org = orgs.find((o: any) => o.id === id);
     return org
-      ? { id: org.id, name: org.name, category: org.type || 'Supplier', location: org.address || '' }
-      : { id, name: id, category: 'Supplier', location: '' };
-  });
+      ? { id: org.id.toString(), name: org.name, category: org.type || 'Supplier', location: org.address || '' }
+      : { id: id.toString(), name: `Supplier ${id}`, category: 'Supplier', location: '' };
+  }).filter(Boolean) as { id: string; name: string; category: string; location: string }[];
+  
   return suppliers;
 };
 

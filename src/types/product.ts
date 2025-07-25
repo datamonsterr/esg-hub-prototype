@@ -1,46 +1,28 @@
+// Unified Product interface - handles both products and components in the same table
 export interface Product {
   [x: string]: any;
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
-  organizationId: number; // Changed to number to match schema
-  parentId?: number | null; // Added to match schema
+  id: number; // SERIAL PRIMARY KEY from schema
+  organizationId: number; // organization_id from schema
+  parentId?: number | null; // For hierarchical relationships (BOM structure)
   name: string;
   sku?: string | null; // Made optional to match schema
   description?: string | null; // Made optional to match schema
   category?: string | null; // Made optional to match schema
-  type: string; // Added to match schema
-  quantity: number; // Added to match schema
-  unit: string; // Added to match schema
-  supplierOrganizationId?: number | null; // Changed to number and made optional
-  metadata: any; // Changed to any to match JSONB
-  dataCompleteness: number;
-  missingDataFields?: string[] | null; // Made nullable to match schema
-  status: string; // Added to match schema
-  createdAt: string;
-  updatedAt: string;
-  children?: ComponentNode[];
+  type: "raw_material" | "sub_assembly" | "component" | "final_product"; // Type field distinguishes between different types
+  quantity: number; // Default 1.0 in schema
+  unit: string; // Default 'pcs' in schema
+  supplierOrganizationId?: number | null; // References organizations table
+  metadata: any; // JSONB field for flexible data storage
+  dataCompleteness: number; // DECIMAL(5,2) DEFAULT 0.0
+  missingDataFields?: string[] | null; // TEXT[] field
+  status: string; // DEFAULT 'active'
+  createdAt: string; // TIMESTAMPTZ
+  updatedAt: string; // TIMESTAMPTZ
+  children?: ProductNode[]; // For hierarchical display (computed field)
 }
 
-export interface Component {
-  id: number; // Changed to number to match schema (products table is unified)
-  organizationId: number; // Changed to number to match schema
-  productId?: string;
-  parentId?: number | null; // Changed to number to match schema
-  name: string;
-  type: "raw_material" | "sub_assembly" | "component" | "final_product";
-  sku?: string | null; // Made nullable to match schema
-  description?: string | null; // Made nullable to match schema
-  quantity: number;
-  unit: string;
-  supplierOrganizationId?: number | null; // Changed to number to match schema
-  metadata: any; // Changed to any to match JSONB
-  dataCompleteness: number;
-  missingDataFields?: string[] | null; // Made nullable to match schema
-  status: string; // Added to match schema
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ComponentMetadata {
+// Metadata interface for product/component additional data
+export interface ProductMetadata {
   materialType?: string;
   originCountry?: string;
   certifications: string[];
@@ -50,15 +32,26 @@ export interface ComponentMetadata {
   hazardousSubstances?: string[];
 }
 
-export interface ComponentNode extends Component {
-  children: ComponentNode[];
+// Node interface for hierarchical product structure
+export interface ProductNode extends Product {
+  children: ProductNode[];
 }
 
+// Legacy aliases for backward compatibility
+export type Component = Product;
+export type ComponentNode = ProductNode;
+export type ComponentMetadata = ProductMetadata;
+
 export interface CreateProductRequest {
-  organizationId: string;
+  organizationId: number; // Changed to number to match schema
   name: string;
-  sku: string;
-  description: string;
-  category: string;
-  metadata?: Record<string, any>;
+  sku?: string; // Made optional since it's nullable in schema
+  description?: string; // Made optional since it's nullable in schema
+  category?: string; // Made optional since it's nullable in schema
+  type?: "raw_material" | "sub_assembly" | "component" | "final_product"; // Added type field
+  quantity?: number; // Made optional with default
+  unit?: string; // Made optional with default
+  parentId?: number | null; // For hierarchical relationships
+  supplierOrganizationId?: number | null; // For supplier relationships
+  metadata?: Record<string, any>; // For additional data
 }

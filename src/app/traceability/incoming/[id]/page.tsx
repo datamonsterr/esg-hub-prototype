@@ -11,20 +11,14 @@ import {
   Route,
   Share2
 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-interface SupplierTraceabilityDetailProps {
-  params: {
-    id: string;
-  };
-}
 
-export default function SupplierTraceabilityDetailPage({
-  params
-}: SupplierTraceabilityDetailProps) {
+export default function SupplierTraceabilityDetailPage({}) {
   const router = useRouter();
-  const { request, isLoading, isError } = useGetTraceabilityRequest(params.id);
+  const params = useParams();
+  const { request, isLoading, isError } = useGetTraceabilityRequest(String(params.id));
   const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([]);
   const [assessmentStarted, setAssessmentStarted] = useState(false);
 
@@ -132,7 +126,7 @@ export default function SupplierTraceabilityDetailPage({
   const isOverdue = new Date(request.dueDate) < new Date();
   const daysUntilDue = Math.ceil(
     (new Date(request.dueDate).getTime() - new Date().getTime()) /
-      (1000 * 60 * 60 * 24)
+    (1000 * 60 * 60 * 24)
   );
 
   return (
@@ -156,18 +150,16 @@ export default function SupplierTraceabilityDetailPage({
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
                   <div
-                    className={`w-2 h-2 rounded-full ${
-                      request.priority === 'high' || request.priority === 'urgent'
+                    className={`w-2 h-2 rounded-full ${request.priority === 'high' || request.priority === 'urgent'
                         ? 'bg-error'
                         : 'bg-gray-400'
-                    }`}
+                      }`}
                   ></div>
                   <span
-                    className={`text-sm font-medium ${
-                      request.priority === 'high' || request.priority === 'urgent'
+                    className={`text-sm font-medium ${request.priority === 'high' || request.priority === 'urgent'
                         ? 'text-error'
                         : 'text-gray-600'
-                    }`}
+                      }`}
                   >
                     {request.priority === 'high' || request.priority === 'urgent'
                       ? 'Mandatory Assessment'
@@ -188,11 +180,10 @@ export default function SupplierTraceabilityDetailPage({
           <div className="text-right">
             <div className="flex items-center space-x-2 mb-2">
               <div
-                className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  isOverdue
+                className={`px-3 py-1 rounded-full text-sm font-medium ${isOverdue
                     ? 'bg-error/20 text-error'
                     : 'bg-accent/20 text-accent'
-                }`}
+                  }`}
               >
                 {isOverdue ? (
                   <AlertTriangle className="h-4 w-4 mr-1 inline-block" />
@@ -388,13 +379,12 @@ export default function SupplierTraceabilityDetailPage({
             </div>
             <div className="text-right">
               <div
-                className={`px-3 py-1 rounded-full text-sm font-medium mb-2 ${
-                  request.status === 'completed'
+                className={`px-3 py-1 rounded-full text-sm font-medium mb-2 ${request.status === 'completed'
                     ? 'bg-primary/20 text-primary'
                     : request.status === 'in_progress'
                       ? 'bg-accent/20 text-accent'
                       : 'bg-gray-200 text-gray-700'
-                }`}
+                  }`}
               >
                 {request.status === 'completed' ? (
                   <CheckCircle2 className="h-4 w-4 mr-1 inline-block" />

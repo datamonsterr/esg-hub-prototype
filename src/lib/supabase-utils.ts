@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "./supabase";
 import { currentUser } from "@clerk/nextjs/server";
+import { getDefaultOrganizationId } from "./database-validator";
 
 export function createErrorResponse(message: string, status: number = 500) {
   return NextResponse.json({ error: message }, { status });
@@ -41,16 +42,8 @@ export async function getCurrentUserContext() {
     if (error && error.code === 'PGRST116') { // No rows returned
       console.log(`User ${user.id} not found in database, creating default record...`);
       
-      // First, ensure there's at least one organization
-      let { data: orgs } = await supabaseAdmin
-        .from('organizations')
-        .select('id')
-        .limit(1);
-      
-      let defaultOrgId = 1; // Default fallback
-      if (orgs && orgs.length > 0) {
-        defaultOrgId = orgs[0].id;
-      }
+      // Get or create default organization
+      const defaultOrgId = await getDefaultOrganizationId();
       
       // Create the user record
       const { data: newUser, error: createError } = await supabaseAdmin
@@ -96,6 +89,63 @@ export async function getCurrentUserContext() {
       organizationRole: userData.organization_role,
       isActive: userData.is_active,
       organization: userData.organizations
+    };
+  } catch (error) {
+    console.error("Error getting current user context:", error);
+    throw error;
+  }
+}
+
+// Get current user without auto-creating (for onboarding checks)
+export async function getCurrentUserWithoutCreating() {
+  try {
+    const user = await currentUser();
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    // Get user's organization from database
+    const { data: userData, error } = await supabaseAdmin
+      .from('users')
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .eq('id', user.id)
+      .single();
+
+    if (error && error.code === 'PGRST116') {
+      // User doesn't exist - return null instead of creating
+      return {
+        userId: user.id,
+        email: user.emailAddresses[0]?.emailAddress,
+        organizationId: null,
+        organizationRole: null,
+        isActive: null,
+        organization: null,
+        exists: false
+      };
+    } else if (error) {
+      throw new Error(`Failed to get user data: ${error.message}`);
+    }
+
+    return {
+      userId: user.id,
+      email: user.emailAddresses[0]?.emailAddress,
+      organizationId: userData.organization_id,
+      organizationRole: userData.organization_role,
+      isActive: userData.is_active,
+      organization: userData.organizations,
+      exists: true
     };
   } catch (error) {
     console.error("Error getting current user context:", error);
@@ -202,22 +252,67 @@ export function validateRequiredFields(data: any, requiredFields: string[]) {
 }
 
 // Handle database errors
+// Enhanced database error handler with better new instance support
 export function handleDatabaseError(error: any) {
-  console.error("Database error:", error);
+  console.error('Database error:', error);
   
-  if (error.code === "23505") {
-    return createErrorResponse("Duplicate entry", 409);
+  // Handle specific Supabase error codes
+  switch (error?.code) {
+    case 'PGRST116':
+      return createErrorResponse('Resource not found', 404);
+    case 'PGRST301':
+      return createErrorResponse('Duplicate resource', 409);
+    case '42P01':
+      // Table does not exist - common in new Supabase instances
+      return createErrorResponse(
+        'Database schema not properly initialized. Please ensure all required tables are created.',
+        503
+      );
+    case '42501':
+      // Insufficient privilege
+      return createErrorResponse(
+        'Database permission error. Please check your Supabase service role key permissions.',
+        403
+      );
+    case '23505':
+      // Unique violation
+      return createErrorResponse('Resource already exists', 409);
+    case '23503':
+      // Foreign key violation
+      return createErrorResponse('Referenced resource does not exist', 400);
+    case '23502':
+      // Not null violation
+      return createErrorResponse('Required field is missing', 400);
+    case 'PGRST001':
+      // Request timeout
+      return createErrorResponse('Database request timeout', 408);
+    case 'PGRST000':
+      // Connection error
+      return createErrorResponse(
+        'Database connection error. Please check your Supabase configuration.',
+        503
+      );
+    default:
+      // Check for JWT/auth errors
+      if (error?.message?.includes('JWT') || error?.message?.includes('invalid API key')) {
+        return createErrorResponse(
+          'Invalid Supabase credentials. Please check your API keys.',
+          401
+        );
+      }
+      
+      if (error?.message?.includes('connection')) {
+        return createErrorResponse(
+          'Database connection failed. Please check your Supabase URL and network connectivity.',
+          503
+        );
+      }
+      
+      return createErrorResponse(
+        error?.message || 'Database operation failed',
+        500
+      );
   }
-  
-  if (error.code === "23503") {
-    return createErrorResponse("Foreign key constraint violation", 400);
-  }
-  
-  if (error.code === "23502") {
-    return createErrorResponse("Required field missing", 400);
-  }
-
-  return createErrorResponse(error.message || "Database operation failed", 500);
 }
 
 // Sanitize data for database insertion

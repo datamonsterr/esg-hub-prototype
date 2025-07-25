@@ -1,7 +1,7 @@
 "use client"
 
 import { useGetActivities } from "@/src/api/management"
-import { IntegrationActivity } from "@/src/types/integration"
+import { IntegrationActivity, IntegrationActivityClient } from "@/src/types/integration"
 import { format } from "date-fns"
 import { CheckCircle, Clock, XCircle } from "lucide-react"
 import { Badge } from "@/src/components/ui/badge"
@@ -43,7 +43,7 @@ export function RecentActivities() {
   return (
     <div className="space-y-4">
       {activities && activities.length > 0 ? (
-        activities.map((activity: IntegrationActivity) => (
+        activities.map((activity: IntegrationActivityClient) => (
           <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-brand">
             {getStatusIcon(activity.status)}
             <div className="flex-1">

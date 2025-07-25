@@ -12,9 +12,11 @@ import { OrganizationSettings } from "@/src/components/admin/organization-settin
 import { OrganizationAnalytics } from "@/src/components/admin/organization-analytics";
 import { useGetUserOrg } from "@/src/api/user";
 import { useUserContext, useIsAdmin } from "@/src/hooks/useUserContext";
+import { useGetOrganization } from "@/src/api/organization";
 
 export default function AdminPage() {
-    const { organizationId, organizationRole, organization, userId } = useUserContext();
+    const { organizationId, organizationRole, userId } = useUserContext();
+    const { organization } = useGetOrganization(organizationId?.toString() || "1");
     const isAdmin = useIsAdmin();
     const [showInviteDialog, setShowInviteDialog] = useState(false);
 
@@ -117,7 +119,7 @@ export default function AdminPage() {
                             id: organizationId || 0,
                             name: organization?.name || "",
                             address: organization?.address || "",
-                            createdAt: organization?.created_at || ""
+                            createdAt: organization?.createdAt || ""
                         }}
                         organizationId={organizationId?.toString() || "0"}
                     />

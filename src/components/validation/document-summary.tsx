@@ -9,16 +9,16 @@ import { Progress } from "@/src/components/ui/progress"
 import { FileText, Calendar, Building, Users, CheckCircle } from "lucide-react"
 
 interface DocumentSummaryProps {
-  contentUrl: string | undefined
+  documentId: string | undefined
   fileName?: string
 }
 
-export function DocumentSummary({ contentUrl, fileName }: DocumentSummaryProps) {
+export function DocumentSummary({ documentId, fileName }: DocumentSummaryProps) {
   const {
     documentSummary,
     isLoading,
     isError,
-  } = useGetDocumentSummary(contentUrl)
+  } = useGetDocumentSummary(documentId)
   const [showSummaryPrompt, setShowSummaryPrompt] = useState(false)
 
   if (isLoading) return <div>Loading document summary...</div>

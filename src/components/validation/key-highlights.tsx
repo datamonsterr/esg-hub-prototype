@@ -8,15 +8,15 @@ import { Highlight } from "@/src/types/integration"
 import { CheckCircle, AlertCircle } from "lucide-react"
 
 interface KeyHighlightsProps {
-  contentUrl: string | undefined
+  documentId: string | undefined
 }
 
-export function KeyHighlights({ contentUrl }: KeyHighlightsProps) {
+export function KeyHighlights({ documentId }: KeyHighlightsProps) {
   const {
     keyHighlights,
     isLoading,
     isError,
-  } = useGetKeyHighlights(contentUrl)
+  } = useGetKeyHighlights(documentId)
   const [showHighlightPrompt, setShowHighlightPrompt] = useState(false)
 
   if (isLoading) return <div>Loading key highlights...</div>

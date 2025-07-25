@@ -48,11 +48,6 @@ export const createAssessment = async (
   return response.data;
 };
 
-export const getAssessmentFilters = async () => {
-  const res = await axiosInstance.get(endpoints.assessment.filter);
-  return res.data;
-};
-
 // #endregion
 
 // #region SWR
@@ -154,17 +149,5 @@ export function useCreateAssessment(data: Assessment) {
   return {
     createAssessment: trigger,
     isCreating: isMutating,
-  };
-}
-
-export function useAssessmentFilters() {
-  const { data, error, isLoading } = useSWR<{
-    topics: string[];
-    creators: string[];
-  }>(endpoints.assessment.filter, fetcher);
-  return {
-    filters: data,
-    isLoading,
-    isError: error,
   };
 }

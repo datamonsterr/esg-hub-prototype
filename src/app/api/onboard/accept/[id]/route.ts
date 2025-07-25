@@ -1,123 +1,126 @@
-import { NextRequest } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs/server";
-import {
-  getDbData,
-  writeDbData,
-  createErrorResponse,
-  createSuccessResponse,
-} from "../../../../../lib/api-utils";
+import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@clerk/nextjs/server'
+import { supabaseAdmin } from '@/src/lib/supabase'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId } = await auth();
-
+    const { userId } = await auth()
+    
     if (!userId) {
-      return createErrorResponse("Unauthorized", 401);
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
-    const { id } = params;
+    const { id } = await params
+    const invitationId = parseInt(id)
 
-    if (!id) {
-      return createErrorResponse("Invitation ID is required", 400);
+    if (isNaN(invitationId)) {
+      return NextResponse.json(
+        { error: 'Invalid invitation ID' },
+        { status: 400 }
+      )
     }
 
-    // Get database data
-    const db = await getDbData();
-    const invitations = db["pending-invitations"] || [];
+    // Get the invitation details
+    const { data: invitation, error: inviteError } = await supabaseAdmin
+      .from('organization_invites')
+      .select('*, organizations(name)')
+      .eq('id', invitationId)
+      .eq('status', 'pending')
+      .single()
 
-    // Find the invitation by ID
-    const invitationIndex = invitations.findIndex((inv: any) => inv.id === id);
-
-    if (invitationIndex === -1) {
-      return createErrorResponse("Invitation not found", 404);
-    }
-
-    const invitation = invitations[invitationIndex];
-
-    // Check if invitation is already accepted
-    if (invitation.status === "accepted") {
-      return createErrorResponse("Invitation already accepted", 400);
+    if (inviteError || !invitation) {
+      return NextResponse.json(
+        { error: 'Invalid or expired invitation' },
+        { status: 404 }
+      )
     }
 
     // Check if invitation has expired
-    if (invitation.expiresAt && new Date(invitation.expiresAt) < new Date()) {
-      return createErrorResponse("Invitation has expired", 400);
+    if (new Date(invitation.expires_at) < new Date()) {
+      // Update invitation status to expired
+      await supabaseAdmin
+        .from('organization_invites')
+        .update({ status: 'expired' })
+        .eq('id', invitationId)
+
+      return NextResponse.json(
+        { error: 'Invitation has expired' },
+        { status: 400 }
+      )
     }
 
-    // Update invitation status
-    invitations[invitationIndex] = {
-      ...invitation,
-      status: "accepted",
-      acceptedAt: new Date().toISOString(),
-      acceptedBy: userId,
-    };
+    // Check if user already exists
+    const { data: existingUser, error: userCheckError } = await supabaseAdmin
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+      .single()
 
-    // Update user's Clerk metadata to assign them to the organization
-    try {
-      const clerk = await clerkClient();
-      const user = await clerk.users.getUser(userId);
-      const currentMetadata = user.unsafeMetadata || {};
-
-      // Add organization info to user metadata
-      const updatedMetadata = {
-        ...currentMetadata,
-        organizationId: invitation.organizationId,
-        organizationRole: invitation.organizationRole,
-        organizationName: invitation.organizationName,
-      };
-
-      await clerk.users.updateUserMetadata(userId, {
-        unsafeMetadata: updatedMetadata,
-      });
-    } catch (clerkError) {
-      console.error("Error updating Clerk metadata:", clerkError);
-      return createErrorResponse("Failed to assign user to organization", 500);
+    if (userCheckError && userCheckError.code !== 'PGRST116') {
+      console.error('Error checking existing user:', userCheckError)
+      return NextResponse.json(
+        { error: 'Failed to check user status' },
+        { status: 500 }
+      )
     }
 
-    // Save updated data
-    await writeDbData(db);
+    if (existingUser) {
+      return NextResponse.json(
+        { error: 'User already belongs to an organization' },
+        { status: 400 }
+      )
+    }
 
-    // Return response matching the AcceptInvitationResponse interface
-    return createSuccessResponse({
-      organizationId: invitation.organizationId,
-      organizationRole: invitation.organizationRole,
-      organizationName: invitation.organizationName,
-      message: "Invitation accepted successfully",
-    });
+    // Create user in database
+    const { data: newUser, error: createUserError } = await supabaseAdmin
+      .from('users')
+      .insert({
+        id: userId,
+        organization_id: invitation.organization_id,
+        organization_role: invitation.organization_role,
+        is_active: true
+      })
+      .select()
+      .single()
+
+    if (createUserError) {
+      console.error('Error creating user:', createUserError)
+      return NextResponse.json(
+        { error: 'Failed to create user account' },
+        { status: 500 }
+      )
+    }
+
+    // Update invitation status to accepted
+    const { error: updateInviteError } = await supabaseAdmin
+      .from('organization_invites')
+      .update({ status: 'accepted' })
+      .eq('id', invitationId)
+
+    if (updateInviteError) {
+      console.error('Error updating invitation:', updateInviteError)
+      // User was created successfully, but invitation status update failed
+      // This is not critical, continue with success response
+    }
+
+    return NextResponse.json({
+      organizationId: invitation.organization_id.toString(),
+      organizationRole: invitation.organization_role,
+      organizationName: invitation.organizations?.name,
+      message: 'Successfully joined organization'
+    })
+
   } catch (error) {
-    console.error("Error accepting invitation:", error);
-    return createErrorResponse("Internal server error", 500);
-  }
-}
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const { id } = params;
-
-    const db = await getDbData();
-    const invitations = db["pending-invitations"] || [];
-
-    const invitation = invitations.find((inv: any) => inv.id === id);
-
-    if (!invitation) {
-      return createErrorResponse("Invitation not found", 404);
-    }
-
-    // Don't expose sensitive information like tokens in GET responses
-    const safeInvitation = {
-      ...invitation,
-      token: undefined,
-    };
-
-    return createSuccessResponse(safeInvitation);
-  } catch (error) {
-    console.error("Error fetching invitation:", error);
-    return createErrorResponse("Internal server error", 500);
+    console.error('Accept invitation error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
   }
 }

@@ -20,10 +20,20 @@ export interface DataIntegrationsData {
   }
   
   export interface IntegrationActivity {
-    id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
-    organizationId: number; // Added to match schema
+    id: number; // SERIAL PRIMARY KEY
+    organization_id: number; // Foreign key to organizations table
     title: string;
-    subtitle?: string | null; // Made nullable to match schema
+    subtitle?: string | null; // Nullable as per schema
+    status: 'success' | 'processing' | 'completed' | 'failed';
+    created_at: string; // TIMESTAMPTZ
+  }
+
+  // Client-side interface with camelCase for better TypeScript usage
+  export interface IntegrationActivityClient {
+    id: number;
+    organizationId: number;
+    title: string;
+    subtitle?: string | null;
     status: 'success' | 'processing' | 'completed' | 'failed';
     createdAt: string;
   }

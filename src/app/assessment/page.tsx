@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchAssessments, useAssessmentFilters } from '@/src/api/assessment';
+import { useSearchAssessments } from '@/src/api/assessment';
 import { Assessment, AssessmentTemplate } from '@/src/types/assessment';
 import {
   Search,
@@ -24,10 +24,10 @@ import { ErrorComponent } from '@/src/components/ui/error';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash.debounce';
 import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
+import { getUserById } from '@/src/lib/user-utils';
 
 export default function SupplierAssessmentPage() {
   const { assessments, totalPages, isLoading, isError } = useSearchAssessments();
-  const { filters, isLoading: isLoadingFilters, isError: isErrorFilters } = useAssessmentFilters();
 
   // Modal state and template selection
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,24 +35,33 @@ export default function SupplierAssessmentPage() {
   // Mock templates (should be fetched from API in real app)
   const mockTemplates: AssessmentTemplate[] = [
     {
-      id: 'blank',
+      id: 1,
+      createdByOrganizationId: 1,
       title: 'Blank Template',
       description: 'Start from scratch with a blank assessment.',
       icon: 'fa-file',
+      recommended: false,
+      schema: {},
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       details: { category: 'General', sections: 0, questions: 0, time: '5 min', completion: 'N/A', sample: [] },
     },
     {
-      id: 'origin',
+      id: 2,
+      createdByOrganizationId: 1,
       title: 'Origin Verification',
       description: 'Verify product origin and documentation.',
       icon: 'fa-globe',
       recommended: true,
       lastUsed: '2024-05-01',
+      schema: {},
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       details: { category: 'Compliance', sections: 3, questions: 10, time: '20 min', completion: '85%', sample: ['What is the country of origin?', 'Is there a certificate of origin?'] },
     },
   ];
 
-  if (isLoading || isLoadingFilters) {
+  if (isLoading) {
     return <GlobalLoading />;
   }
 
@@ -60,15 +69,11 @@ export default function SupplierAssessmentPage() {
     return <ErrorComponent title="Error Loading Data" description="There was an error loading the assessment data. Please try again later." />;
   }
 
-  if (isErrorFilters) {
-    return <ErrorComponent title="Error Loading Data" description="There was an error loading the assessment filters. Please try again later." />;
-  }
-
   return (
     <div className="bg-gray-50 font-arial text-base">
       <main className="max-w-7xl mx-auto px-5 py-8">
         <PageHeader onOpenModal={() => setIsModalOpen(true)} />
-        {filters && <SearchAndFilter filters={filters} />}
+        <SearchAndFilter />
         <AssessmentGrid assessments={assessments || []} />
         <Pagination totalPages={totalPages} />
         <CreateAssessmentModal
@@ -108,7 +113,7 @@ function PageHeader({ onOpenModal }: { onOpenModal: () => void }) {
   );
 }
 
-function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: string[] } }) {
+function SearchAndFilter() {
   const router = useRouter();
 
   const handleSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,16 +143,6 @@ function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: s
             </div>
           </div>
           <div className="flex gap-4">
-            {Object.keys(filters).map((filter) => (
-              <select
-                key={filter}
-                className="px-4 py-3 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                {filters[filter as keyof typeof filters].map((option: string) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            ))}
             <Button variant="outline">
               <Filter className="w-5 h-5" />
               <span>Filters</span>
@@ -160,7 +155,27 @@ function SearchAndFilter({ filters }: { filters: { topics: string[]; creators: s
 }
 
 function AssessmentGrid({ assessments }: { assessments: Assessment[] }) {
-  if (!assessments) return null;
+  if (!assessments || assessments.length === 0) {
+    return (
+      <section id="assessment-grid" className="mb-8">
+        <div className="bg-white rounded-lg border border-border p-12 text-center">
+          <div className="max-w-md mx-auto">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i className="fas fa-clipboard-list text-2xl text-gray-400"></i>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Assessments Found</h3>
+            <p className="text-gray-600 mb-6">
+              Get started by creating your first assessment or check back later for new requests.
+            </p>
+            <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90">
+              Create Assessment
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="assessment-grid" className="mb-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -177,7 +192,7 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
     title,
     description,
     topic,
-    creator,
+    createdBy,
     createdAt,
     updatedAt,
     status,
@@ -186,10 +201,65 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
     topicColor,
   } = assessment;
 
+  const [creatorEmail, setCreatorEmail] = useState<string>('Loading...');
+
+  useEffect(() => {
+    async function fetchCreatorEmail() {
+      try {
+        const user = await getUserById(createdBy);
+        setCreatorEmail(user?.organizations?.email || 'Unknown');
+      } catch (error) {
+        console.error('Error fetching creator email:', error);
+        setCreatorEmail('Error fetching email');
+      }
+    }
+
+    fetchCreatorEmail();
+  }, [createdBy]);
+
+  // Function to format date strings to readable format
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+    } catch {
+      return 'Invalid Date';
+    }
+  };
+
+  // Generate random icon and color if not provided
+  const defaultIcons = ['fa-file-alt', 'fa-leaf', 'fa-users', 'fa-shield-alt', 'fa-chart-line', 'fa-cog'];
+  const defaultColors = ['blue', 'green', 'purple', 'orange', 'red'] as const;
+
+  const displayIcon = icon || defaultIcons[assessment.id % defaultIcons.length];
+  const displayColor = (topicColor as keyof typeof iconColorClasses) || defaultColors[assessment.id % defaultColors.length];
+
+  // Convert status to match our classes (handle CSV data format)
+  const normalizeStatus = (status: string) => {
+    const statusMap: { [key: string]: keyof typeof statusClasses } = {
+      'Complete': 'complete',
+      'Completed': 'complete',
+      'complete': 'complete',
+      'Draft': 'draft',
+      'draft': 'draft',
+      'In Progress': 'in_progress',
+      'in_progress': 'in_progress',
+      'Pending': 'draft',
+      'pending': 'draft',
+    };
+    return statusMap[status] || 'draft';
+  };
+
+  const normalizedStatus = normalizeStatus(status);
+
   const statusClasses = {
-    Complete: 'bg-green-100 text-green-700',
-    Draft: 'bg-gray-100 text-gray-700',
-    'In Progress': 'bg-accent/20 text-accent',
+    complete: 'bg-green-100 text-green-700',
+    draft: 'bg-gray-100 text-gray-700',
+    in_progress: 'bg-accent/20 text-accent',
   };
 
   const iconColorClasses = {
@@ -198,6 +268,7 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
     orange: 'bg-orange-100 text-orange-600',
     yellow: 'bg-yellow-100 text-yellow-600',
     purple: 'bg-purple-100 text-purple-600',
+    green: 'bg-green-100 text-green-600',
   };
 
   return (
@@ -239,20 +310,20 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Created:</span>
-          <span className="text-gray-900">{createdAt}</span>
+          <span className="text-gray-900">{formatDate(createdAt)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Creator:</span>
-          <span className="text-gray-900">{creator}</span>
+          <span className="text-gray-900">{creatorEmail}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Last Updated:</span>
-          <span className="text-gray-900">{updatedAt}</span>
+          <span className="text-gray-900">{formatDate(updatedAt)}</span>
         </div>
       </div>
 
       <div className="flex flex-wrap gap-1 mb-4">
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <span
             key={tag}
             className="px-2 py-1 bg-secondary/50 text-primary text-xs rounded"
@@ -264,10 +335,10 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
 
       <div className="flex items-center justify-between">
         <span
-          className={`px-2 py-1 ${statusClasses[status]
+          className={`px-2 py-1 ${statusClasses[normalizedStatus]
             } text-xs rounded`}
         >
-          {status}
+          {normalizedStatus}
         </span>
         <Link href={`/assessment/preview/${assessment.id}`}>
           <span className="text-primary text-sm font-medium hover:underline">

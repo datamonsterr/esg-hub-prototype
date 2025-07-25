@@ -1,6 +1,6 @@
 'use client';
 
-import { ComponentNode } from '@/src/types/product';
+import { ProductNode } from '@/src/types/product';
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,12 +18,6 @@ import {
 import axiosInstance, { endpoints } from './axios';
 import { useUpdateProduct } from './product';
 
-// #region RAW API
-export const getDataIntegrations = async () => {
-  const res = await axiosInstance.get(endpoints.integration.base);
-  return res.data;
-};
-
 export const getFileUpload = async () => {
   const res = await axiosInstance.get(endpoints.integration.fileUpload);
   return res.data;
@@ -37,7 +31,7 @@ export const getActivityById = async (id: string) => {
 };
 
 export const getDocumentById = async (id: string) => {
-  const res = await axiosInstance.get(endpoints.documents.processed + `/${id}`);
+  const res = await axiosInstance.get(endpoints.documents.validation.id(id));
   return res.data;
 };
 
@@ -56,6 +50,7 @@ export const createDocument = async (
   { arg }: { arg: { id: string; fileName: string; fileExtension: string } }
 ) => {
   const { id, fileName, fileExtension } = arg;
+  const numberId = parseInt(id, 10);
   
   // Create processed document entry with comprehensive mock data
   const newProcessedDoc = {
@@ -112,27 +107,27 @@ export const createDocument = async (
       {
         title: "File Preview",
         type: "file-preview",
-        contentUrl: `/file-previews/${id}`
+        contentUrl: endpoints.documents.validation.filePreview(numberId)
       },
       {
         title: "Key Highlights",
         type: "key-highlights",
-        contentUrl: `/key-highlights-data/${id}`
+        contentUrl: endpoints.documents.validation.keyHighlights(id)
       },
       {
         title: "Document Summary",
         type: "document-summary",
-        contentUrl: `/document-summary/${id}`
+        contentUrl: endpoints.documents.validation.summary(id)
       }
     ]
   };
 
   // Create all entries in parallel
   const [processedDocResponse] = await Promise.all([
-    axiosInstance.post(endpoints.documents.processed, newProcessedDoc),
+    axiosInstance.post(endpoints.documents.validation.base, newProcessedDoc),
     
     // Create file preview data with comprehensive mock content
-    axiosInstance.post(endpoints.documents.previews, {
+    axiosInstance.post(endpoints.documents.validation.filePreview(numberId), {
       id,
       fileName,
       fileSize: "Processing...",
@@ -171,7 +166,7 @@ export const createDocument = async (
     }),
     
     // Create key highlights data with comprehensive mock content
-    axiosInstance.post(endpoints.dataValidation.keyHighlights, {
+    axiosInstance.post(endpoints.documents.validation.keyHighlights(id), {
       id,
       highlights: [
         {
@@ -199,7 +194,7 @@ export const createDocument = async (
     }),
     
     // Create document summary data with comprehensive mock content
-    axiosInstance.post(endpoints.documents.summary, {
+    axiosInstance.post(endpoints.documents.validation.summary(id), {
       id,
       description: `ESG compliance report for ${fileName} covering supply chain traceability, material origins, and certification status. Document includes comprehensive data from 3 key suppliers across multiple regions with detailed material sourcing information.`,
       reportingPeriod: "2024 Q1",
@@ -238,7 +233,7 @@ export const createDocument = async (
     }),
 
     // Create document actors data
-    axiosInstance.post(endpoints.documents.actors, {
+    axiosInstance.post(endpoints.documents.validation.actors(id), {
       id,
       documentId: id,
       actors: [
@@ -274,7 +269,7 @@ export const createDocument = async (
     }),
 
     // Create document actions data
-    axiosInstance.post(endpoints.documents.actions, {
+    axiosInstance.post(endpoints.documents.validation.actions(id), {
       id,
       documentId: id,
       actions: [
@@ -310,7 +305,7 @@ export const createDocument = async (
     }),
 
     // Create document table data
-    axiosInstance.post(endpoints.documents.tables, {
+    axiosInstance.post(endpoints.documents.validation.tables(id), {
       id,
       documentId: id,
       title: `${fileName} - Supply Chain Analysis`,
@@ -373,19 +368,6 @@ export const createDocument = async (
 // #region SWR
 const fetcher = (url: string) => axiosInstance.get(url).then((res) => res.data);
 
-export function useGetDataIntegrations() {
-  const { data, error, isLoading } = useSWR<DataIntegrationsData>(
-    endpoints.integration.base,
-    fetcher,
-  );
-
-  return {
-    dataIntegrations: data,
-    isLoading,
-    isError: error,
-  };
-}
-
 export function useGetFileUpload() {
   const { data, error, isLoading } = useSWR<FileUploadData>(
     endpoints.integration.fileUpload,
@@ -399,7 +381,7 @@ export function useGetFileUpload() {
   };
 }
 
-export function useGetActivityStatus(activityId: string | null) {
+export function useGetActivityStatus(activityId: number | null) {
   const { data, error, isLoading, mutate } = useSWR<ActivityWithProduct>(
     activityId ? `${endpoints.integration.activities}/${activityId}` : null,
     fetcher,
@@ -426,28 +408,36 @@ export function useGetActivityStatus(activityId: string | null) {
 
           const productToUpdate = await axiosInstance.get(`/products/${productId}`).then(res => res.data);
 
-          const newComponents: ComponentNode[] = filePreview.data.map((item: any) => ({
-            id: uuidv4(),
+          // Create new child products/components in the unified products table
+          const newChildProducts: ProductNode[] = filePreview.data.map((item: any) => ({
+            id: parseInt(uuidv4().replace(/-/g, '').substring(0, 8), 16), // Generate numeric ID
             name: item.material,
             quantity: item.qty,
             organizationId: productToUpdate.organizationId,
-            type: 'raw_material',
+            parentId: productToUpdate.id, // Set parent relationship
+            type: 'raw_material' as const,
             description: `Sourced from ${item.supplier}`,
             unit: item.unit,
+            sku: null,
+            category: null,
+            supplierOrganizationId: null,
             metadata: {
               originCountry: item.origin,
               certifications: [item.cert],
             },
             dataCompleteness: 75,
             missingDataFields: ['carbon_footprint'],
+            status: 'active',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             children: [],
           }));
 
+          // In a real app, these would be created via API calls to the products endpoint
+          // For now, we'll update the product's children array for display purposes
           const updatedProduct = {
             ...productToUpdate,
-            children: [...(productToUpdate.children || []), ...newComponents],
+            children: [...(productToUpdate.children || []), ...newChildProducts],
           };
           
           await updateProduct(productId, updatedProduct);
@@ -482,7 +472,7 @@ export function useGetActivityStatus(activityId: string | null) {
 
 export function useGetDocument(id: string) {
   const { data, error, isLoading } = useSWR<ProcessedDocument>(
-    id ? endpoints.documents.processed + `/${id}` : null,
+    id ? `${endpoints.documents.base}/${id}` : null,
     fetcher,
   );
 
@@ -493,8 +483,11 @@ export function useGetDocument(id: string) {
   };
 }
 
-export function useGetFilePreview(url: string | undefined) {
-  const { data, error, isLoading } = useSWR<FilePreviewData>(url, fetcher);
+export function useGetFilePreview(documentId: number | undefined) {
+  const { data, error, isLoading } = useSWR<FilePreviewData>(
+    documentId ? endpoints.documents.validation.filePreview(documentId) : null, 
+    fetcher
+  );
 
   return {
     filePreview: data,
@@ -503,8 +496,11 @@ export function useGetFilePreview(url: string | undefined) {
   };
 }
 
-export function useGetKeyHighlights(url: string | undefined) {
-  const { data, error, isLoading } = useSWR<KeyHighlightsData>(url, fetcher);
+export function useGetKeyHighlights(documentId: string | undefined) {
+  const { data, error, isLoading } = useSWR<KeyHighlightsData>(
+    documentId ? endpoints.documents.validation.keyHighlights(documentId) : null, 
+    fetcher
+  );
 
   return {
     keyHighlights: data,
@@ -513,15 +509,10 @@ export function useGetKeyHighlights(url: string | undefined) {
   };
 }
 
-export function useGetDocumentSummary(url: string | undefined) {
+export function useGetDocumentSummary(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<DocumentSummaryData>(
-    url,
-    async (fetchUrl: string) => {
-      // Extract ID from URL like "/document-summary/c983ee50-0c80-43aa-b6c8-6d24e974dab9"
-      const id = fetchUrl.split('/').pop();
-      const response = await fetcher(`${endpoints.documents.summary}/${id}`);
-      return response;
-    }
+    documentId ? endpoints.documents.validation.summary(documentId) : null,
+    fetcher
   );
 
   return {
@@ -533,18 +524,15 @@ export function useGetDocumentSummary(url: string | undefined) {
 
 export function useGetActors(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<Actor[]>(
-    documentId ? `${endpoints.documents.processed}/${documentId}` : null,
+    documentId ? endpoints.documents.validation.actors(documentId) : null,
     async (url: string) => {
       try {
         const response = await fetcher(url);
         
-        if (response?.actors && Array.isArray(response.actors) && response.actors.length > 0) {
-          return response.actors;
+        if (Array.isArray(response) && response.length > 0) {
+          return response;
         }
         
-        if (response?.actors && !Array.isArray(response.actors)) {
-          return [];
-        }
         return [];
         
       } catch (error) {
@@ -563,31 +551,21 @@ export function useGetActors(documentId: string | undefined) {
 
 export function useGetDynamicTable(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<DynamicTable>(
-    documentId ? `${endpoints.documents.previews}/${documentId}` : null,
+    documentId ? endpoints.documents.validation.tables(documentId) : null,
     async (url: string): Promise<DynamicTable> => {
       try {
-        const previewResponse = await fetcher(url);
+        const response = await fetcher(url);
         
-        console.log('File Preview API Response for Dynamic Table:', previewResponse); // Debug log
+        console.log('Document Tables API Response:', response); // Debug log
         
-        // Check if file preview data exists and is properly structured
-        if (previewResponse?.data && Array.isArray(previewResponse.data) && previewResponse.data.length > 0) {
-          console.log('Found valid file preview data:', previewResponse.data); // Debug log
+        // Check if table data exists and is properly structured
+        if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
+          console.log('Found valid table data:', response.data); // Debug log
           
           const tableData: DynamicTable = {
-            title: `${previewResponse.fileName || 'Document'} - Data Table`,
-            columns: ['Material', 'Origin', 'Supplier', 'Certification', 'Date', 'Quantity', 'Unit', 'Status'],
-            data: previewResponse.data.map((item: any, index: number) => ({
-              id: `row-${index + 1}`,
-              Material: item.material || '-',
-              Origin: item.origin || '-',
-              Supplier: item.supplier || '-',
-              Certification: item.cert || '-',
-              Date: item.date || '-',
-              Quantity: item.qty?.toString() || '-',
-              Unit: item.unit || '-',
-              Status: item.status || '-',
-            }))
+            title: response.title || 'Document Data Table',
+            columns: response.columns || Object.keys(response.data[0]).filter(key => key !== 'id'),
+            data: response.data
           };
           
           console.log('Generated table data:', tableData); // Debug log
@@ -595,7 +573,7 @@ export function useGetDynamicTable(documentId: string | undefined) {
         }
         
         // If no valid data found, return fallback structure
-        console.warn('No valid file preview data found:', previewResponse); // Debug log
+        console.warn('No valid table data found:', response); // Debug log
         return {
           title: 'No Data Available',
           columns: ['Status'],
@@ -622,18 +600,15 @@ export function useGetDynamicTable(documentId: string | undefined) {
 
 export function useGetActions(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<any[]>(
-    documentId ? `${endpoints.documents.actions}/${documentId}` : null,
+    documentId ? endpoints.documents.validation.actions(documentId) : null,
     async (url: string) => {
       try {
         const response = await fetcher(url);
         
-        if (response?.actions && Array.isArray(response.actions) && response.actions.length > 0) {
-          return response.actions;
+        if (Array.isArray(response) && response.length > 0) {
+          return response;
         }
         
-        if (response?.actions && !Array.isArray(response.actions)) {
-          return [];
-        }
         return [];
         
       } catch (error) {
@@ -651,33 +626,36 @@ export function useGetActions(documentId: string | undefined) {
 }
 
 // --- Mock Extracted Product Tree API ---
-export const getExtractedProductTree = async (activityId: string) => {
-  // For demo, just return a static product/component tree with suppliers from db.json
+export const getExtractedProductTree = async (activityId: number) => {
+  // For demo, just return a static product tree with child products/components from unified products table
   // In real app, this would be based on the uploaded file and extraction process
   const { data: products } = await axiosInstance.get('/products');
-  const { data: components } = await axiosInstance.get('/components');
   const { data: orgs } = await axiosInstance.get('/organizations');
+  
   // Pick the first product as the extracted one
   const product = products[0];
-  // Get all components for this product
-  const productComponents = components.filter((c: any) => c.productId === product.id);
-  // Attach supplier info
-  const componentsWithSupplier = productComponents.map((c: any) => ({
-    ...c,
-    supplier: orgs.find((o: any) => o.id === c.supplierOrganizationId) || null
+  
+  // Get all child products/components for this product (where parentId matches product.id)
+  const childProducts = products.filter((p: any) => p.parentId === product.id);
+  
+  // Attach supplier info to child products
+  const childProductsWithSupplier = childProducts.map((child: any) => ({
+    ...child,
+    supplier: orgs.find((o: any) => o.id === child.supplierOrganizationId) || null
   }));
+  
   return {
     activityId,
     product: {
       ...product,
-      components: componentsWithSupplier
+      children: childProductsWithSupplier // Use children instead of components to match unified structure
     }
   };
 };
 
-export function useGetExtractedProductTree(activityId: string | undefined) {
+export function useGetExtractedProductTree(activityId: number | undefined) {
   const { data, error, isLoading, mutate } = useSWR(
-    activityId ? endpoints.integration.extractedProductTree(activityId) : null,
+    activityId ? `/integration/extracted-product-tree/${activityId}` : null,
     () => activityId ? getExtractedProductTree(activityId) : null
   );
   return {

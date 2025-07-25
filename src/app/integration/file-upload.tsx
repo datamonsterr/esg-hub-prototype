@@ -39,26 +39,83 @@ import { Product } from '@/src/types';
 interface FileUploadProps {
   selectedProduct: Product | null
   onNavigateBack: () => void
-  onUploadComplete: (docId: string) => void
+  onUploadComplete: (docId: number) => void
 }
 
 export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }: FileUploadProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { fileUpload, isLoading, isError } = useGetFileUpload();
+  const fileUpload = {
+    fileTypes: [
+      {
+        "id": "excel",
+        "title": "Excel",
+        "description": "Upload .xlsx or .xls files",
+        "icon": "faFileExcel",
+        "iconColor": "text-green-600",
+        "badge": "Recommended",
+        "badgeColor": "bg-green-100 text-green-800"
+      },
+      {
+        "id": "csv",
+        "title": "CSV",
+        "description": "Upload .csv files",
+        "icon": "faFileCsv",
+        "iconColor": "text-blue-600",
+        "badge": "Simple",
+        "badgeColor": "bg-blue-100 text-blue-800"
+      },
+      {
+        "id": "pdf",
+        "title": "PDF",
+        "description": "Upload .pdf documents",
+        "icon": "faFilePdf",
+        "iconColor": "text-red-600",
+        "badge": "Read-Only",
+        "badgeColor": "bg-red-100 text-red-800"
+      },
+      {
+        "id": "word",
+        "title": "Word",
+        "description": "Upload .doc or .docx files",
+        "icon": "faFileWord",
+        "iconColor": "text-blue-700",
+        "badge": "Documents",
+        "badgeColor": "bg-blue-100 text-blue-800"
+      },
+      {
+        "id": "images",
+        "title": "Images",
+        "description": "Upload .jpg, .png, or .svg files",
+        "icon": "faFileImage",
+        "iconColor": "text-purple-600",
+        "badge": "Visuals",
+        "badgeColor": "bg-purple-100 text-purple-800"
+      },
+      {
+        "id": "multiple",
+        "title": "Multiple Files",
+        "description": "Upload a zip archive with multiple files",
+        "icon": "faFile",
+        "iconColor": "text-gray-600",
+        "badge": "Advanced",
+        "badgeColor": "bg-gray-100 text-gray-800"
+      }
+    ]
+  }
   const { showErrorToast, showSuccessToast } = useToast();
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [selectedFileType, setSelectedFileType] = useState<FileType | null>(null);
-  const [uploadingActivityId, setUploadingActivityId] = useState<string | null>(null);
+  const [uploadingActivityId, setUploadingActivityId] = useState<number| null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get('productId');
 
   const { activity: uploadingActivity, isLoading: isStatusLoading } = useGetActivityStatus(uploadingActivityId);
 
-  const onNavigateToValidation = (activityId: string) => {
+  const onNavigateToValidation = (activityId: number) => {
     router.push(`/integration/validation/${activityId}`);
   };
 
@@ -94,18 +151,6 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
     [isUploadModalOpen]
   );
 
-  if (isLoading) {
-    return <GlobalLoading />;
-  }
-
-  if (isError) {
-    return <ErrorComponent title="Error Loading Data" description="There was an error loading the file upload data. Please try again later." />;
-  }
-
-  if (!fileUpload) {
-    return null;
-  }
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setUploadedFile(e.target.files[0]);
@@ -121,37 +166,36 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
       return
     }
     try {
-      const newActivityId = uuidv4();
-      const fileExtension = uploadedFile.name.split('.').pop() || '';
+      // const fileExtension = uploadedFile.name.split('.').pop() || '';
 
-      await createDocument(endpoints.documents.processed, {
-        arg: { id: newActivityId, fileName: uploadedFile.name, fileExtension },
-      });
+      // await createDocument(endpoints.documents.processed, {
+      //   arg: { id: newActivityId, fileName: uploadedFile.name, fileExtension },
+      // });
 
       const newActivity = await createActivity(endpoints.integration.activities, {
         arg: {
-          id: newActivityId,
-          title: 'File Upload',
-          subtitle: uploadedFile.name,
+          title: `File Upload - ${uploadedFile.name}`,
+          subtitle: `Processing file for product ${selectedProduct?.name || 'Unknown Product'}`,
+          status: 'processing',
         }
       });
-      
-      // Upload the file with the same UUID
-      const formData = new FormData();
-      formData.append('file', uploadedFile);
-      formData.append('id', newActivityId);
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      // // Upload the file with the same UUID
+      // const formData = new FormData();
+      // formData.append('file', uploadedFile);
+      // formData.append('id', newActivityId);
 
-      if (!response.ok) {
-        throw new Error('File upload failed');
-      }
+      // const response = await fetch('/api/upload', {
+      //   method: 'POST',
+      //   body: formData,
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('File upload failed');
+      // }
+      // 
       setUploadingActivityId(newActivity.id);
       showSuccessToast("Upload started, processing file...");
-      // The useGetActivityStatus hook will now monitor the status
       onUploadComplete(newActivity.id);
     } catch (error) {
       console.error('Upload failed:', error);
@@ -248,9 +292,8 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
         {/* File Upload Area */}
         {!uploadedFile && (
           <div
-            className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${
-              dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
-            }`}
+            className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
+              }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
@@ -304,10 +347,10 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
               </Button>
             </div>
             {uploadingActivity && (
-               <div className="flex items-center space-x-2 mt-2">
-                 <p>Status: {uploadingActivity.status}</p>
-                  {uploadingActivity.status === 'processing' && isStatusLoading && <p>(checking...)</p>}
-               </div>
+              <div className="flex items-center space-x-2 mt-2">
+                <p>Status: {uploadingActivity.status}</p>
+                {uploadingActivity.status === 'processing' && isStatusLoading && <p>(checking...)</p>}
+              </div>
             )}
           </div>
         )}
@@ -337,8 +380,8 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
         </div>
 
         <ComingSoonModal isOpen={isComingSoonModalOpen} onClose={() => setIsComingSoonModalOpen(false)} />
-        
-        <FileUploadModal 
+
+        <FileUploadModal
           isOpen={isUploadModalOpen}
           onClose={() => setIsUploadModalOpen(false)}
           fileType={selectedFileType}
@@ -352,18 +395,18 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
   )
 }
 
-function FileUploadModal({ 
-  isOpen, 
-  onClose, 
-  fileType, 
-  onFileSelect, 
+function FileUploadModal({
+  isOpen,
+  onClose,
+  fileType,
+  onFileSelect,
   onDrop,
   dragActive,
   handleDrag,
-}: { 
-  isOpen: boolean, 
-  onClose: () => void, 
-  fileType: FileType | null, 
+}: {
+  isOpen: boolean,
+  onClose: () => void,
+  fileType: FileType | null,
   onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void,
   onDrop: (e: React.DragEvent) => void,
   dragActive: boolean,
@@ -393,9 +436,8 @@ function FileUploadModal({
           <DialogTitle>Upload {fileType.title}</DialogTitle>
         </DialogHeader>
         <div
-          className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${
-            dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
-          }`}
+          className={`border-2 border-dashed rounded-brand p-12 text-center transition-colors ${dragActive ? "border-brand-primary bg-brand-primary/5" : "border-border-light hover:border-brand-primary/50"
+            }`}
         >
           <Upload className="h-12 w-12 text-brand-primary mx-auto mb-4" />
           <h3 className="text-lg font-medium mb-2">Drag and drop your file here</h3>

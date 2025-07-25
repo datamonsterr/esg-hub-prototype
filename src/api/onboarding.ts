@@ -33,7 +33,7 @@ export const getPendingInvitations = async (): Promise<PendingInvitation[]> => {
 };
 
 export const acceptInvitation = async (
-  invitationId: string
+  invitationId: number 
 ): Promise<AcceptInvitationResponse> => {
   const response = await axiosInstance.post(
     endpoints.onboard.accept(invitationId)
@@ -94,7 +94,7 @@ export function useGetPendingInvitations() {
 }
 
 export function useAcceptInvitation() {
-  const acceptInvite = async (invitationId: string) => {
+  const acceptInvite = async (invitationId: number) => {
     return await acceptInvitation(invitationId);
   };
 

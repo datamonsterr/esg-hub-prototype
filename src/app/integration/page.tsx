@@ -48,7 +48,7 @@ export default function DataIntegrationPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isProductSelectOpen, setIsProductSelectOpen] = useState(false)
   const [step, setStep] = useState<'integration' | 'upload' | 'validation'>('integration')
-  const [documentId, setDocumentId] = useState<string | null>(null)
+  const [documentId, setDocumentId] = useState<number | null>(null)
 
   // Handler for starting upload
   const handleStartUpload = () => {
@@ -56,7 +56,7 @@ export default function DataIntegrationPage() {
   }
 
   // Handler for upload completion
-  const handleUploadComplete = (docId: string) => {
+  const handleUploadComplete = (docId: number) => {
     setDocumentId(docId)
     setStep('validation')
   }

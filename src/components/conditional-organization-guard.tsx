@@ -15,7 +15,8 @@ export function ConditionalOrganizationGuard({ children }: ConditionalOrganizati
         '/sign-in',
         '/sign-up',
         '/onboarding',
-        '/admin' // Admin page has its own organization check
+        '/admin', // Admin page has its own organization check
+        '/traceability' // Remove organization requirement for traceability module
     ];
 
     const requiresOrganization = !publicPaths.some(path => pathname.startsWith(path));

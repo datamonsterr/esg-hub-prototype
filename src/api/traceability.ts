@@ -17,7 +17,7 @@ export const getIncomingRequests = async (params?: {
   dateFrom?: string;
   dateTo?: string;
 }): Promise<TraceabilityRequest[]> => {
-  const res = await axiosInstance.get(endpoints.traceabilityRequests.incoming, { params });
+  const res = await axiosInstance.get(endpoints.traceability.requests.incoming, { params });
   return res.data;
 };
 
@@ -27,27 +27,27 @@ export const getOutgoingRequests = async (params?: {
   dateFrom?: string;
   dateTo?: string;
 }): Promise<TraceabilityRequest[]> => {
-  const res = await axiosInstance.get(endpoints.traceabilityRequests.outgoing, { params });
+  const res = await axiosInstance.get(endpoints.traceability.requests.outgoing, { params });
   return res.data;
 };
 
 export const getTraceabilityRequest = async (id: string): Promise<TraceabilityRequestDetail> => {
-  const res = await axiosInstance.get(endpoints.traceabilityRequests.id(id));
+  const res = await axiosInstance.get(endpoints.traceability.requests.id(id));
   return res.data;
 };
 
 export const createTraceabilityRequest = async (data: CreateTraceabilityRequest): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.post(endpoints.traceabilityRequests.base, data);
+  const res = await axiosInstance.post(endpoints.traceability.requests.base, data);
   return res.data;
 };
 
 export const updateTraceabilityRequest = async (id: string, data: Partial<TraceabilityRequest>): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.put(endpoints.traceabilityRequests.id(id), data);
+  const res = await axiosInstance.put(endpoints.traceability.requests.id(id), data);
   return res.data;
 };
 
 export const respondToRequest = async (id: string, response: TraceabilityResponse): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.post(endpoints.traceabilityRequests.respond(id), response);
+  const res = await axiosInstance.post(endpoints.traceability.requests.respond(id), response);
   return res.data;
 };
 
@@ -83,7 +83,7 @@ export function useGetIncomingRequests(params?: {
   dateTo?: string;
 }) {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
-    [endpoints.traceabilityRequests.incoming, params],
+    [endpoints.traceability.requests.incoming, params],
     () => getIncomingRequests(params),
   );
 
@@ -116,7 +116,7 @@ export function useGetOutgoingRequests(params?: {
 
 export function useGetTraceabilityRequest(id: string) {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityRequestDetail>(
-    id ? endpoints.traceabilityRequests.id(id) : null,
+    id ? endpoints.traceability.requests.id(id) : null,
     () => getTraceabilityRequest(id),
   );
 

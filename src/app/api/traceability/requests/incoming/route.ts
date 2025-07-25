@@ -45,7 +45,8 @@ export async function GET(request: NextRequest) {
     query = processQueryParams(query, searchParams, allowedFilters);
 
     const { data: requests, error } = await query;
-
+    console.log(requests)
+    
     if (error) {
       return handleDatabaseError(error);
     }

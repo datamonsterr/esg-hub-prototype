@@ -27,11 +27,11 @@ if (typeof window !== 'undefined') {
 }
 
 interface FilePreviewProps {
-  contentUrl: string | undefined
+  documentId: number | undefined
 }
 
-export function FilePreview({ contentUrl }: FilePreviewProps) {
-  const { filePreview, isLoading, isError } = useGetFilePreview(contentUrl)
+export function FilePreview({ documentId }: FilePreviewProps) {
+  const { filePreview, isLoading, isError } = useGetFilePreview(documentId)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [numPages, setNumPages] = useState<number | null>(null)
   const [isClient, setIsClient] = useState(false)
@@ -71,12 +71,10 @@ export function FilePreview({ contentUrl }: FilePreviewProps) {
     setNumPages(numPages)
   }
 
-  // Extract file ID from contentUrl and construct the actual file URL
+  // Construct the actual file URL from documentId
   const getFileUrl = () => {
-    if (!contentUrl) return null;
-    // Extract the ID from contentUrl (e.g., "/file-previews/c3b7e7ad-5548-4f72-9842-be1d62169f38")
-    const id = contentUrl.split('/').pop();
-    return `/api/files/${id}`;
+    if (!documentId) return null;
+    return `/api/files/${documentId}`;
   };
 
   const fileUrl = getFileUrl();

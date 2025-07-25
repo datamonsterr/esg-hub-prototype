@@ -1,4 +1,4 @@
-import { Product, Component, ComponentNode } from "./product";
+import { Product, ProductNode } from "./product";
 
 export type UserRole = "brand" | "supplier" | "admin";
 
@@ -93,7 +93,7 @@ export interface Organization {
 export interface ProcessRequest {
   processingId: string;
   selectedProductId?: string;
-  extractionType: "product" | "components" | "bom";
+  extractionType: "product" | "materials" | "bom";
   organizationId: string;
 }
 
@@ -102,8 +102,8 @@ export interface ProcessResult {
   status: "processing" | "completed" | "failed";
   extractedData: {
     products: Product[];
-    components: Component[];
-    componentTree: ComponentNode;
+    children: Product[]; // Child products/components from unified table
+    productTree: ProductNode;
   };
   dataQuality: {
     completeness: number;
@@ -115,7 +115,7 @@ export interface ProcessResult {
 
 export interface OrganizationAnalytics {
   productCount: number;
-  componentCount: number;
+  materialCount: number; // Changed from componentCount
   traceabilityCompleteness: number;
   supplierCount: number;
   customerCount: number;
@@ -141,20 +141,7 @@ export interface TrendData {
   value: number;
 }
 
-// API Request/Response types
-export interface CreateComponentRequest {
-  productId?: string;
-  parentId?: string;
-  name: string;
-  type: Component['type'];
-  description: string;
-  quantity: number;
-  unit: string;
-  supplierOrganizationId?: string;
-  metadata?: Record<string, any>;
-}
-
-// Auth types for organization-based system
+// API Request/Response types - now using unified Product interface
 export interface AuthUser {
   id: string;
   email: string;

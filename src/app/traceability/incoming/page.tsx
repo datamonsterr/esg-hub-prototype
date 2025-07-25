@@ -29,8 +29,8 @@ export default function SupplierTraceabilityPage() {
   const filteredRequests =
     requests?.filter((request: TraceabilityRequest) => {
       const matchesSearch =
-        request.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        request.assessmentTemplateId
+        request.id.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+        request.assessmentId.toString()
           .toLowerCase()
           .includes(searchQuery.toLowerCase());
       return matchesSearch;
@@ -84,11 +84,13 @@ export default function SupplierTraceabilityPage() {
     }
   };
 
-  const isOverdue = (expirationDate: string) => {
+  const isOverdue = (expirationDate: string | null | undefined) => {
+    if (!expirationDate) return false;
     return new Date(expirationDate) < new Date();
   };
 
-  const getDaysOverdue = (expirationDate: string) => {
+  const getDaysOverdue = (expirationDate: string | null | undefined) => {
+    if (!expirationDate) return 0;
     const due = new Date(expirationDate);
     const now = new Date();
     const diffTime = now.getTime() - due.getTime();
@@ -195,7 +197,7 @@ export default function SupplierTraceabilityPage() {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         <h3 className="text-lg font-medium text-gray-900">
-                          Assessment Request {request.assessmentTemplateId}
+                          Assessment Request {request.assessmentId}
                         </h3>
                         <span
                           className={`px-2 py-1 text-xs rounded-full font-medium ${getStatusBadge(
@@ -210,7 +212,7 @@ export default function SupplierTraceabilityPage() {
                           <strong>Request ID:</strong> {request.id}
                         </span>
                         <span>
-                          <strong>Assessment:</strong> {request.assessmentTemplateId}
+                          <strong>Assessment:</strong> {request.assessmentId}
                         </span>
                         <span>
                           <strong>Created:</strong>{' '}
@@ -235,9 +237,9 @@ export default function SupplierTraceabilityPage() {
                       </span>
                     </div>
                     <div className="text-sm text-gray-600">
-                      Due: {new Date(request.dueDate).toLocaleDateString()}
+                      Due: {request.dueDate ? new Date(request.dueDate).toLocaleDateString() : 'No due date'}
                     </div>
-                    {isOverdue(request.dueDate) &&
+                    {request.dueDate && isOverdue(request.dueDate) &&
                       request.status !== 'completed' && (
                         <div className="text-xs text-error mt-1">
                           {getDaysOverdue(request.dueDate)} days overdue

@@ -20,7 +20,7 @@ export default function OnboardingPage() {
 
     const [invitations, setInvitations] = useState<PendingInvitation[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [acceptingId, setAcceptingId] = useState<string | null>(null);
+    const [acceptingId, setAcceptingId] = useState<number | null>(null);
 
     useEffect(() => {
         if (isLoaded && !userContextLoading && user) {
@@ -43,28 +43,14 @@ export default function OnboardingPage() {
                 loadInvitations();
             }
         }
-    }, [isLoaded, user, router]);
+    }, [isLoaded, user, router, organizationId, userContextLoading]);
 
     const loadInvitations = async () => {
         try {
             setIsLoading(true);
 
-            // Auto-create invitation for new users
-            if (user?.emailAddresses?.[0]?.emailAddress) {
-                const email = user.emailAddresses[0].emailAddress;
-                const firstName = user.firstName || "";
-                const lastName = user.lastName || "";
-
-                // Auto-create invitation
-                await fetch("/api/onboard/pending-invitations", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, firstName, lastName }),
-                });
-            }
-
             const email = user?.emailAddresses?.[0]?.emailAddress;
-            const response = await fetch(`/api/onboard/pending-invitations?email=${email}`);
+            const response = await fetch(`/api/onboard/pending-invitations${email ? `?email=${email}` : ''}`);
             const data = await response.json();
 
             if (response.ok) {
@@ -79,7 +65,7 @@ export default function OnboardingPage() {
         }
     };
 
-    const handleAcceptInvitation = async (invitationId: string) => {
+    const handleAcceptInvitation = async (invitationId: number) => {
         try {
             setAcceptingId(invitationId);
 
@@ -177,11 +163,11 @@ export default function OnboardingPage() {
 
                                         <div className="flex gap-3">
                                             <Button
-                                                onClick={() => handleAcceptInvitation(invitation.id.toString())}
-                                                disabled={acceptingId === invitation.id.toString()}
+                                                onClick={() => handleAcceptInvitation(invitation.id)}
+                                                disabled={acceptingId === invitation.id}
                                                 className="flex items-center gap-2"
                                             >
-                                                {acceptingId === invitation.id.toString() ? (
+                                                {acceptingId === invitation.id ? (
                                                     <>
                                                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                                                         Accepting...

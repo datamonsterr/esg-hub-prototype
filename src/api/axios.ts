@@ -1,7 +1,9 @@
 import axios from "axios";
+import { KeyHighlights } from "../components/validation/key-highlights";
+import { actionAsyncStorage } from "next/dist/server/app-render/action-async-storage.external";
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NODE_ENV === "production" ? "/api" : "/api",
+  baseURL: "/api",
 });
 
 export const endpoints = {
@@ -16,29 +18,24 @@ export const endpoints = {
     inviteById: (orgId: string, inviteId: string) =>
       `/organizations/${orgId}/invites/${inviteId}`,
   },
-  // Products
+  // Products (unified table for both products and components)
   products: {
     base: "/products",
     id: (id: string) => `/products/${id}`,
-    components: (id: string) => `/products/${id}/components`,
+    children: (id: string) => `/products/${id}/children`, // Get child products/components
     dataGaps: (id: string) => `/products/${id}/data-gaps`,
-  },
-  // Components
-  components: {
-    base: "/components",
-    id: (id: string) => `/components/${id}`,
-    tree: (productId: string) => `/products/${productId}/component-tree`,
-    children: (id: string) => `/components/${id}/children`,
-    relationships: "/component-relationships",
-    dataGaps: (id: string) => `/components/${id}/data-gaps`,
+    tree: (id: string) => `/products/${id}/tree`, // Get hierarchical tree
   },
   // Traceability
-  traceabilityRequests: {
-    base: "/traceability-requests",
-    id: (id: string) => `/traceability-requests/${id}`,
-    incoming: "/traceability-requests-incoming",
-    outgoing: "/traceability-requests-outgoing",
-    respond: (id: string) => `/traceability-requests/${id}/respond`,
+  traceability: {
+    base: "/traceability",
+    requests: {
+      base: "/traceability/requests",
+      id: (id: string) => `/traceability/requests/${id}`,
+      respond: (id: string) => `/traceability/requests/${id}/respond`,
+      incoming: "/traceability/requests/incoming",
+      outgoing: "/traceability/requests/outgoing",
+    },
   },
   // Assessments
   assessment: {
@@ -48,32 +45,35 @@ export const endpoints = {
       base: "/assessment/template",
       id: (id: string) => `/assessment/template/${id}`,
     },
-    filter: "/assessment/filter",
   },
   // Data Integration
   integration: {
     base: "/integration",
-    activities: "/activities",
+    activities: "/activities", // Updated to match new API structure
     fileUpload: "/file-upload",
     csvImport: "/csv-import",
     productLink: "/product-link",
     validation: (id: string) => `/integration/validation/${id}`,
   },
-  dataValidation: {
-    base: "/data-validation",
-    keyHighlights: "/key-highlights-data",
-  },
   documents: {
-    processed: "/processed-documents",
-    previews: "/file-previews",
-    summary: "/document-summary",
-    actors: "/document-actors",
-    actions: "/document-actions",
-    tables: "/document-tables",
+    base: "/documents",
+    validation: {
+      base: "/documents/validation",
+      id: (id: string) => `/documents/validation/${id}`,
+      tables: (id: string) => `/documents/validation/${id}/tables`,
+      keyHighlights: (id: string) =>
+        `/documents/validation/${id}/key-highlights`,
+      summary: (id: string) => `/documents/validation/${id}/summary`,
+      actors: (id: string) => `/documents/validation/${id}/actors`,
+      actions: (id: string) => `/documents/validation/${id}/actions`,
+      dynamicTable: (id: string) => `/documents/validation/${id}/dynamic-table`,
+      filePreview: (id: number) => `/documents/validation/${id}/file-preview`,
+    },
   },
   // User Management
   users: {
     base: "/users",
+    current: "/users/current",
     id: (id: string) => `/users/${id}`,
     profile: "/users/profile",
     updateRole: (id: string) => `/users/${id}/role`,

@@ -15,7 +15,7 @@ import { Edit } from "lucide-react"
 import { Product } from "@/src/types/product"
 import { WidgetCard } from "@/src/components/ui/widget-card"
 
-export default function Validation({ documentId, selectedProduct }: { documentId: string, selectedProduct: Product | null }) {
+export default function Validation({ documentId, selectedProduct }: { documentId: number, selectedProduct: Product | null }) {
   const { extractedTree, isLoading, isError, mutate } = useGetExtractedProductTree(documentId);
 
   if (isLoading || !documentId) {
@@ -49,25 +49,25 @@ export default function Validation({ documentId, selectedProduct }: { documentId
             <ExtractedProductTree tree={extractedTree.product} onChange={() => {}} />
           </WidgetCard>
           <WidgetCard title="File Preview">
-            <FilePreview contentUrl={documentId} />
+            <FilePreview documentId={documentId} />
           </WidgetCard>
           <WidgetCard title="Document Summary">
-            <DocumentSummary contentUrl={documentId} />
+            <DocumentSummary documentId={documentId.toString()} />
           </WidgetCard>
           <WidgetCard title="Key Highlights">
-            <KeyHighlights contentUrl={documentId} />
+            <KeyHighlights documentId={documentId.toString()} />
           </WidgetCard>
           <WidgetCard title="Dynamic Table">
-            <DynamicTable documentId={documentId} />
+            <DynamicTable documentId={documentId.toString()} />
           </WidgetCard>
         </div>
         {/* Right Panel: 1/3 width */}
         <div className="w-1/3 flex flex-col space-y-6">
           <WidgetCard title="Actors">
-            <Actors documentId={documentId} />
+            <Actors documentId={documentId.toString()} />
           </WidgetCard>
           <WidgetCard title="Actions">
-            <Actions documentId={documentId} />
+            <Actions documentId={documentId.toString()} />
           </WidgetCard>
         </div>
       </div>

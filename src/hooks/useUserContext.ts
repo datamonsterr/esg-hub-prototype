@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { getUserByClerkId } from '../lib/user-utils';
 
 export interface UserContextData {
   userId: string;
@@ -7,13 +8,6 @@ export interface UserContextData {
   organizationId?: number;
   organizationRole?: "admin" | "employee";
   isActive?: boolean;
-  organization?: {
-    id: number;
-    name: string;
-    address?: string;
-    email?: string;
-    created_at: string;
-  };
   isLoading: boolean;
   error?: string;
 }
@@ -46,20 +40,17 @@ export function useUserContext(): UserContextData {
     // Fetch user data from our API
     const fetchUserData = async () => {
       try {
-        const response = await fetch('/api/users/current');
-        if (!response.ok) {
-          throw new Error('Failed to fetch user data');
+        const data = await getUserByClerkId(user.id);
+        if (!data) {
+            throw new Error('Failed to fetch user data');
         }
-
-        const data = await response.json();
         
         setUserData({
           userId: user.id,
           email: user.emailAddresses[0]?.emailAddress,
-          organizationId: data.organization_id,
+          organizationId: data?.organization_id,
           organizationRole: data.organization_role,
           isActive: data.is_active,
-          organization: data.organizations,
           isLoading: false,
         });
       } catch (error) {

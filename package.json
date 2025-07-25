@@ -6,7 +6,10 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db:init": "tsx scripts/initialize-database.ts",
+    "db:check": "curl http://localhost:3000/api/health",
+    "supabase:test": "curl http://localhost:3000/api/test-supabase"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.24.0",

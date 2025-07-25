@@ -1,26 +1,67 @@
 import { createClient } from '@supabase/supabase-js'
+import { getSupabaseConfigWithValidation } from './supabase-config-validator'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Lazy initialization to ensure environment variables are loaded
+let _config: any = null;
+let _supabase: any = null;
+let _supabaseAdmin: any = null;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Server-side client with service role key for admin operations
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false
-  },
-  db: {
-    schema: 'public'
-  },
-  global: {
-    headers: {
-      Authorization: `Bearer ${supabaseServiceRoleKey}`,
-    }
+function getConfig() {
+  if (!_config) {
+    _config = getSupabaseConfigWithValidation();
   }
-})
+  return _config;
+}
+
+export function getSupabase() {
+  if (!_supabase) {
+    const config = getConfig();
+    _supabase = createClient(config.url, config.anonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true
+      },
+      db: {
+        schema: 'public'
+      }
+    });
+  }
+  return _supabase;
+}
+
+export function getSupabaseAdmin() {
+  if (!_supabaseAdmin) {
+    const config = getConfig();
+    _supabaseAdmin = createClient(config.url, config.serviceRoleKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      },
+      db: {
+        schema: 'public'
+      },
+      global: {
+        headers: {
+          Authorization: `Bearer ${config.serviceRoleKey}`,
+        }
+      }
+    });
+  }
+  return _supabaseAdmin;
+}
+
+// Export lazy-initialized clients
+export const supabase = new Proxy({} as any, {
+  get(target, prop) {
+    return getSupabase()[prop];
+  }
+});
+
+export const supabaseAdmin = new Proxy({} as any, {
+  get(target, prop) {
+    return getSupabaseAdmin()[prop];
+  }
+});
 
 // Database types based on our schema
 export type Database = {

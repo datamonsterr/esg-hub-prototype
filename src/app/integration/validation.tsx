@@ -1,6 +1,5 @@
 "use client"
 
-import { useGetExtractedProductTree } from "@/src/api/integration"
 import { GlobalLoading } from "@/src/components/global-loading"
 import { Button } from "@/src/components/ui/button"
 import { ErrorComponent } from "@/src/components/ui/error"
@@ -16,14 +15,57 @@ import { Product } from "@/src/types/product"
 import { WidgetCard } from "@/src/components/ui/widget-card"
 
 export default function Validation({ documentId, selectedProduct }: { documentId: number, selectedProduct: Product | null }) {
-  const { extractedTree, isLoading, isError, mutate } = useGetExtractedProductTree(documentId);
+  
+  const extractedTree: Product = {
+    id: documentId,
+    organizationId: 1,
+    name: "Extracted Product Tree",
+    type: "final_product",
+    description: "Mock extracted product tree",
+    status: "active",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    parentId: null,
+    children: [
+      {
+        id: 1,
+        organizationId: 1,
+        name: `Child Product ${documentId}-1`,
+        type: "component",
+        description: "Child product",
+        status: "active",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        parentId: documentId,
+        children: [],
+        quantity: 0,
+        unit: "",
+        metadata: undefined,
+        dataCompleteness: 0
+      },
+      {
+        id: 2,
+        organizationId: 1,
+        name: `Child Product ${documentId}-2`,
+        type: "component",
+        description: "Child product",
+        status: "active",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        parentId: documentId,
+        children: [],
+        quantity: 0,
+        unit: "",
+        metadata: undefined,
+        dataCompleteness: 0
+      }
+    ],
+    quantity: 0,
+    unit: "",
+    metadata: undefined,
+    dataCompleteness: 0
+  };
 
-  if (isLoading || !documentId) {
-    return <GlobalLoading />;
-  }
-  if (isError || !extractedTree) {
-    return <ErrorComponent title="Error Loading Extracted Data" description="There was an error loading the extracted product tree." />;
-  }
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -73,4 +115,4 @@ export default function Validation({ documentId, selectedProduct }: { documentId
       </div>
     </div>
   );
-} 
+}

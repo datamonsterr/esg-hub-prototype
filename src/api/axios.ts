@@ -68,6 +68,7 @@ export const endpoints = {
       actions: (id: string) => `/documents/validation/${id}/actions`,
       dynamicTable: (id: string) => `/documents/validation/${id}/dynamic-table`,
       filePreview: (id: number) => `/documents/validation/${id}/file-preview`,
+      productTree: (id: number) => `/documents/validation/${id}/product-tree`,
     },
   },
   // User Management

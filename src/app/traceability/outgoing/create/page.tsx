@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import Link from "next/link"
 import { ArrowLeft, Search, WandIcon, Plus, X, Eye, Send } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
@@ -17,7 +17,7 @@ import { useSearchAssessments } from "@/src/api/assessment"
 import { useGetProducts, useGetMaterialCodes, useGetSuppliers } from "@/src/api/product"
 import { CreateTraceabilityRequest, CascadeSettings } from "@/src/types/traceability"
 
-export default function CreateTraceabilityRequestPage() {
+function CreateTraceabilityRequestPage() {
   const { assessments, isLoading: isLoadingAssessments } = useSearchAssessments()
   const { createTraceabilityRequest } = useCreateTraceabilityRequest()
 
@@ -275,7 +275,7 @@ export default function CreateTraceabilityRequestPage() {
               {/* Create New Assessment Link */}
               {!isLoadingAssessments && assessments && assessments.filter(assessment => assessment.status === 'Complete').length > 0 && (
                 <div className="text-center py-4 border border-dashed border-gray-300 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Don't see the assessment you need?</p>
+                  <p className="text-sm text-gray-600 mb-2">Don&apos;t see the assessment you need?</p>
                   <Link
                     href="/assessment/create"
                     className="text-brand-primary hover:text-brand-primary/80 font-medium text-sm inline-flex items-center"
@@ -569,13 +569,13 @@ export default function CreateTraceabilityRequestPage() {
               </Link>
               <Button
                 onClick={handleSubmit}
-                disabled={isCreating || isLoadingAssessments || !assessments || assessments.filter(a => a.status === 'Complete').length === 0}
+                disabled={isCreating || isLoadingAssessments || !assessments || assessments.filter(a => a.status === 'complete').length === 0}
                 className="bg-brand-primary hover:bg-brand-primary/90"
               >
                 <Send className="h-4 w-4 mr-2" />
                 {isCreating ? 'Creating...' :
                   isLoadingAssessments ? 'Loading...' :
-                    !assessments || assessments.filter(a => a.status === 'Complete').length === 0 ? 'No Assessments Available' :
+                    !assessments || assessments.filter(a => a.status === 'complete').length === 0 ? 'No Assessments Available' :
                       'Send Request'}
               </Button>
             </div>
@@ -584,4 +584,12 @@ export default function CreateTraceabilityRequestPage() {
       </div>
     </div>
   )
-} 
+}
+
+export default function CreateTraceabilityRequestPageWrapper() {
+  return (
+    <Suspense fallback={<div className="p-8">Loading...</div>}>
+      <CreateTraceabilityRequestPage />
+    </Suspense>
+  )
+}

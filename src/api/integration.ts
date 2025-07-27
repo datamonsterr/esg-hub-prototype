@@ -461,7 +461,7 @@ export function useGetActivityStatus(activityId: number | null) {
 
       processDocument();
     }
-  }, [data, mutate]);
+  }, [data, mutate, updateProduct]);
 
   return {
     activity: data,
@@ -624,45 +624,3 @@ export function useGetActions(documentId: string | undefined) {
     isError: error,
   };
 }
-
-// --- Mock Extracted Product Tree API ---
-export const getExtractedProductTree = async (activityId: number) => {
-  // For demo, just return a static product tree with child products/components from unified products table
-  // In real app, this would be based on the uploaded file and extraction process
-  const { data: products } = await axiosInstance.get('/products');
-  const { data: orgs } = await axiosInstance.get('/organizations');
-  
-  // Pick the first product as the extracted one
-  const product = products[0];
-  
-  // Get all child products/components for this product (where parentId matches product.id)
-  const childProducts = products.filter((p: any) => p.parentId === product.id);
-  
-  // Attach supplier info to child products
-  const childProductsWithSupplier = childProducts.map((child: any) => ({
-    ...child,
-    supplier: orgs.find((o: any) => o.id === child.supplierOrganizationId) || null
-  }));
-  
-  return {
-    activityId,
-    product: {
-      ...product,
-      children: childProductsWithSupplier // Use children instead of components to match unified structure
-    }
-  };
-};
-
-export function useGetExtractedProductTree(activityId: number | undefined) {
-  const { data, error, isLoading, mutate } = useSWR(
-    activityId ? `/integration/extracted-product-tree/${activityId}` : null,
-    () => activityId ? getExtractedProductTree(activityId) : null
-  );
-  return {
-    extractedTree: data,
-    isLoading,
-    isError: error,
-    mutate,
-  };
-}
-// #endregion 

@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { useGetFilePreview } from "@/src/api/integration"
 import { Button } from "@/src/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/src/components/ui/dialog"
 import dynamic from 'next/dynamic'
+import { endpoints } from "@/src/api/axios"
 
 // Dynamically import react-pdf components with SSR disabled
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
@@ -74,7 +76,7 @@ export function FilePreview({ documentId }: FilePreviewProps) {
   // Construct the actual file URL from documentId
   const getFileUrl = () => {
     if (!documentId) return null;
-    return `/api/files/${documentId}`;
+    return endpoints.documents.validation.filePreview(documentId);
   };
 
   const fileUrl = getFileUrl();
@@ -101,7 +103,7 @@ export function FilePreview({ documentId }: FilePreviewProps) {
       case "jpg":
       case "jpeg":
       case "gif":
-        return <img src={fileUrl} alt="File preview" className="max-w-full h-auto rounded-lg" />
+        return <Image src={fileUrl} alt="File preview" className="max-w-full h-auto rounded-lg" width={800} height={600} />
       default:
         return <p>Unsupported file type for preview.</p>
     }

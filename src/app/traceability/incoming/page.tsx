@@ -20,7 +20,7 @@ export default function SupplierTraceabilityPage() {
   const { incomingRequests: requests, isLoading, isError } = useGetIncomingRequests({
     status: statusFilter !== 'all' ? statusFilter : undefined
   });
-
+  
   if (isError) {
     return (
       <ErrorComponent title="Error" description="An error occurred while loading this page." />

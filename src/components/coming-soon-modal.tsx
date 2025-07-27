@@ -22,7 +22,7 @@ export function ComingSoonModal({ isOpen, onClose }: ComingSoonModalProps) {
           <DialogTitle>Coming Soon</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <p>This feature is not yet available, but we're working on it!</p>
+          <p>This feature is not yet available, but we&apos;re working on it!</p>
         </div>
         <DialogFooter>
           <Button onClick={onClose}>Close</Button>

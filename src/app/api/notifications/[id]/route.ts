@@ -15,7 +15,8 @@ export async function GET(
 ) {
   try {
     const userContext = await getCurrentUserContext();
-    const notificationId = parseInt(params.id);
+    const { id } = await params;
+    const notificationId = parseInt(id);
 
     if (isNaN(notificationId)) {
       return createErrorResponse("Invalid notification ID", 400);
@@ -49,7 +50,8 @@ export async function PATCH(
 ) {
   try {
     const userContext = await getCurrentUserContext();
-    const notificationId = parseInt(params.id);
+    const { id } = await params;
+    const notificationId = parseInt(id);
     const updates = await request.json();
 
     if (isNaN(notificationId)) {
@@ -100,7 +102,8 @@ export async function DELETE(
 ) {
   try {
     const userContext = await getCurrentUserContext();
-    const notificationId = parseInt(params.id);
+    const { id } = await params;
+    const notificationId = parseInt(id);
 
     if (isNaN(notificationId)) {
       return createErrorResponse("Invalid notification ID", 400);

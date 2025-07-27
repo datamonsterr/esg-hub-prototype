@@ -1,5 +1,6 @@
 'use client';
 
+import { endpoints } from '@/src/api/axios';
 import { useGetTraceabilityRequest } from '@/src/api/traceability';
 import {
   AlertTriangle,
@@ -98,9 +99,7 @@ export default function SupplierTraceabilityDetailPage({}) {
   const handleStartAssessment = () => {
     setAssessmentStarted(true);
     // Redirect to traceability-specific assessment page
-    router.push(
-      `/traceability/incoming/assessment/${request?.assessmentTemplateId}?traceabilityRequestId=${params.id}`
-    );
+    router.push(endpoints.assessment.id('1'));
   };
 
   if (isLoading) {
@@ -123,9 +122,9 @@ export default function SupplierTraceabilityDetailPage({}) {
     );
   }
 
-  const isOverdue = new Date(request.dueDate) < new Date();
+  const isOverdue = new Date(request.dueDate || '') < new Date();
   const daysUntilDue = Math.ceil(
-    (new Date(request.dueDate).getTime() - new Date().getTime()) /
+    (new Date(request.dueDate || '').getTime() - new Date().getTime()) /
     (1000 * 60 * 60 * 24)
   );
 
@@ -145,7 +144,7 @@ export default function SupplierTraceabilityDetailPage({}) {
               <div className="flex items-center space-x-4 text-sm text-gray-600 mb-2">
                 <span>Request ID: {request.id}</span>
                 <span>•</span>
-                <span>Assessment: {request.assessmentTemplateId}</span>
+                <span>Assessment: {request.assessment.templateId}</span>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
@@ -196,7 +195,7 @@ export default function SupplierTraceabilityDetailPage({}) {
               </div>
             </div>
             <p className="text-sm text-gray-500">
-              Due: {new Date(request.dueDate).toLocaleDateString()}
+              Due: {new Date(request.dueDate || '').toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -405,7 +404,7 @@ export default function SupplierTraceabilityDetailPage({}) {
                 Assessment
               </h4>
               <p className="text-lg font-medium text-gray-900">
-                {request.assessmentTemplate.title}
+                {request.assessment.title}
               </p>
             </div>
             <div className="bg-gray-50 rounded-lg p-6">

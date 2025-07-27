@@ -206,7 +206,7 @@ export function OrganizationProfile({ organizationId }: OrganizationProfileProps
                 <div>
                     <h2 className="text-2xl font-bold tracking-tight">Organization Profile</h2>
                     <p className="text-muted-foreground mt-1">
-                        Manage your organization's information and capabilities
+                        Manage your organization&apos;s information and capabilities
                     </p>
                 </div>
                 <div className="flex gap-2">
@@ -367,7 +367,7 @@ export function OrganizationProfile({ organizationId }: OrganizationProfileProps
                             ESG Capabilities
                         </CardTitle>
                         <CardDescription>
-                            Your organization's sustainability and ESG capabilities
+                            Your organization&apos;s sustainability and ESG capabilities
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">

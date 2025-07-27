@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
@@ -21,6 +21,26 @@ export default function OnboardingPage() {
     const [invitations, setInvitations] = useState<PendingInvitation[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [acceptingId, setAcceptingId] = useState<number | null>(null);
+
+    const loadInvitations = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            const email = user?.emailAddresses?.[0]?.emailAddress;
+            const response = await fetch(`/api/onboard/pending-invitations${email ? `?email=${email}` : ''}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                setInvitations(data);
+            } else {
+                console.error("Failed to load invitations:", data.error);
+            }
+        } catch (error) {
+            console.error("Error loading invitations:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [user]);
 
     useEffect(() => {
         if (isLoaded && !userContextLoading && user) {
@@ -43,27 +63,7 @@ export default function OnboardingPage() {
                 loadInvitations();
             }
         }
-    }, [isLoaded, user, router, organizationId, userContextLoading]);
-
-    const loadInvitations = async () => {
-        try {
-            setIsLoading(true);
-
-            const email = user?.emailAddresses?.[0]?.emailAddress;
-            const response = await fetch(`/api/onboard/pending-invitations${email ? `?email=${email}` : ''}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                setInvitations(data);
-            } else {
-                console.error("Failed to load invitations:", data.error);
-            }
-        } catch (error) {
-            console.error("Error loading invitations:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, [isLoaded, user, router, organizationId, userContextLoading, loadInvitations]);
 
     const handleAcceptInvitation = async (invitationId: number) => {
         try {
@@ -103,7 +103,7 @@ export default function OnboardingPage() {
                 <h1 className="text-3xl font-bold mb-2">Welcome to ESG Hub</h1>
                 <p className="text-gray-600">
                     Hi {user.firstName || user.emailAddresses?.[0]?.emailAddress}!
-                    Let's get you set up with an organization.
+                    Let&apos;s get you set up with an organization.
                 </p>
             </div>
 
@@ -195,7 +195,7 @@ export default function OnboardingPage() {
                         <Building2 className="mx-auto h-16 w-16 text-gray-400 mb-4" />
                         <h2 className="text-xl font-semibold mb-2">No Invitations Found</h2>
                         <p className="text-gray-600 mb-6">
-                            You don't have any pending invitations at this time.
+                            You don&apos;t have any pending invitations at this time.
                             Please contact your organization administrator to request an invitation.
                         </p>
                         <div className="space-y-2">

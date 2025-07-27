@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/src/components/ui/button";
 import { Label } from "@/src/components/ui/label";
 import { Switch } from "@/src/components/ui/switch";
@@ -77,11 +77,7 @@ export function OrganizationSettings({ organizationId }: OrganizationSettingsPro
         },
     });
 
-    useEffect(() => {
-        loadSettings();
-    }, [organizationId]);
-
-    const loadSettings = async () => {
+    const loadSettings = useCallback(async () => {
         try {
             setIsLoadingSettings(true);
             const response = await axiosInstance.get(`/organizations/${organizationId}/settings`);
@@ -94,7 +90,11 @@ export function OrganizationSettings({ organizationId }: OrganizationSettingsPro
         } finally {
             setIsLoadingSettings(false);
         }
-    };
+    }, [organizationId]);
+
+    useEffect(() => {
+        loadSettings();
+    }, [loadSettings]);
 
     const handleSaveSettings = async () => {
         try {
@@ -199,7 +199,7 @@ export function OrganizationSettings({ organizationId }: OrganizationSettingsPro
                         Privacy & Data Sharing
                     </CardTitle>
                     <CardDescription>
-                        Control how your organization's data is shared and used
+                        Control how your organization&apos;s data is shared and used
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">

@@ -113,7 +113,7 @@ function TemplatePreview({ template }: { template: AssessmentTemplate | null }) 
         </h3>
         <p className="text-gray-600 mb-6">{template.description}</p>
         <div className="bg-white rounded-lg p-4 mb-6">
-          <h4 className="font-medium text-gray-900 mb-3">What you'll get:</h4>
+          <h4 className="font-medium text-gray-900 mb-3">What you&apos;ll get:</h4>
           <ul className="text-sm text-gray-600 space-y-2 text-left">
             <li className="flex items-center">
               <Icon icon="fa-check" className="text-primary mr-2" />

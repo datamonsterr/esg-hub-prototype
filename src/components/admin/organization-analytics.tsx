@@ -129,7 +129,7 @@ export function OrganizationAnalytics({ organization, organizationId }: Organiza
                             Member Analytics
                         </CardTitle>
                         <CardDescription>
-                            Overview of your organization's membership
+                            Overview of your organization&apos;s membership
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
@@ -206,7 +206,7 @@ export function OrganizationAnalytics({ organization, organizationId }: Organiza
                         Compliance & Certifications
                     </CardTitle>
                     <CardDescription>
-                        Your organization's compliance status and certifications
+                        Your organization&apos;s compliance status and certifications
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

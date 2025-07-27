@@ -139,7 +139,7 @@ export default function OrganizationSettingsPage() {
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            This action cannot be undone. You will leave "{organization.name}" and lose access to:
+                                            This action cannot be undone. You will leave &quot;{organization.name}&quot; and lose access to:
                                             <ul className="list-disc list-inside mt-2 space-y-1">
                                                 <li>All organization data and reports</li>
                                                 <li>Shared documents and assessments</li>

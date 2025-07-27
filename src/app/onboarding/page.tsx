@@ -100,7 +100,7 @@ export default function OnboardingPage() {
         <div className="container mx-auto py-8 max-w-4xl">
             <div className="text-center mb-8">
                 <Building2 className="mx-auto h-16 w-16 text-blue-600 mb-4" />
-                <h1 className="text-3xl font-bold mb-2">Welcome to ESG Hub</h1>
+                <h1 className="text-3xl font-bold mb-2">Welcome to Traceability Hub</h1>
                 <p className="text-gray-600">
                     Hi {user.firstName || user.emailAddresses?.[0]?.emailAddress}!
                     Let&apos;s get you set up with an organization.

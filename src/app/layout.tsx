@@ -11,8 +11,8 @@ import { ConditionalOrganizationGuard } from '@/src/components/conditional-organ
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'ESG Hub',
-  description: 'ESG Hub Prototype',
+  title: 'Traceability Hub',
+  description: 'Traceability Hub - from Nuoa.io',
 };
 
 export default function RootLayout({

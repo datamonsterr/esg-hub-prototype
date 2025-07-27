@@ -16,31 +16,35 @@ interface ProductTreeViewProps {
 const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) => {
   const [expandedNodes, setExpandedNodes] = useState<Record<string, boolean>>({});
 
-  const toggleNode = (id: string) => {
-    setExpandedNodes(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggleNode = (id: string | number) => {
+    const stringId = id.toString();
+    setExpandedNodes(prev => ({ ...prev, [stringId]: !prev[stringId] }));
   };
 
   const renderProductRow = (product: Product, level = 0) => {
-    const isExpanded = expandedNodes[product.id] || false;
+    const isExpanded = expandedNodes[product.id.toString()] || false;
     const hasChildren = product.children && product.children.length > 0;
 
     return (
-      <div key={product.id} className="border-b">
+      <li key={product.id} className="border-b">
         <div 
           className="flex items-center space-x-2 py-3 px-4"
           style={{ paddingLeft: `${level * 24 + 16}px` }}
         >
           <div className="flex items-center w-full">
             <div className="flex items-center flex-1">
-              {hasChildren || level > 0 && !hasChildren ? (
+              {hasChildren ? (
                 <button onClick={() => toggleNode(product.id)} className="p-1 -ml-2">
                   {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 </button>
               ) : (
-                <div className="w-8" />
+                <div className="w-6" />
               )}
-              {level === 0 ? <Package size={18} className="text-gray-700" /> : <Box size={16} className="text-gray-600" />}
+              {level === 0 ? <Package size={18} className="text-gray-700 ml-2" /> : <Box size={16} className="text-gray-600 ml-2" />}
               <span className={`ml-3 ${level === 0 ? 'font-semibold text-base' : 'font-medium'}`}>{product.name}</span>
+              <Badge variant="outline" className="ml-2 text-xs">
+                {product.type?.replace('_', ' ') || 'product'}
+              </Badge>
             </div>
             <div className="w-1/5 text-sm text-gray-500">{product.sku}</div>
             <div className="w-1/5">
@@ -60,7 +64,7 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
           </div>
         </div>
         {isExpanded && (
-          <div className="bg-gray-50" style={{ paddingLeft: `${level * 24 + 16}px` }}>
+          <div className="bg-gray-50">
             {level === 0 && (
               <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card>
@@ -69,7 +73,7 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{product.metadata.sustainabilityScore || 'N/A'}</div>
+                    <div className="text-2xl font-bold">{product.metadata?.sustainabilityScore || 'N/A'}</div>
                   </CardContent>
                 </Card>
                 <Card>
@@ -78,7 +82,7 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
                     <MapPin className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{product.metadata.originCountry || 'N/A'}</div>
+                    <div className="text-2xl font-bold">{product.metadata?.originCountry || 'N/A'}</div>
                   </CardContent>
                 </Card>
                 <Card>
@@ -88,7 +92,7 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-1">
-                      {product.metadata.certifications?.map(c => <Badge key={c} variant="secondary">{c}</Badge>) ?? <p className='text-sm'>N/A</p>}
+                      {product.metadata?.certifications?.map((c: string) => <Badge key={c} variant="secondary">{c}</Badge>) ?? <p className='text-sm'>N/A</p>}
                     </div>
                   </CardContent>
                 </Card>
@@ -104,13 +108,13 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
               </div>
             )}
             {hasChildren && (
-              <div>
+              <ul className="list-none">
                 {product.children?.map(child => renderProductRow(child, level + 1))}
-              </div>
+              </ul>
             )}
           </div>
         )}
-      </div>
+      </li>
     );
   };
 
@@ -120,7 +124,7 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
           <div className="flex items-center w-full">
             <div className="flex items-center flex-1 font-semibold text-sm text-gray-600 uppercase">
                 <div className="w-8" />
-                Name
+                Product Name & Type
             </div>
             <div className="w-1/5 font-semibold text-sm text-gray-600 uppercase">SKU</div>
             <div className="w-1/5 font-semibold text-sm text-gray-600 uppercase">Status</div>
@@ -128,7 +132,9 @@ const ProductTreeView = ({ products, onEdit, onDelete }: ProductTreeViewProps) =
             <div className="w-auto font-semibold text-sm text-gray-600 uppercase">Actions</div>
           </div>
         </div>
-      {products.map(product => renderProductRow(product))}
+      <ul className="list-none">
+        {products.map(product => renderProductRow(product))}
+      </ul>
     </div>
   );
 };

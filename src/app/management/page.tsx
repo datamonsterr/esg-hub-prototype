@@ -27,6 +27,7 @@ export default function ManagementPage() {
   const { products, isLoading, isError, mutate } = useGetProducts({
     search: search,
     category: category === 'all' ? undefined : category,
+    flatView: false // Ensure we get the hierarchical tree structure
   });
 
   const { createProduct } = useCreateProduct();
@@ -36,7 +37,7 @@ export default function ManagementPage() {
   const handleFormSubmit = async (data: CreateProductRequest) => {
     try {
       if (selectedProduct) {
-        await updateProduct(selectedProduct.id, data);
+        await updateProduct(selectedProduct.id.toString(), data);
         toast({ title: "Product Updated", description: "The product has been successfully updated." });
       } else {
         await createProduct(data);
@@ -56,7 +57,7 @@ export default function ManagementPage() {
   const handleDeleteConfirm = async () => {
     if (selectedProduct) {
       try {
-        await deleteProduct(selectedProduct.id);
+        await deleteProduct(selectedProduct.id.toString());
         toast({ title: "Product Deleted", description: "The product has been successfully deleted." });
         mutate();
         setIsDeleteDialogOpen(false);

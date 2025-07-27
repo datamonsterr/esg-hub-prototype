@@ -135,10 +135,11 @@ export function useGetProducts(params?: {
   organizationId?: string;
   category?: string;
   search?: string;
+  flatView?: boolean; // Add option for flat view instead of tree structure
 }) {
   const { data, error, isLoading, mutate } = useSWR<Product[]>(
     ['/products', params],
-    () => getProductsWithComponent(params),
+    () => params?.flatView ? getProducts(params) : getProductsWithComponent(params),
   );
 
   return {

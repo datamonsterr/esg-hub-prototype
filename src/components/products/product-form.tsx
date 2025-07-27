@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { X } from "lucide-react"
 import { Card } from "@/src/components/ui/card"
 import {
   Form,
@@ -18,19 +17,27 @@ import { Input } from "@/src/components/ui/input"
 import { Button } from "@/src/components/ui/button"
 import { CreateProductRequest, Product } from "@/src/types"
 import { Textarea } from "../ui/textarea"
+import { useGetProducts } from "@/src/api/product"
 import axiosInstance from "@/src/api/axios"
 
 const formSchema = z.object({
-  organizationId: z.string().min(1, "Organization is required."),
+  organizationId: z.number(),
   name: z.string().min(2, "Product name must be at least 2 characters."),
   sku: z.string().min(2, "SKU must be at least 2 characters."),
   description: z.string().optional(),
   category: z.string().min(1, "Category is required."),
+  type: z.enum(["final_product", "component", "raw_material", "sub_assembly"]).default("final_product"),
+  parentId: z.number().optional().nullable(),
+  quantity: z.number().min(0).default(1),
+  unit: z.string().default("pcs"),
+  supplierOrganizationId: z.number().optional().nullable(),
   metadata: z.object({
     brand: z.string().optional(),
     originCountry: z.string().optional(),
   }).optional(),
 })
+
+type FormData = z.infer<typeof formSchema>;
 
 interface ProductFormProps {
   onSubmit: (values: CreateProductRequest) => void;
@@ -43,14 +50,20 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
   const [organizations, setOrganizations] = useState<{ id: string; name: string }[]>([]);
   const [isLoadingOrgs, setIsLoadingOrgs] = useState(true);
 
+  // Get products for parent selection (exclude components and materials)
+  const { products: parentProducts = [] } = useGetProducts();
+  const availableParents = parentProducts.filter(p => 
+    p.type === 'final_product' && p.id !== initialData?.id
+  );
+
   useEffect(() => {
     async function fetchOrgs() {
       setIsLoadingOrgs(true);
       try {
         const { data } = await axiosInstance.get('/organizations');
-        setOrganizations(data.map((org: any) => ({ id: org.id, name: org.name })));
-      } catch (e) {
-        setOrganizations([]);
+        setOrganizations(data.map((org: any) => ({ id: org.id.toString(), name: org.name })));
+      } catch (error) {
+        console.error('Failed to fetch organizations:', error);
       } finally {
         setIsLoadingOrgs(false);
       }
@@ -58,39 +71,46 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
     fetchOrgs();
   }, []);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      organizationId: initialData?.organizationId || '',
+      organizationId: Number(initialData?.organizationId) || 0,
       name: initialData?.name || '',
       sku: initialData?.sku || '',
       description: initialData?.description || '',
       category: initialData?.category || '',
+      type: initialData?.type || 'final_product',
+      parentId: initialData?.parentId || null,
+      quantity: initialData?.quantity || 1,
+      unit: initialData?.unit || 'pcs',
+      supplierOrganizationId: initialData?.supplierOrganizationId || null,
       metadata: {
         brand: initialData?.metadata?.brand || '',
         originCountry: initialData?.metadata?.originCountry || '',
-      }
-    },
+      },
+    }
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+  const handleSubmit = async (values: FormData) => {
     setIsSubmitting(true);
     try {
       await onSubmit({
         ...values,
         description: values.description || '',
-      });
+      } as CreateProductRequest);
     } catch (error) {
-      console.error('Failed to submit product:', error);
+      console.error('Form submission failed:', error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const selectedType = form.watch('type');
+
   return (
-      <Card className="p-6 border-0 shadow-none">
+      <Card className="w-full max-w-4xl">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 p-6">
             <FormField
               control={form.control}
               name="organizationId"
@@ -100,6 +120,8 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
                   <FormControl>
                     <select
                       {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={field.value || ''}
                       className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       required
                       disabled={isLoadingOrgs}
@@ -114,6 +136,58 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product Type *</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        required
+                      >
+                        <option value="final_product">Final Product</option>
+                        <option value="component">Component</option>
+                        <option value="raw_material">Raw Material</option>
+                        <option value="sub_assembly">Sub Assembly</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {selectedType !== 'final_product' && (
+                <FormField
+                  control={form.control}
+                  name="parentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parent Product</FormLabel>
+                      <FormControl>
+                        <select
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                          value={field.value || ''}
+                          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                          <option value="">Select parent product...</option>
+                          {availableParents.map(product => (
+                            <option key={product.id} value={product.id}>{product.name}</option>
+                          ))}
+                        </select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -143,7 +217,8 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
               />
             </div>
 
-            <FormField
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
@@ -168,6 +243,52 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        placeholder="1" 
+                        min="0"
+                        step="0.01"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Unit</FormLabel>
+                    <FormControl>
+                      <select
+                        {...field}
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      >
+                        <option value="pcs">Pieces</option>
+                        <option value="kg">Kilograms</option>
+                        <option value="m">Meters</option>
+                        <option value="m2">Square Meters</option>
+                        <option value="m3">Cubic Meters</option>
+                        <option value="liters">Liters</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
@@ -231,4 +352,4 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
         </Form>
       </Card>
   )
-} 
+}

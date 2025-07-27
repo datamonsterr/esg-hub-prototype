@@ -72,7 +72,8 @@ export function ProductList({
 
   const { products, isLoading, isError, mutate } = useGetProducts({
     search: searchQuery || undefined,
-    category: categoryFilter !== "all" ? categoryFilter : undefined
+    category: categoryFilter !== "all" ? categoryFilter : undefined,
+    flatView: selectionMode // Use flat view when in selection mode
   })
 
   const { deleteProduct } = useDeleteProduct()
@@ -284,7 +285,7 @@ export function ProductList({
                       <SortIcon field="dataCompleteness" />
                     </div>
                   </TableHead>
-                  <TableHead>Components</TableHead>
+                  {!selectionMode && <TableHead>Components</TableHead>}
                   <TableHead
                     className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleSort('createdAt')}
@@ -306,7 +307,14 @@ export function ProductList({
                   >
                     <TableCell>
                       <div>
-                        <p className="font-medium">{product.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium">{product.name}</p>
+                          {selectionMode && (
+                            <Badge variant="outline" className="text-xs">
+                              {product.type?.replace('_', ' ') || 'product'}
+                            </Badge>
+                          )}
+                        </div>
                         {product.description && (
                           <p className="text-sm text-muted-foreground truncate max-w-xs">
                             {product.description}
@@ -337,11 +345,13 @@ export function ProductList({
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">
-                        {(product.children?.length || 0)} components
-                      </Badge>
-                    </TableCell>
+                    {!selectionMode && (
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {(product.children?.length || 0)} components
+                        </Badge>
+                      </TableCell>
+                    )}
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
                         {new Date(product.createdAt).toLocaleDateString()}

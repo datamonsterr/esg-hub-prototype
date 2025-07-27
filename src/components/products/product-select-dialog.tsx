@@ -32,8 +32,8 @@ export function ProductSelectDialog({
         <DialogHeader>
           <DialogTitle>Select a Product</DialogTitle>
           <DialogDescription>
-            Choose a product to associate with this integration. The product data
-            will be used to calculate carbon footprint.
+            Choose any product from your organization to associate with this integration. 
+            The integration will automatically add data to the selected product.
           </DialogDescription>
         </DialogHeader>
         <div className="mt-4 flex-grow overflow-y-auto">

@@ -140,7 +140,7 @@ export function useGetTemplate(id: string) {
   };
 }
 
-export function useCreateAssessment(data: Assessment) {
+export function useCreateAssessment() {
   const { trigger, isMutating } = useSWRMutation(
     endpoints.assessment.base,
     createAssessment

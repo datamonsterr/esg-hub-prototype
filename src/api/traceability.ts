@@ -56,11 +56,11 @@ export const getTraceabilityAnalytics = async (): Promise<TraceabilityAnalytics>
   return Promise.resolve({
     keyInsights: 'Tariff risks from Vietnam have increased by 15% in the last quarter, primarily affecting footwear production. Material traceability for leather remains low at 45%, posing a compliance risk.',
     tariffRiskByCountry: [
-      { country: 'Vietnam', risk: 75 },
-      { country: 'China', risk: 60 },
-      { country: 'Indonesia', risk: 45 },
-      { country: 'Brazil', risk: 30 },
-      { country: 'India', risk: 25 },
+      { country: 'Vietnam', risk: 75, riskLevel: 'High', originPercentage: 35, material: 'Leather', status: 'At Risk' },
+      { country: 'China', risk: 60, riskLevel: 'Medium', originPercentage: 25, material: 'Synthetics', status: 'Monitoring' },
+      { country: 'Indonesia', risk: 45, riskLevel: 'Medium', originPercentage: 20, material: 'Rubber', status: 'Monitoring' },
+      { country: 'Brazil', risk: 30, riskLevel: 'Low', originPercentage: 15, material: 'Cotton', status: 'Compliant' },
+      { country: 'India', risk: 25, riskLevel: 'Low', originPercentage: 5, material: 'Cotton', status: 'Compliant' },
     ],
     materialTraceability: [
       { material: 'Leather', percentage: 45 },
@@ -70,6 +70,17 @@ export const getTraceabilityAnalytics = async (): Promise<TraceabilityAnalytics>
     ],
     complianceScore: 82,
     supplyChainVisibility: 65,
+    originTraceabilityTrends: [
+      { period: 'Q1 2024', percentage: 75 },
+      { period: 'Q2 2024', percentage: 80 },
+      { period: 'Q3 2024', percentage: 85 },
+      { period: 'Q4 2024', percentage: 82 },
+    ],
+    overallStats: {
+      traceabilityPercentage: 82,
+      tracedCount: 245,
+      untracedCount: 55,
+    },
   });
 };
 

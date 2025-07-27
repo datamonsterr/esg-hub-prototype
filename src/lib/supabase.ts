@@ -122,7 +122,6 @@ export type Database = {
           type: string
           quantity: number
           unit: string
-          supplier_organization_id: number | null
           metadata: any
           data_completeness: number
           missing_data_fields: string[] | null
@@ -141,7 +140,6 @@ export type Database = {
           type?: string
           quantity?: number
           unit?: string
-          supplier_organization_id?: number | null
           metadata?: any
           data_completeness?: number
           missing_data_fields?: string[] | null
@@ -160,7 +158,6 @@ export type Database = {
           type?: string
           quantity?: number
           unit?: string
-          supplier_organization_id?: number | null
           metadata?: any
           data_completeness?: number
           missing_data_fields?: string[] | null

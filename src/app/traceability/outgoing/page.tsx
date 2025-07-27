@@ -135,7 +135,7 @@ export default function TraceabilityRequestsPage() {
                     <span className="text-gray-900">{request.targetOrganizationId}</span>
                   </td>
                   <td className="py-4 px-4">
-                    <span className="text-gray-900">{request.assessmentTemplateId}</span>
+                    <span className="text-gray-900">{request.assessmentId}</span>
                   </td>
                   <td className="py-4 px-4">
                     <Badge className={`text-xs ${getStatusBadgeStyle(request.status)}`}>

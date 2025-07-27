@@ -15,7 +15,7 @@ function transformProductFromDb(dbProduct: any) {
   return {
     id: dbProduct.id,
     organizationId: dbProduct.organization_id,
-    parentId: dbProduct.parent_id,
+    childrenIds: dbProduct.children_ids,
     name: dbProduct.name,
     sku: dbProduct.sku,
     description: dbProduct.description,
@@ -23,7 +23,6 @@ function transformProductFromDb(dbProduct: any) {
     type: dbProduct.type,
     quantity: dbProduct.quantity,
     unit: dbProduct.unit,
-    supplierOrganizationId: dbProduct.supplier_organization_id,
     metadata: dbProduct.metadata,
     dataCompleteness: dbProduct.data_completeness,
     missingDataFields: dbProduct.missing_data_fields,
@@ -39,7 +38,7 @@ function transformProductToDb(product: any) {
   
   if (product.id !== undefined) dbProduct.id = product.id;
   if (product.organizationId !== undefined) dbProduct.organization_id = product.organizationId;
-  if (product.parentId !== undefined) dbProduct.parent_id = product.parentId;
+  if (product.childrenIds !== undefined) dbProduct.children_ids = product.childrenIds;
   if (product.name !== undefined) dbProduct.name = product.name;
   if (product.sku !== undefined) dbProduct.sku = product.sku;
   if (product.description !== undefined) dbProduct.description = product.description;
@@ -47,7 +46,6 @@ function transformProductToDb(product: any) {
   if (product.type !== undefined) dbProduct.type = product.type;
   if (product.quantity !== undefined) dbProduct.quantity = product.quantity;
   if (product.unit !== undefined) dbProduct.unit = product.unit;
-  if (product.supplierOrganizationId !== undefined) dbProduct.supplier_organization_id = product.supplierOrganizationId;
   if (product.metadata !== undefined) dbProduct.metadata = product.metadata;
   if (product.dataCompleteness !== undefined) dbProduct.data_completeness = product.dataCompleteness;
   if (product.missingDataFields !== undefined) dbProduct.missing_data_fields = product.missingDataFields;
@@ -65,10 +63,10 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const productId = parseInt(id);
-
-    if (isNaN(productId)) {
-      return createErrorResponse("Invalid product ID", 400);
+    
+    // Validate UUID format (basic check)
+    if (!id || typeof id !== 'string' || id.length < 32) {
+      return createErrorResponse("Invalid product ID format", 400);
     }
 
     const userContext = await getCurrentUserContext();
@@ -76,7 +74,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const { data: product, error } = await supabaseAdmin
       .from('products')
       .select('*')
-      .eq('id', productId)
+      .eq('id', id)
       .eq('organization_id', userContext.organizationId)
       .single();
 
@@ -100,10 +98,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const productId = parseInt(id);
-
-    if (isNaN(productId)) {
-      return createErrorResponse("Invalid product ID", 400);
+    
+    // Validate UUID format (basic check)
+    if (!id || typeof id !== 'string' || id.length < 32) {
+      return createErrorResponse("Invalid product ID format", 400);
     }
 
     const userContext = await getCurrentUserContext();
@@ -122,7 +120,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const { data: product, error } = await supabaseAdmin
       .from('products')
       .update(productData)
-      .eq('id', productId)
+      .eq('id', id)
       .eq('organization_id', userContext.organizationId)
       .select()
       .single();
@@ -147,10 +145,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const productId = parseInt(id);
-
-    if (isNaN(productId)) {
-      return createErrorResponse("Invalid product ID", 400);
+    
+    // Validate UUID format (basic check)
+    if (!id || typeof id !== 'string' || id.length < 32) {
+      return createErrorResponse("Invalid product ID format", 400);
     }
 
     const userContext = await getCurrentUserContext();
@@ -158,7 +156,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { error } = await supabaseAdmin
       .from('products')
       .delete()
-      .eq('id', productId)
+      .eq('id', id)
       .eq('organization_id', userContext.organizationId);
 
     if (error) {

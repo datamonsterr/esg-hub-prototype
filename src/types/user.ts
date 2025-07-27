@@ -9,7 +9,7 @@ export interface UserProfile {
   lastName?: string;
   fullName?: string;
   imageUrl?: string;
-  organizationId: number; // Changed to number to match schema
+  organizationId: string; // Changed to string UUID to match schema
   organizationRole: "admin" | "employee";
   isActive: boolean;
   invitedAt?: string;
@@ -22,7 +22,7 @@ export interface UserProfile {
 export interface OrganizationMember {
   id: string;
   userId: string;
-  organizationId: number; // Changed to number to match schema
+  organizationId: string; // Changed to string UUID to match schema
   role: "admin" | "employee";
   status: "active" | "pending" | "suspended";
   invitedBy?: string;
@@ -75,7 +75,7 @@ export interface AuthUser {
 }
 
 export interface Organization {
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+  id: string; // Changed to string UUID to match schema
   name: string;
   type?: string; // Made optional since not in schema
   address?: string; // Made optional to match schema

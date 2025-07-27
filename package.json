@@ -6,10 +6,9 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start",
-    "db:init": "tsx scripts/initialize-database.ts",
-    "db:check": "curl http://localhost:3000/api/health",
-    "supabase:test": "curl http://localhost:3000/api/test-supabase"
+    "lint:fix": "next lint --fix",
+    "check": "tsc --noEmit",
+    "start": "next start"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.24.0",
@@ -62,6 +61,7 @@
     "next-themes": "^0.4.4",
     "pdfjs-dist": "^5.3.93",
     "react": "^19",
+    "react-d3-tree": "^3.6.6",
     "react-day-picker": "8.10.1",
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",

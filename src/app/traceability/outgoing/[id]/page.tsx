@@ -120,16 +120,16 @@ export default function TraceabilityRequestDetailPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Components
+              Products
             </label>
             <div className="flex flex-wrap gap-1">
-              {request.components.map((c) => (
+              {request.products?.map((product) => (
                 <Badge
-                  key={c.id}
+                  key={product.id}
                   variant="secondary"
                   className="bg-blue-100 text-blue-700"
                 >
-                  {c.name}
+                  {product.name}
                 </Badge>
               ))}
             </div>

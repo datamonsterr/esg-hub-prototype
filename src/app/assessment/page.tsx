@@ -35,8 +35,8 @@ export default function SupplierAssessmentPage() {
   // Mock templates (should be fetched from API in real app)
   const mockTemplates: AssessmentTemplate[] = [
     {
-      id: 1,
-      createdByOrganizationId: 1,
+      id: "template-001",
+      createdByOrganizationId: "org-001",
       title: 'Blank Template',
       description: 'Start from scratch with a blank assessment.',
       icon: 'fa-file',
@@ -47,8 +47,8 @@ export default function SupplierAssessmentPage() {
       details: { category: 'General', sections: 0, questions: 0, time: '5 min', completion: 'N/A', sample: [] },
     },
     {
-      id: 2,
-      createdByOrganizationId: 1,
+      id: "template-002",
+      createdByOrganizationId: "org-001",
       title: 'Origin Verification',
       description: 'Verify product origin and documentation.',
       icon: 'fa-globe',
@@ -235,8 +235,19 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
   const defaultIcons = ['fa-file-alt', 'fa-leaf', 'fa-users', 'fa-shield-alt', 'fa-chart-line', 'fa-cog'];
   const defaultColors = ['blue', 'green', 'purple', 'orange', 'red'] as const;
 
-  const displayIcon = icon || defaultIcons[assessment.id % defaultIcons.length];
-  const displayColor = (topicColor as keyof typeof iconColorClasses) || defaultColors[assessment.id % defaultColors.length];
+  // Create a simple hash from string ID for consistent indexing
+  const hashId = (id: string) => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      const char = id.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+  };
+
+  const displayIcon = icon || defaultIcons[hashId(assessment.id) % defaultIcons.length];
+  const displayColor = (topicColor as keyof typeof iconColorClasses) || defaultColors[hashId(assessment.id) % defaultColors.length];
 
   // Convert status to match our classes (handle CSV data format)
   const normalizeStatus = (status: string) => {

@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       isOnboarded: false,
-      pendingInvitations: (pendingInvitations || []).map(invitation => ({
+      pendingInvitations: (pendingInvitations || []).map((invitation: any) => ({
         id: invitation.id,
         email: invitation.email,
         organizationId: invitation.organization_id,

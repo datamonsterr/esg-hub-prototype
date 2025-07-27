@@ -410,20 +410,20 @@ export function useGetActivityStatus(activityId: number | null) {
 
           // Create new child products/components in the unified products table
           const newChildProducts: ProductNode[] = filePreview.data.map((item: any) => ({
-            id: parseInt(uuidv4().replace(/-/g, '').substring(0, 8), 16), // Generate numeric ID
+            id: uuidv4(), // Generate UUID string
             name: item.material,
             quantity: item.qty,
             organizationId: productToUpdate.organizationId,
-            parentId: productToUpdate.id, // Set parent relationship
+            childrenIds: [], // Use children array instead of parent relationship
             type: 'raw_material' as const,
             description: `Sourced from ${item.supplier}`,
             unit: item.unit,
             sku: null,
             category: null,
-            supplierOrganizationId: null,
             metadata: {
               originCountry: item.origin,
               certifications: [item.cert],
+              supplier: item.supplier, // Store supplier info in metadata instead
             },
             dataCompleteness: 75,
             missingDataFields: ['carbon_footprint'],

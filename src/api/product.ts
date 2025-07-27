@@ -44,31 +44,40 @@ export const getProductsWithComponent = async (params?: {
   // Get all products from the unified products table
   const { data: allProducts } = await axiosInstance.get(endpoints.products.base, { params });
 
-  // Separate root products (no parentId) from child products/components
-  const rootProducts = allProducts.filter((p: any) => !p.parentId);
-  const childProducts = allProducts.filter((p: any) => p.parentId);
+  // Build hierarchical structure based on children_ids
+  const productMap = new Map<string, Product>();
+  allProducts.forEach((product: Product) => {
+    productMap.set(product.id, { ...product, children: [] });
+  });
 
-  // Create a map for building hierarchical structure
-  const productMap = allProducts.reduce((acc: any, product: any) => {
-    acc[product.id] = { ...product, children: [] };
-    return acc;
-  }, {});
-
-  // Build hierarchical relationships
-  for (const product of childProducts) {
-    if (productMap[product.parentId]) {
-      productMap[product.parentId].children.push(productMap[product.id]);
+  // Build the tree structure
+  const rootProducts: Product[] = [];
+  
+  allProducts.forEach((product: Product) => {
+    const productWithChildren = productMap.get(product.id)!;
+    
+    // If this product has children, populate them
+    if (product.childrenIds && product.childrenIds.length > 0) {
+      product.childrenIds.forEach(childId => {
+        const child = productMap.get(childId);
+        if (child && productWithChildren.children) {
+          productWithChildren.children.push(child as any);
+        }
+      });
     }
-  }
+    
+    // If this product is not a child of any other product, it's a root product
+    const isChildOfAnotherProduct = allProducts.some((p: Product) => 
+      p.childrenIds && p.childrenIds.includes(product.id)
+    );
+    
+    if (!isChildOfAnotherProduct) {
+      rootProducts.push(productWithChildren);
+    }
+  });
 
-  // Return root products with their hierarchical children
-  const productTree = rootProducts.map((product: any) => ({
-    ...productMap[product.id],
-    status: 'Verified'
-  }));
-
-  return productTree;
-}
+  return rootProducts;
+};
 
 export const attachDocumentToProduct = async (
   productId: string,
@@ -90,25 +99,89 @@ export const getMaterialCodes = async (): Promise<{ id: string; code: string; na
   const seen = new Set();
   const codes: { id: string; code: string; name: string }[] = [];
   for (const product of materialProducts) {
-    const code = product.sku || product.id.toString();
+    const code = product.sku || product.id;
     if (!seen.has(code)) {
       seen.add(code);
-      codes.push({ id: product.id.toString(), code, name: product.name });
+      codes.push({ id: product.id, code, name: product.name });
     }
   }
   return codes;
 };
 
-// --- Get unique suppliers from products/components for an organization ---
-export const getSuppliers = async (organizationId?: string): Promise<{ id: string; name: string; category: string; location: string }[]> => {
-  // Get all products for the org from unified products table
-  const products = await getProducts({ organizationId });
+// --- Get products with traceability status ---
+export const getProductsWithTraceabilityStatus = async (params?: {
+  organizationId?: string;
+  category?: string;
+  search?: string;
+}): Promise<Product[]> => {
+  // Get all products from the unified products table
+  const { data: allProducts } = await axiosInstance.get(endpoints.products.base, { params });
+
+  // Get traceability requests for these products
+  const productIds = allProducts.map((p: any) => p.id);
+  const { data: traceRequests } = await axiosInstance.get(endpoints.traceability.requests.outgoing, {
+    params: { productIds }
+  });
+
+  // Build hierarchical structure based on children_ids
+  const productMap = new Map<string, Product>();
+  allProducts.forEach((product: Product) => {
+    // Find traceability status for this product
+    const traceRequest = traceRequests?.find((req: any) => 
+      req.productIds?.includes(product.id)
+    );
+    
+    const traceabilityStatus = traceRequest ? traceRequest.status : 'none';
+    const hasDetailedInfo = traceRequest?.status === 'completed';
+
+    productMap.set(product.id, { 
+      ...product, 
+      children: [],
+      traceabilityStatus,
+      hasDetailedInfo
+    });
+  });
+
+  // Build the tree structure
+  const rootProducts: Product[] = [];
   
-  // Extract unique supplier org IDs from all products/components
-  const allProducts = products.flatMap(p => [p, ...(p.children || [])]);
+  allProducts.forEach((product: Product) => {
+    const productWithChildren = productMap.get(product.id)!;
+    
+    // If this product has children, populate them
+    if (product.childrenIds && product.childrenIds.length > 0) {
+      product.childrenIds.forEach(childId => {
+        const child = productMap.get(childId);
+        if (child && productWithChildren.children) {
+          productWithChildren.children.push(child as any);
+        }
+      });
+    }
+    
+    // If this product is not a child of any other product, it's a root product
+    const isChildOfAnotherProduct = allProducts.some((p: Product) => 
+      p.childrenIds && p.childrenIds.includes(product.id)
+    );
+    
+    if (!isChildOfAnotherProduct) {
+      rootProducts.push(productWithChildren);
+    }
+  });
+
+  return rootProducts;
+};
+
+// --- Get suppliers from traceability requests for an organization ---
+export const getSuppliers = async (organizationId?: string): Promise<{ id: string; name: string; category: string; location: string }[]> => {
+  if (!organizationId) return [];
+  
+  // Get traceability requests made by this organization
+  const { data: outgoingRequests } = await axiosInstance.get(endpoints.traceability.requests.outgoing);
+  
+  // Extract unique target organization IDs
   const supplierOrgIds = Array.from(new Set(
-    allProducts
-      .map(p => p.supplierOrganizationId)
+    outgoingRequests
+      .map((req: any) => req.targetOrganizationId)
       .filter(Boolean)
   ));
   
@@ -116,13 +189,13 @@ export const getSuppliers = async (organizationId?: string): Promise<{ id: strin
   const { data: orgs } = await axiosInstance.get(endpoints.organizations.base);
   
   // Map supplier org IDs to org info
-  const suppliers = supplierOrgIds.map((id: number | null | undefined) => {
-    if (!id) return null;
-    const org = orgs.find((o: any) => o.id === id);
+  const suppliers = supplierOrgIds.map((id: unknown) => {
+    const orgId = id as string;
+    const org = orgs.find((o: any) => o.id === orgId);
     return org
-      ? { id: org.id.toString(), name: org.name, category: org.type || 'Supplier', location: org.address || '' }
-      : { id: id.toString(), name: `Supplier ${id}`, category: 'Supplier', location: '' };
-  }).filter(Boolean) as { id: string; name: string; category: string; location: string }[];
+      ? { id: org.id, name: org.name, category: org.type || 'Supplier', location: org.address || '' }
+      : { id: orgId, name: `Organization ${orgId}`, category: 'Supplier', location: '' };
+  });
   
   return suppliers;
 };
@@ -136,10 +209,16 @@ export function useGetProducts(params?: {
   category?: string;
   search?: string;
   flatView?: boolean; // Add option for flat view instead of tree structure
+  includeTraceability?: boolean; // Add option to include traceability status
 }) {
   const { data, error, isLoading, mutate } = useSWR<Product[]>(
     ['/products', params],
-    () => params?.flatView ? getProducts(params) : getProductsWithComponent(params),
+    () => {
+      if (params?.includeTraceability) {
+        return getProductsWithTraceabilityStatus(params);
+      }
+      return params?.flatView ? getProducts(params) : getProductsWithComponent(params);
+    },
   );
 
   return {

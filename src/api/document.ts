@@ -2,14 +2,14 @@
 
 import useSWR from 'swr';
 import axiosInstance, { endpoints } from './axios';
-import { ProcessedDocument } from '../types/processed-document';
+import { ProcessedDocument } from '../types/integration';
 
 // #region RAW API
 export const getProcessedDocumentById = async (
   id: string,
 ): Promise<ProcessedDocument> => {
   const res = await axiosInstance.get(
-    `${endpoints.documents.processed}/${id}`,
+    `${endpoints.documents.base}/${id}`,
   );
   return res.data;
 };
@@ -18,7 +18,7 @@ export const getProcessedDocumentById = async (
 // #region SWR
 export function useGetProcessedDocument(id: string | null) {
   const { data, error, isLoading } = useSWR<ProcessedDocument>(
-    id ? `${endpoints.documents.processed}/${id}` : null,
+    id ? `${endpoints.documents.base}/${id}` : null,
     () => getProcessedDocumentById(id as string),
   );
 

@@ -43,7 +43,7 @@ function PreviewAssessment() {
             <main className="px-5 py-8">
                 <PageHeader title={assessment.title} />
                 <div className="bg-white rounded-lg border border-border p-8">
-                    <AssessmentDetails description={assessment.description} />
+                    <AssessmentDetails description={assessment.description || ""} />
                     {template?.sections?.map((section) => (
                         <Section
                             key={section.id}

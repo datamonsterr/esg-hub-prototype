@@ -1,10 +1,10 @@
 export type AssessmentStatus = "complete" | "draft" | "in_progress"; // Updated to match schema values
 
 export interface Assessment {
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
-  templateId: number; // Changed to number and made required to match schema
-  organizationId: number; // Changed to number and made required to match schema
-  requestingOrganizationId?: number | null; // Changed to number to match schema
+  id: string; // Changed to string UUID to match schema
+  templateId: string; // Changed to string UUID to match schema
+  organizationId: string; // Changed to string UUID to match schema
+  requestingOrganizationId?: string | null; // Changed to string UUID to match schema
   title: string;
   description?: string | null; // Made nullable to match schema
   topic?: string | null; // Made nullable to match schema
@@ -13,7 +13,7 @@ export interface Assessment {
   updatedAt: string;
   status: "draft" | "in_progress" | "complete"; // Updated to match schema values
   priority: "low" | "medium" | "high" | "urgent"; // Added to match schema
-  productIds?: number[] | null; // Changed to number array to match schema
+  productIds?: string[] | null; // Changed to string UUID array to match schema
   dueDate?: string | null; // Made nullable to match schema
   completedAt?: string | null;
   dataCompleteness: number;
@@ -27,11 +27,12 @@ export interface Assessment {
   assignedTo?: string;
   responses?: AssessmentResponse[];
   attachments?: AssessmentAttachment[];
+  creator?: string; // Add creator field for compatibility
 }
 
 export interface AssessmentTemplate {
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
-  createdByOrganizationId: number; // Added to match schema
+  id: string; // Changed to string UUID to match schema
+  createdByOrganizationId: string; // Changed to string UUID to match schema
   title: string;
   description?: string | null; // Made nullable to match schema
   icon?: string | null; // Made nullable to match schema

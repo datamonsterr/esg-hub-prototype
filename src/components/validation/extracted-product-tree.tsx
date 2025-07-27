@@ -16,8 +16,11 @@ const mockProductTree: Product = {
   id: "prod-mock-001",
   organizationId: "org-001",
   name: "Mock Eco-Friendly Running Shoe",
+  type: "final_product",
   sku: "MOCK-ERS-001",
   description: "A mock high-performance running shoe made from sustainable materials",
+  quantity: 1,
+  unit: "piece",
   category: "footwear",
   componentTreeId: "comp-mock-001",
   metadata: {
@@ -31,6 +34,7 @@ const mockProductTree: Product = {
   },
   dataCompleteness: 85,
   missingDataFields: ["water_usage", "energy_consumption", "waste_generation"],
+  status: "active",
   createdAt: "2024-02-15T00:00:00Z",
   updatedAt: "2024-03-20T00:00:00Z",
   children: [
@@ -45,16 +49,17 @@ const mockProductTree: Product = {
       description: "Complete running shoe assembly (mock)",
       quantity: 1,
       unit: "piece",
-      supplierOrganizationId: "org-005",
       metadata: {
         materialType: "composite",
         originCountry: "Vietnam",
         certifications: ["GOTS", "Carbon Neutral"],
         sustainabilityScore: 8.5,
-        carbonFootprint: 12.5
+        carbonFootprint: 12.5,
+        supplier: "EcoSport Manufacturing" // Store supplier info in metadata
       },
       dataCompleteness: 85,
       missingDataFields: ["assembly_energy", "packaging_impact"],
+      status: "active",
       createdAt: "2024-02-15T00:00:00Z",
       updatedAt: "2024-03-20T00:00:00Z",
       children: [
@@ -68,17 +73,17 @@ const mockProductTree: Product = {
           description: "Shoe upper made from organic cotton and recycled polyester (mock)",
           quantity: 1,
           unit: "piece",
-          supplierOrganizationId: "org-002",
           metadata: {
-            materialType: "textile_composite",
-            originCountry: "India",
-            certifications: ["GOTS"],
-            sustainabilityScore: 8.8,
-            carbonFootprint: 4.2,
-            recycledContent: 40
+            materialType: "leather",
+            originCountry: "Brazil",
+            certifications: ["LWG"],
+            sustainabilityScore: 7.2,
+            carbonFootprint: 8.7,
+            supplier: "Global Leather Co" // Store supplier info in metadata
           },
           dataCompleteness: 88,
           missingDataFields: ["dyeing_process", "finishing_chemicals"],
+          status: "active",
           createdAt: "2024-02-15T00:00:00Z",
           updatedAt: "2024-03-18T00:00:00Z",
           children: []
@@ -93,17 +98,17 @@ const mockProductTree: Product = {
           description: "Sole made from recycled rubber compounds (mock)",
           quantity: 1,
           unit: "piece",
-          supplierOrganizationId: "org-004",
           metadata: {
-            materialType: "recycled_rubber",
-            originCountry: "Japan",
-            certifications: ["Environmental Choice"],
-            sustainabilityScore: 7.5,
-            carbonFootprint: 6.8,
-            recycledContent: 75
+            materialType: "rubber",
+            originCountry: "Thailand", 
+            certifications: ["FSC"],
+            sustainabilityScore: 8.9,
+            carbonFootprint: 3.4,
+            supplier: "Sustainable Rubber Inc" // Store supplier info in metadata
           },
           dataCompleteness: 72,
           missingDataFields: ["vulcanization_process", "chemical_composition", "durability_testing"],
+          status: "active",
           createdAt: "2024-02-15T00:00:00Z",
           updatedAt: "2024-03-10T00:00:00Z",
           children: []
@@ -144,15 +149,21 @@ export function ExtractedProductTree({ tree = mockProductTree, onChange }: Extra
   }
 
   // Helper to update supplier in the tree by path
-  const updateSupplierByPath = (node: ComponentNode, path: number[], orgId: string): ComponentNode => {
+  const updateSupplierByPath = (node: ComponentNode, path: number[], supplier: string): ComponentNode => {
     if (path.length === 0) {
-      return { ...node, supplierOrganizationId: orgId }
+      return { 
+        ...node, 
+        metadata: { 
+          ...node.metadata, 
+          supplier 
+        } 
+      }
     }
     const [idx, ...rest] = path
     return {
       ...node,
       children: node.children.map((child, i) =>
-        i === idx ? updateSupplierByPath(child, rest, orgId) : child
+        i === idx ? updateSupplierByPath(child, rest, supplier) : child
       )
     }
   }
@@ -184,7 +195,7 @@ export function ExtractedProductTree({ tree = mockProductTree, onChange }: Extra
         <div className="flex gap-2 items-center">
           <span className="font-medium">Supplier:</span>
           <Select
-            value={node.supplierOrganizationId || ''}
+            value={node.metadata?.supplier || ''}
             onValueChange={val => setProduct({
               ...product,
               children: product.children?.map((child, idx) =>
@@ -198,9 +209,11 @@ export function ExtractedProductTree({ tree = mockProductTree, onChange }: Extra
               <SelectValue placeholder="Select supplier" />
             </SelectTrigger>
             <SelectContent>
-              {orgs.map(org => (
-                <SelectItem key={org.id} value={org.id}>{org.name}</SelectItem>
-              ))}
+              <SelectItem value="EcoSport Manufacturing">EcoSport Manufacturing</SelectItem>
+              <SelectItem value="Global Leather Co">Global Leather Co</SelectItem>
+              <SelectItem value="Sustainable Rubber Inc">Sustainable Rubber Inc</SelectItem>
+              <SelectItem value="Premium Materials Ltd">Premium Materials Ltd</SelectItem>
+              <SelectItem value="EcoSupply Chain Co">EcoSupply Chain Co</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -211,7 +224,7 @@ export function ExtractedProductTree({ tree = mockProductTree, onChange }: Extra
         <div className="flex gap-2 items-center">
           <span className="font-medium">Description:</span>
           <Input
-            value={node.description}
+            value={node.description || ''}
             onChange={e => setProduct({
               ...product,
               children: product.children?.map((child, idx) =>

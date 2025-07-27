@@ -1,6 +1,6 @@
 ---
 description: when write new api fetch
-alwaysApply: false
+applyTo: src/api/*.ts
 ---
 Use axios and useSWR for handling fetch.
 api endpoints must be defined in endpoints object in src/api/axios.ts.

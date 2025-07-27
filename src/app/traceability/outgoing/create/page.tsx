@@ -82,7 +82,7 @@ function CreateTraceabilityRequestPage() {
       alert('Selected assessment not found')
       return
     }
-    if (selectedAssessment.status !== 'Complete') {
+    if (selectedAssessment.status !== 'complete') {
       alert('Only completed assessments can be used for traceability requests')
       return
     }
@@ -92,10 +92,9 @@ function CreateTraceabilityRequestPage() {
     }
     setIsCreating(true)
     const requestData: CreateTraceabilityRequest = {
-      targetOrganizationId: selectedSuppliers[0], // Only one supplier supported in type
+      targetOrganizationId: selectedSuppliers[0],
       productIds: selectedProductCodes,
-      componentIds: selectedMaterialCodes,
-      assessmentTemplateId: assessmentId,
+      assessmentId: assessmentId,
       priority: "high",
       dueDate: `${expirationDate}T${expirationTime || '00:00'}:00Z`,
       message: message || undefined,
@@ -198,7 +197,7 @@ function CreateTraceabilityRequestPage() {
                     <SelectValue placeholder={isLoadingAssessments ? "Loading assessments..." : "Select an existing assessment"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {assessments?.filter(assessment => assessment.status === 'Complete').map((assessment) => (
+                    {assessments?.filter(assessment => assessment.status === 'complete').map((assessment) => (
                       <SelectItem key={assessment.id} value={assessment.id}>
                         <div className="flex flex-col">
                           <span className="font-medium">{assessment.id} - {assessment.title}</span>
@@ -235,13 +234,13 @@ function CreateTraceabilityRequestPage() {
                         </div>
                         <p className="text-sm text-gray-600">{selectedAssessment.description}</p>
                         <div className="flex items-center space-x-4 text-xs text-gray-500">
-                          <span>Created by: {selectedAssessment.creator}</span>
+                          <span>Created by: {selectedAssessment.creator || selectedAssessment.createdBy}</span>
                           <span>•</span>
                           <span>Created: {new Date(selectedAssessment.createdAt).toLocaleDateString()}</span>
                           <span>•</span>
                           <span>Topic: {selectedAssessment.topic}</span>
                         </div>
-                        {selectedAssessment.tags.length > 0 && (
+                        {selectedAssessment.tags && selectedAssessment.tags.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-2">
                             {selectedAssessment.tags.map((tag, index) => (
                               <Badge key={index} variant="outline" className="text-xs">
@@ -256,7 +255,7 @@ function CreateTraceabilityRequestPage() {
                 </div>
               )}
               {/* No Assessments Available Message */}
-              {!isLoadingAssessments && assessments && assessments.filter(assessment => assessment.status === 'Complete').length === 0 && (
+              {!isLoadingAssessments && assessments && assessments.filter(assessment => assessment.status === 'complete').length === 0 && (
                 <div className="text-center py-6 border border-dashed border-gray-300 rounded-lg bg-gray-50">
                   <div className="text-gray-400 mb-2">
                     <i className="fas fa-clipboard-list text-2xl"></i>
@@ -273,7 +272,7 @@ function CreateTraceabilityRequestPage() {
                 </div>
               )}
               {/* Create New Assessment Link */}
-              {!isLoadingAssessments && assessments && assessments.filter(assessment => assessment.status === 'Complete').length > 0 && (
+              {!isLoadingAssessments && assessments && assessments.filter(assessment => assessment.status === 'complete').length > 0 && (
                 <div className="text-center py-4 border border-dashed border-gray-300 rounded-lg">
                   <p className="text-sm text-gray-600 mb-2">Don&apos;t see the assessment you need?</p>
                   <Link

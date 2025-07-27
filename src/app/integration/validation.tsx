@@ -16,9 +16,9 @@ import { WidgetCard } from "@/src/components/ui/widget-card"
 
 export default function Validation({ documentId, selectedProduct }: { documentId: number, selectedProduct: Product | null }) {
   
-  const extractedTree: Product = {
-    id: documentId,
-    organizationId: 1,
+  const mockProduct: Product = {
+    id: `doc-${documentId}`,
+    organizationId: "org-001",
     name: "Extracted Product Tree",
     type: "final_product",
     description: "Mock extracted product tree",
@@ -28,8 +28,8 @@ export default function Validation({ documentId, selectedProduct }: { documentId
     parentId: null,
     children: [
       {
-        id: 1,
-        organizationId: 1,
+        id: "product-001",
+        organizationId: "org-001",
         name: `Child Product ${documentId}-1`,
         type: "component",
         description: "Child product",
@@ -44,8 +44,8 @@ export default function Validation({ documentId, selectedProduct }: { documentId
         dataCompleteness: 0
       },
       {
-        id: 2,
-        organizationId: 1,
+        id: "product-002",
+        organizationId: "org-001",
         name: `Child Product ${documentId}-2`,
         type: "component",
         description: "Child product",
@@ -88,7 +88,7 @@ export default function Validation({ documentId, selectedProduct }: { documentId
         {/* Left Panel: 2/3 width */}
         <div className="w-2/3 flex flex-col space-y-6">
           <WidgetCard title="Product Tree">
-            <ExtractedProductTree tree={extractedTree.product} onChange={() => {}} />
+            <ExtractedProductTree tree={mockProduct} onChange={() => {}} />
           </WidgetCard>
           <WidgetCard title="File Preview">
             <FilePreview documentId={documentId} />

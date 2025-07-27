@@ -116,7 +116,7 @@ export default function AdminPage() {
                 <TabsContent value="analytics" className="space-y-6">
                     <OrganizationAnalytics
                         organization={{
-                            id: organizationId || 0,
+                            id: organizationId?.toString() || "0",
                             name: organization?.name || "",
                             address: organization?.address || "",
                             createdAt: organization?.createdAt || ""

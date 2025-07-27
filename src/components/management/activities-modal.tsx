@@ -106,7 +106,7 @@ export function ActivitiesModal({ isOpen, onClose }: ActivitiesModalProps) {
         <div className="space-y-4 max-h-96 overflow-y-auto">
           {isLoading && <GlobalLoading />}
           {isError && <ErrorComponent title="Error" description="Could not load activities." />}
-          {filteredAndSortedActivities.map((activity: IntegrationActivity) => (
+          {filteredAndSortedActivities.map((activity) => (
             <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-brand">
               {getStatusIcon(activity.status)}
               <div className="flex-1">

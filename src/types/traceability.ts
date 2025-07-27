@@ -3,12 +3,12 @@ import type { Product, Component } from './product';
 import type { Assessment, AssessmentTemplate } from './assessment';
 
 export interface TraceabilityRequest {
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
-  requestingOrganizationId: number; // Changed to number to match schema
-  targetOrganizationId: number; // Changed to number to match schema
-  productIds?: number[] | null; // Changed to number array and made nullable to match schema
-  assessmentId: number; // Changed to assessmentId (not template) to match schema
-  parentRequestId?: number | null; // Added to match schema
+  id: string; // Changed to string UUID to match schema
+  requestingOrganizationId: string; // Changed to string UUID to match schema
+  targetOrganizationId: string; // Changed to string UUID to match schema
+  productIds?: string[] | null; // Changed to string UUID array and made nullable to match schema
+  assessmentId: string; // Changed to string UUID to match schema
+  parentRequestId?: string | null; // Changed to string UUID to match schema
   status: "pending" | "in_progress" | "completed" | "rejected" | "overdue";
   priority: "low" | "medium" | "high" | "urgent";
   dueDate?: string | null; // Made nullable to match schema
@@ -31,10 +31,10 @@ export interface CascadeSettings {
 }
 
 export interface TraceabilityResponse {
-  id: number; // Changed to number to match assessment_responses schema
-  assessmentId: number; // Added to match schema
-  traceRequestId?: number | null; // Added to match schema
-  respondingOrganizationId: number; // Changed to number to match schema
+  id: string; // Changed to string UUID to match assessment_responses schema
+  assessmentId: string; // Changed to string UUID to match schema
+  traceRequestId?: string | null; // Changed to string UUID to match schema
+  respondingOrganizationId: string; // Changed to string UUID to match schema
   submittedByUserId: string; // Changed to match schema (Clerk user ID)
   responseData: any; // Changed to any to match JSONB
   attachments?: string[] | null; // Made nullable to match schema
@@ -45,28 +45,39 @@ export interface TraceabilityResponse {
 export interface TraceabilityRequestDetail extends TraceabilityRequest {
   requestingOrganization: Organization;
   targetOrganization: Organization;
-  products: Product[];
-  components: Component[];
+  products: Product[]; // Products being requested for information
   assessment: Assessment; // Changed from assessmentTemplate to assessment
   responses: TraceabilityResponse[];
   cascadedRequests: TraceabilityRequest[];
 }
 
 export interface CreateTraceabilityRequest {
-  targetOrganizationId: number; // Changed to number to match schema
-  productIds: string[];
-  componentIds: string[];
-  assessmentTemplateId: string;
+  targetOrganizationId: string; // Changed to string UUID to match schema
+  productIds: string[]; // Changed to string UUID array to match schema
+  assessmentId: string; // Changed to string UUID to match schema
   priority: TraceabilityRequest['priority'];
-  dueDate: string;
+  dueDate?: string; // Made optional to match schema
   message?: string;
-  cascadeSettings: CascadeSettings;
+  cascadeSettings?: any; // Changed to any to match JSONB schema
 }
 
 export interface TraceabilityAnalytics {
   keyInsights: string;
-  tariffRiskByCountry: { country: string; risk: number }[];
+  tariffRiskByCountry: { 
+    country: string; 
+    risk: number;
+    riskLevel: string;
+    originPercentage: number;
+    material: string;
+    status: string;
+  }[];
   materialTraceability: { material: string; percentage: number }[];
   complianceScore: number;
   supplyChainVisibility: number;
+  originTraceabilityTrends?: any[];
+  overallStats?: {
+    traceabilityPercentage: number;
+    tracedCount: number;
+    untracedCount: number;
+  };
 }

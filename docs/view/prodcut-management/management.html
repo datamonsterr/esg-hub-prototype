@@ -1,0 +1,556 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "border": "#E3E6EA"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head>
+<body class="bg-gray-50 font-arial text-base">
+
+    <!-- Navigation Bar -->
+    <header id="header" class="bg-white border-b border-border">
+        <div class="max-w-7xl mx-auto px-5">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+                            <i class="fas fa-route text-white text-sm"></i>
+                        </div>
+                        <span class="ml-2 text-xl font-medium text-gray-900">Traceability Hub</span>
+                    </div>
+                    <div class="hidden md:flex space-x-6">
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Integrations</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Data Management</span>
+                        <span class="text-gray-600 hover:text-primary pb-4 cursor-pointer">Traceability Request</span>
+                        <span class="text-primary font-medium border-b-2 border-primary pb-4 cursor-pointer">Product Management</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bell text-lg"></i>
+                    </button>
+                    <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" class="w-8 h-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-5 py-8">
+        
+        <!-- Header Section -->
+        <section id="page-header" class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-medium text-gray-900 mb-2">Product Tree View</h1>
+                    <p class="text-gray-600">Visualize product hierarchy and component relationships</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="goBackToManagement()" class="bg-gray-500 text-white px-6 py-3 rounded-md hover:bg-gray-600">
+                        <i class="fas fa-arrow-left text-sm mr-2"></i>Back to Management
+                    </button>
+                    <button onclick="editProduct()" class="bg-primary text-white px-6 py-3 rounded-md hover:bg-primary/90">
+                        <i class="fas fa-edit text-sm mr-2"></i>Edit Product
+                    </button>
+                    <button onclick="deleteProduct()" class="bg-error text-white px-6 py-3 rounded-md hover:bg-error/90">
+                        <i class="fas fa-trash text-sm mr-2"></i>Delete
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            
+            <!-- Product Tree Graph -->
+            <section id="product-tree-graph" class="lg:col-span-2 bg-white rounded-lg border border-border p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-medium text-gray-900">Product Tree Structure</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="zoomIn()" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button onclick="zoomOut()" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button onclick="resetZoom()" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 text-sm">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="tree-svg-container" class="w-full h-[600px] border border-border rounded-lg bg-gray-50">
+                    <svg id="tree-svg" width="100%" height="100%"></svg>
+                </div>
+            </section>
+
+            <!-- Node Metadata Panel -->
+            <section id="node-metadata-panel" class="bg-white rounded-lg border border-border">
+                <div class="p-6">
+                    <h2 class="text-xl font-medium text-gray-900 mb-6">Node Metadata</h2>
+                    
+                    <div id="metadata-content" class="space-y-6">
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-mouse-pointer text-3xl mb-3"></i>
+                            <p>Click on a node to view its metadata</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Metadata Modal -->
+    <div id="metadata-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-medium text-gray-900" id="modal-title">Node Details</h3>
+                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="modal-content" class="space-y-4">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 mt-6 pt-6 border-t border-border">
+                        <button onclick="closeModal()" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+                            Close
+                        </button>
+                        <button onclick="editNode()" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90">
+                            <i class="fas fa-edit mr-2"></i>Edit
+                        </button>
+                        <button onclick="deleteNode()" class="px-4 py-2 bg-error text-white rounded-md hover:bg-error/90">
+                            <i class="fas fa-trash mr-2"></i>Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for the product tree
+        const treeData = {
+            name: "Athletic Wear Pro",
+            type: "main",
+            id: "main-product",
+            metadata: {
+                category: "Apparel",
+                description: "High-performance athletic wear with sustainable materials",
+                supplier: "EcoFabrics Ltd.",
+                cost: "$45.00",
+                revenue: "$120.00",
+                certification: "GOTS Certified",
+                tags: "sustainable, organic, performance"
+            },
+            parents: [
+                {
+                    name: "Sustainable Clothing Line",
+                    type: "parent",
+                    id: "parent-1",
+                    metadata: {
+                        category: "Product Line",
+                        description: "Complete line of sustainable athletic wear",
+                        supplier: "EcoFabrics Ltd.",
+                        cost: "$200.00",
+                        revenue: "$500.00"
+                    }
+                },
+                {
+                    name: "Performance Series",
+                    type: "parent",
+                    id: "parent-2",
+                    metadata: {
+                        category: "Product Series",
+                        description: "High-performance athletic wear series",
+                        supplier: "SportsTech Inc.",
+                        cost: "$150.00",
+                        revenue: "$400.00"
+                    }
+                }
+            ],
+            children: [
+                {
+                    name: "Organic Cotton Fabric",
+                    type: "child",
+                    id: "child-1",
+                    metadata: {
+                        category: "Raw Material",
+                        description: "GOTS certified organic cotton fabric",
+                        supplier: "GreenThread Co.",
+                        cost: "$12.00",
+                        certification: "GOTS, OEKO-TEX"
+                    },
+                    children: [
+                        {
+                            name: "Cotton Fiber",
+                            type: "child",
+                            id: "child-1-1",
+                            metadata: {
+                                category: "Fiber",
+                                description: "Raw organic cotton fiber",
+                                supplier: "Cotton Farms Ltd.",
+                                cost: "$8.00"
+                            }
+                        }
+                    ]
+                },
+                {
+                    name: "Recycled Polyester",
+                    type: "child",
+                    id: "child-2",
+                    metadata: {
+                        category: "Raw Material",
+                        description: "Thread made from recycled plastic bottles",
+                        supplier: "RecycleTech Inc.",
+                        cost: "$15.00",
+                        certification: "GRS Certified"
+                    },
+                    children: [
+                        {
+                            name: "Plastic Bottles",
+                            type: "child",
+                            id: "child-2-1",
+                            metadata: {
+                                category: "Source Material",
+                                description: "Post-consumer plastic bottles",
+                                supplier: "WasteManagement Co.",
+                                cost: "$3.00"
+                            }
+                        }
+                    ]
+                },
+                {
+                    name: "Natural Dye",
+                    type: "child",
+                    id: "child-3",
+                    metadata: {
+                        category: "Component",
+                        description: "Plant-based dye solution",
+                        supplier: "NaturalColors Ltd.",
+                        cost: "$5.00",
+                        certification: "Organic"
+                    }
+                },
+                {
+                    name: "Eco Packaging",
+                    type: "child",
+                    id: "child-4",
+                    metadata: {
+                        category: "Packaging",
+                        description: "Biodegradable packaging materials",
+                        supplier: "GreenPack Co.",
+                        cost: "$2.00",
+                        certification: "Compostable"
+                    }
+                }
+            ]
+        };
+
+        let currentSelectedNode = null;
+        let svg, g, zoom;
+
+        function initializeTree() {
+            const container = d3.select("#tree-svg-container");
+            const width = container.node().clientWidth;
+            const height = container.node().clientHeight;
+
+            svg = d3.select("#tree-svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            zoom = d3.zoom()
+                .scaleExtent([0.1, 3])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                });
+
+            svg.call(zoom);
+
+            g = svg.append("g");
+
+            // Ensure the graph is drawn immediately
+            setTimeout(() => {
+                drawTree();
+            }, 100);
+        }
+
+        function drawTree() {
+            const width = svg.node().clientWidth;
+            const height = svg.node().clientHeight;
+
+            // Clear existing content
+            g.selectAll("*").remove();
+
+            // Position main product in center
+            const mainX = width / 2;
+            const mainY = height / 2;
+
+            // Draw main product node (yellow)
+            drawNode(mainX, mainY, treeData, "#FFB823", "main");
+
+            // Draw parent nodes (dark green) - positioned above main
+            treeData.parents.forEach((parent, i) => {
+                const parentX = mainX + (i - 0.5) * 200;
+                const parentY = mainY - 150;
+                drawNode(parentX, parentY, parent, "#1F5F3F", "parent");
+                drawConnection(parentX, parentY + 25, mainX, mainY - 25);
+            });
+
+            // Draw child nodes (grey) - positioned around main
+            const angleStep = (2 * Math.PI) / treeData.children.length;
+            treeData.children.forEach((child, i) => {
+                const angle = i * angleStep;
+                const radius = 180;
+                const childX = mainX + Math.cos(angle) * radius;
+                const childY = mainY + Math.sin(angle) * radius;
+                
+                drawNode(childX, childY, child, "#6B7280", "child");
+                drawConnection(mainX, mainY, childX, childY);
+
+                // Draw sub-children if they exist
+                if (child.children) {
+                    child.children.forEach((subChild, j) => {
+                        const subAngle = angle + (j - 0.5) * 0.5;
+                        const subRadius = 120;
+                        const subChildX = childX + Math.cos(subAngle) * subRadius;
+                        const subChildY = childY + Math.sin(subAngle) * subRadius;
+                        
+                        drawNode(subChildX, subChildY, subChild, "#9CA3AF", "child");
+                        drawConnection(childX, childY, subChildX, subChildY);
+                    });
+                }
+            });
+        }
+
+        function drawNode(x, y, nodeData, color, type) {
+            const nodeGroup = g.append("g")
+                .attr("transform", `translate(${x}, ${y})`)
+                .style("cursor", "pointer")
+                .on("click", () => selectNode(nodeData));
+
+            // Node circle
+            nodeGroup.append("circle")
+                .attr("r", type === "main" ? 30 : 20)
+                .attr("fill", color)
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 3);
+
+            // Node icon
+            const iconClass = type === "main" ? "fa-star" : type === "parent" ? "fa-cube" : "fa-circle";
+            nodeGroup.append("foreignObject")
+                .attr("x", type === "main" ? -8 : -6)
+                .attr("y", type === "main" ? -8 : -6)
+                .attr("width", type === "main" ? 16 : 12)
+                .attr("height", type === "main" ? 16 : 12)
+                .append("xhtml:div")
+                .html(`<i class="fas ${iconClass} text-white" style="font-size: ${type === "main" ? "16px" : "12px"}"></i>`);
+
+            // Node label
+            nodeGroup.append("text")
+                .attr("y", type === "main" ? 45 : 35)
+                .attr("text-anchor", "middle")
+                .attr("fill", "#374151")
+                .attr("font-size", "12px")
+                .attr("font-weight", "500")
+                .text(nodeData.name.length > 15 ? nodeData.name.substring(0, 12) + "..." : nodeData.name);
+        }
+
+        function drawConnection(x1, y1, x2, y2) {
+            g.append("line")
+                .attr("x1", x1)
+                .attr("y1", y1)
+                .attr("x2", x2)
+                .attr("y2", y2)
+                .attr("stroke", "#D1D5DB")
+                .attr("stroke-width", 2);
+        }
+
+        function selectNode(nodeData) {
+            currentSelectedNode = nodeData;
+            showMetadata(nodeData);
+            showModal(nodeData);
+        }
+
+        function showMetadata(nodeData) {
+            const metadataContent = document.getElementById("metadata-content");
+            metadataContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-${getNodeColor(nodeData.type)} rounded-full flex items-center justify-center">
+                            <i class="fas ${getNodeIcon(nodeData.type)} text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-900">${nodeData.name}</h3>
+                            <p class="text-sm text-gray-500">${nodeData.metadata.category}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Description</label>
+                            <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.description}</p>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Supplier</label>
+                            <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.supplier || 'N/A'}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Cost</label>
+                                <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.cost || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-700">Revenue</label>
+                                <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.revenue || 'N/A'}</p>
+                            </div>
+                        </div>
+                        
+                        ${nodeData.metadata.certification ? `
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Certification</label>
+                            <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.certification}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${nodeData.metadata.tags ? `
+                        <div>
+                            <label class="text-sm font-medium text-gray-700">Tags</label>
+                            <p class="text-sm text-gray-900 mt-1">${nodeData.metadata.tags}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showModal(nodeData) {
+            const modal = document.getElementById("metadata-modal");
+            const title = document.getElementById("modal-title");
+            const content = document.getElementById("modal-content");
+            
+            title.textContent = nodeData.name;
+            
+            content.innerHTML = `
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.name}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.metadata.category}</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.metadata.description}</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                        <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.metadata.supplier || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cost</label>
+                        <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.metadata.cost || 'N/A'}</p>
+                    </div>
+                </div>
+                
+                ${nodeData.metadata.certification ? `
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Certification</label>
+                    <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded">${nodeData.metadata.certification}</p>
+                </div>
+                ` : ''}
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Node ID</label>
+                    <p class="text-sm text-gray-900 p-2 bg-gray-50 rounded font-mono">${nodeData.id}</p>
+                </div>
+            `;
+            
+            modal.classList.remove("hidden");
+        }
+
+        // Initialize the tree when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTree();
+        });
+
+        // Also add window resize handler to redraw the graph
+        window.addEventListener('resize', function() {
+            if (svg) {
+                const container = d3.select("#tree-svg-container");
+                const width = container.node().clientWidth;
+                const height = container.node().clientHeight;
+                
+                svg.attr("width", width).attr("height", height);
+                drawTree();
+            }
+        });
+    </script>
+
+</body></html>

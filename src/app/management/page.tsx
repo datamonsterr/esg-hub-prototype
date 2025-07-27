@@ -4,17 +4,17 @@ import { useState } from "react"
 import { useGetProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from "@/src/api/product"
 import { GlobalLoading } from "@/src/components/global-loading"
 import { ErrorComponent } from "@/src/components/ui/error"
-import ProductTreeView from "@/src/components/management/product-tree-view"
 import { Input } from "@/src/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Button } from "@/src/components/ui/button"
-import { Search, PlusCircle } from "lucide-react"
+import { Search, PlusCircle, Eye, Edit, Trash2, Package, Box } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog"
 import { ProductForm } from "@/src/components/products/product-form"
 import { CreateProductRequest, Product } from "@/src/types"
 import { useToast } from "@/src/components/ui/use-toast"
-import { WidgetCard } from "@/src/components/ui/widget-card"
-import { RecentActivities } from "@/src/components/management/recent-activities"
+import { Badge } from "@/src/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import Link from "next/link"
 
 export default function ManagementPage() {
   const [search, setSearch] = useState('');
@@ -27,7 +27,7 @@ export default function ManagementPage() {
   const { products, isLoading, isError, mutate } = useGetProducts({
     search: search,
     category: category === 'all' ? undefined : category,
-    flatView: false // Ensure we get the hierarchical tree structure
+    flatView: true // Get flat view for list display
   });
 
   const { createProduct } = useCreateProduct();
@@ -127,8 +127,86 @@ export default function ManagementPage() {
         </Select>
       </div>
 
-      <div>
-        {products && <ProductTreeView products={products} onEdit={openModal} onDelete={openDeleteDialog} />}
+      {/* Product List */}
+      <div className="grid gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Product List</span>
+              <span className="text-sm font-normal text-gray-500">
+                {products?.length || 0} products
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {products && products.length > 0 ? (
+                products.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        {product.type === 'final_product' ? (
+                          <Package className="h-6 w-6 text-gray-600" />
+                        ) : (
+                          <Box className="h-6 w-6 text-gray-600" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="text-lg font-medium text-gray-900">{product.name}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {product.type?.replace('_', ' ')}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          SKU: {product.sku || 'N/A'} • Category: {product.category || 'N/A'}
+                        </p>
+                        <div className="flex items-center space-x-4 mt-1">
+                          <span className="text-xs text-gray-500">
+                            Qty: {product.quantity} {product.unit}
+                          </span>
+                          {product.metadata?.sustainabilityScore && (
+                            <span className="text-xs text-green-600">
+                              Sustainability: {product.metadata.sustainabilityScore}%
+                            </span>
+                          )}
+                          {product.metadata?.originCountry && (
+                            <span className="text-xs text-gray-500">
+                              Origin: {product.metadata.originCountry}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Link href={`/management/${product.id}`}>
+                        <Button variant="ghost" size="icon" title="View Tree">
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                      <Button variant="ghost" size="icon" onClick={() => openModal(product)} title="Edit">
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" onClick={() => openDeleteDialog(product)} title="Delete">
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                  <p className="text-gray-500 mb-4">Get started by adding your first product</p>
+                  <Button onClick={() => openModal()}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Product
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -162,10 +240,6 @@ export default function ManagementPage() {
           </div>
         </DialogContent>
       </Dialog>
-      
-      <WidgetCard title="Recent Activities">
-        <RecentActivities />
-      </WidgetCard>
     </div>
   )
 }

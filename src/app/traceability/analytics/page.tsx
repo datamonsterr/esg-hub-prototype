@@ -90,7 +90,6 @@ export default function TraceabilityAnalyticsPage() {
                       <SelectItem value="country_origin">Country of Origin</SelectItem>
                       <SelectItem value="material_type">Material Type</SelectItem>
                       <SelectItem value="product_category">Product Category</SelectItem>
-                      <SelectItem value="supplier_tier">Supplier Tier</SelectItem>
                       <SelectItem value="region">Region</SelectItem>
                       <SelectItem value="assessment_id">Assessment ID</SelectItem>
                       <SelectItem value="request_id">Request ID</SelectItem>

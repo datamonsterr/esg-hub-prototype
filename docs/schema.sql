@@ -1,6 +1,9 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Table to store organization details
 CREATE TABLE organizations (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
     address TEXT,
     email VARCHAR(255),
@@ -10,7 +13,7 @@ CREATE TABLE organizations (
 -- Table for user accounts, linked to organizations
 CREATE TABLE users (
     id VARCHAR(255) PRIMARY KEY, -- Clerk user ID
-    organization_id INT NOT NULL,
+    organization_id UUID NOT NULL,
     organization_role VARCHAR(50) DEFAULT 'employee', -- "admin" | "employee"
     is_active BOOLEAN DEFAULT true,
     CONSTRAINT fk_organization
@@ -20,10 +23,12 @@ CREATE TABLE users (
 );
 
 -- Table for products/components owned by organizations (unified table)
+-- Each organization owns their products and can have hierarchical structure
+-- To get information about components from other organizations, use traceability requests
 CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    organization_id INT NOT NULL,
-    parent_id INT, -- For hierarchical relationships (BOM structure)
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    organization_id UUID NOT NULL,
+    children_ids UUID[], -- Array of child product IDs for hierarchical relationships
     name VARCHAR(255) NOT NULL,
     sku VARCHAR(100),
     description TEXT,
@@ -32,7 +37,6 @@ CREATE TABLE products (
     type VARCHAR(50) NOT NULL DEFAULT 'final_product',
     quantity DECIMAL(10, 4) DEFAULT 1.0,
     unit VARCHAR(20) DEFAULT 'pcs',
-    supplier_organization_id INT,
     metadata JSONB DEFAULT '{}',
     data_completeness DECIMAL(5,2) DEFAULT 0.0,
     missing_data_fields TEXT[],
@@ -43,21 +47,13 @@ CREATE TABLE products (
         FOREIGN KEY(organization_id)
         REFERENCES organizations(id)
         ON DELETE CASCADE,
-    CONSTRAINT fk_parent_product
-        FOREIGN KEY(parent_id)
-        REFERENCES products(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_supplier_organization
-        FOREIGN KEY(supplier_organization_id)
-        REFERENCES organizations(id)
-        ON DELETE SET NULL,
     UNIQUE (organization_id, sku)
 );
 
 -- Table for assessment form templates
 CREATE TABLE assessment_templates (
-    id SERIAL PRIMARY KEY,
-    created_by_organization_id INT NOT NULL,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    created_by_organization_id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     icon VARCHAR(100),
@@ -76,16 +72,16 @@ CREATE TABLE assessment_templates (
 
 -- Table for individual assessments created from templates
 CREATE TABLE assessments (
-    id SERIAL PRIMARY KEY,
-    template_id INT NOT NULL,
-    organization_id INT NOT NULL,
-    requesting_organization_id INT,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    template_id UUID NOT NULL,
+    organization_id UUID NOT NULL,
+    requesting_organization_id UUID,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     topic VARCHAR(100),
     status VARCHAR(50) DEFAULT 'draft', -- "draft", "in_progress", "complete"
     priority VARCHAR(20) DEFAULT 'medium', -- "low", "medium", "high", "urgent"
-    product_ids INT[],
+    product_ids UUID[],
     created_by VARCHAR(255) NOT NULL, -- Clerk user ID who created the assessment
     due_date TIMESTAMPTZ,
     completed_at TIMESTAMPTZ,
@@ -112,13 +108,13 @@ CREATE TABLE assessments (
 
 -- Table to track traceability requests between organizations
 CREATE TABLE trace_requests (
-    id SERIAL PRIMARY KEY,
-    requesting_organization_id INT NOT NULL,
-    target_organization_id INT NOT NULL,
-    product_ids INT[], -- Now includes both products and components
-    assessment_id INT NOT NULL, -- References specific assessment instance
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    requesting_organization_id UUID NOT NULL,
+    target_organization_id UUID NOT NULL,
+    product_ids UUID[], -- Now includes both products and components
+    assessment_id UUID NOT NULL, -- References specific assessment instance
     -- Self-referencing key for cascading trace
-    parent_request_id INT,
+    parent_request_id UUID,
     status VARCHAR(50) DEFAULT 'pending', -- "pending", "in_progress", "completed", "rejected", "overdue"
     priority VARCHAR(20) DEFAULT 'medium', -- "low", "medium", "high", "urgent"
     due_date TIMESTAMPTZ,
@@ -143,10 +139,10 @@ CREATE TABLE trace_requests (
 
 -- Table to store responses to assessment requests
 CREATE TABLE assessment_responses (
-    id SERIAL PRIMARY KEY,
-    assessment_id INT NOT NULL, -- References the assessment instance
-    trace_request_id INT, -- Optional reference to trace request
-    responding_organization_id INT NOT NULL,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    assessment_id UUID NOT NULL, -- References the assessment instance
+    trace_request_id UUID, -- Optional reference to trace request
+    responding_organization_id UUID NOT NULL,
     submitted_by_user_id VARCHAR(255) NOT NULL, -- Clerk user ID
     -- Stores the actual answers to the form
     response_data JSONB NOT NULL,
@@ -173,9 +169,9 @@ CREATE TABLE assessment_responses (
 
 -- Table for organization member invites
 CREATE TABLE organization_invites (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email VARCHAR(255) NOT NULL,
-    organization_id INT NOT NULL,
+    organization_id UUID NOT NULL,
     organization_role VARCHAR(50) DEFAULT 'employee', -- "admin" | "employee"
     invited_by VARCHAR(255) NOT NULL, -- Clerk user ID
     status VARCHAR(50) DEFAULT 'pending', -- "pending", "sent", "accepted", "expired"
@@ -194,8 +190,8 @@ CREATE TABLE organization_invites (
 
 -- Table for notifications
 CREATE TABLE notifications (
-    id SERIAL PRIMARY KEY,
-    organization_id INT NOT NULL,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    organization_id UUID NOT NULL,
     type VARCHAR(100) NOT NULL,
     title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
@@ -211,8 +207,8 @@ CREATE TABLE notifications (
 
 -- Table for integration activities
 CREATE TABLE integration_activities (
-    id SERIAL PRIMARY KEY,
-    organization_id INT NOT NULL,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    organization_id UUID NOT NULL,
     title VARCHAR(255) NOT NULL,
     subtitle VARCHAR(255),
     status VARCHAR(50) NOT NULL, -- "success", "processing", "completed", "failed"
@@ -225,8 +221,8 @@ CREATE TABLE integration_activities (
 
 -- Table for file uploads and document processing
 CREATE TABLE file_uploads (
-    id SERIAL PRIMARY KEY,
-    organization_id INT NOT NULL,
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    organization_id UUID NOT NULL,
     original_filename VARCHAR(255) NOT NULL,
     stored_filename VARCHAR(255) NOT NULL,
     file_path TEXT NOT NULL,
@@ -253,8 +249,6 @@ CREATE TABLE file_uploads (
 -- Add indexes for foreign keys to improve query performance
 CREATE INDEX idx_users_organization_id ON users(organization_id);
 CREATE INDEX idx_products_organization_id ON products(organization_id);
-CREATE INDEX idx_products_parent_id ON products(parent_id);
-CREATE INDEX idx_products_supplier_id ON products(supplier_organization_id);
 CREATE INDEX idx_products_type ON products(type);
 CREATE INDEX idx_assessment_templates_created_by_org ON assessment_templates(created_by_organization_id);
 CREATE INDEX idx_assessments_organization_id ON assessments(organization_id);

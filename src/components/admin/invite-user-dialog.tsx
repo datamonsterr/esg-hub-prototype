@@ -54,7 +54,7 @@ export function InviteUserDialog({
                 "id" | "token" | "status" | "createdAt" | "expiresAt"
             > = {
                 email: formData.email,
-                organizationId: parseInt(organizationId),
+                organizationId: organizationId,
                 organizationRole: formData.organizationRole,
                 invitedBy: "current-user-id", // You'd get this from your auth context
             };

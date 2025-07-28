@@ -10,52 +10,8 @@ import {
   sanitizeData,
   addCreateTimestamps,
 } from "@/src/lib/supabase-utils";
-
-// Transform database fields to TypeScript camelCase
-function transformProductFromDb(dbProduct: any) {
-  return {
-    id: dbProduct.id,
-    organizationId: dbProduct.organization_id,
-    childrenIds: dbProduct.children_ids,
-    name: dbProduct.name,
-    sku: dbProduct.sku,
-    description: dbProduct.description,
-    category: dbProduct.category,
-    type: dbProduct.type,
-    quantity: dbProduct.quantity,
-    unit: dbProduct.unit,
-    metadata: dbProduct.metadata,
-    dataCompleteness: dbProduct.data_completeness,
-    missingDataFields: dbProduct.missing_data_fields,
-    status: dbProduct.status,
-    createdAt: dbProduct.created_at,
-    updatedAt: dbProduct.updated_at,
-  };
-}
-
-// Transform TypeScript camelCase to database fields
-function transformProductToDb(product: any) {
-  const dbProduct: any = {};
-  
-  if (product.id !== undefined) dbProduct.id = product.id;
-  if (product.organizationId !== undefined) dbProduct.organization_id = product.organizationId;
-  if (product.childrenIds !== undefined) dbProduct.children_ids = product.childrenIds;
-  if (product.name !== undefined) dbProduct.name = product.name;
-  if (product.sku !== undefined) dbProduct.sku = product.sku;
-  if (product.description !== undefined) dbProduct.description = product.description;
-  if (product.category !== undefined) dbProduct.category = product.category;
-  if (product.type !== undefined) dbProduct.type = product.type;
-  if (product.quantity !== undefined) dbProduct.quantity = product.quantity;
-  if (product.unit !== undefined) dbProduct.unit = product.unit;
-  if (product.metadata !== undefined) dbProduct.metadata = product.metadata;
-  if (product.dataCompleteness !== undefined) dbProduct.data_completeness = product.dataCompleteness;
-  if (product.missingDataFields !== undefined) dbProduct.missing_data_fields = product.missingDataFields;
-  if (product.status !== undefined) dbProduct.status = product.status;
-  if (product.createdAt !== undefined) dbProduct.created_at = product.createdAt;
-  if (product.updatedAt !== undefined) dbProduct.updated_at = product.updatedAt;
-  
-  return dbProduct;
-}
+import { Product } from "@/src/types/product";
+import { DbProduct, transformProductFromDb, transformProductToDb } from "@/src/types/server-transforms";
 
 export async function GET(request: NextRequest) {
   try {
@@ -78,8 +34,8 @@ export async function GET(request: NextRequest) {
       return handleDatabaseError(error);
     }
 
-    // Transform products to camelCase format
-    const transformedProducts = products?.map(transformProductFromDb) || [];
+    // Transform products to camelCase format using our utility function
+    const transformedProducts = products?.map((product: any) => transformProductFromDb(product as DbProduct)) || [];
 
     return createSuccessResponse(transformedProducts);
   } catch (error) {
@@ -120,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Transform to database format (snake_case)
-    const dbProduct = transformProductToDb(newProduct);
+    const dbProduct = transformProductToDb(newProduct as Product);
     
     // Sanitize and add timestamps
     const productData = addCreateTimestamps(sanitizeData(dbProduct));
@@ -136,7 +92,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Transform response back to camelCase
-    const transformedProduct = transformProductFromDb(product);
+    const transformedProduct = transformProductFromDb(product as DbProduct);
 
     return createSuccessResponse(transformedProduct, 201);
   } catch (error) {

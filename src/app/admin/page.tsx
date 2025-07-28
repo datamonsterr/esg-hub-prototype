@@ -16,7 +16,7 @@ import { useGetOrganization } from "@/src/api/organization";
 
 export default function AdminPage() {
     const { organizationId, organizationRole, userId } = useUserContext();
-    const { organization } = useGetOrganization(organizationId?.toString() || "1");
+    const { organization } = useGetOrganization(organizationId || "1");
     const isAdmin = useIsAdmin();
     const [showInviteDialog, setShowInviteDialog] = useState(false);
 
@@ -95,7 +95,7 @@ export default function AdminPage() {
                         </CardHeader>
                         <CardContent>
                             <UserManagementTable
-                                organizationId={organizationId || 0}
+                                organizationId={organizationId}
                                 currentUserRole={organizationRole === "admin" ? "admin" : "employee"}
                                 currentUserId={userId || ""}
                             />
@@ -105,23 +105,23 @@ export default function AdminPage() {
 
                 <TabsContent value="profile" className="space-y-6">
                     <OrganizationProfile
-                        organizationId={organizationId || 0}
+                        organizationId={organizationId}
                     />
                 </TabsContent>
 
                 <TabsContent value="settings" className="space-y-6">
-                    <OrganizationSettings organizationId={organizationId || 0} />
+                    <OrganizationSettings organizationId={organizationId}/>
                 </TabsContent>
 
                 <TabsContent value="analytics" className="space-y-6">
                     <OrganizationAnalytics
                         organization={{
-                            id: organizationId?.toString() || "0",
+                            id: organizationId || "0",
                             name: organization?.name || "",
                             address: organization?.address || "",
                             createdAt: organization?.createdAt || ""
                         }}
-                        organizationId={organizationId?.toString() || "0"}
+                        organizationId={organizationId || "0"}
                     />
                 </TabsContent>
             </Tabs>
@@ -130,7 +130,7 @@ export default function AdminPage() {
             <InviteUserDialog
                 isOpen={showInviteDialog}
                 onClose={() => setShowInviteDialog(false)}
-                organizationId={organizationId?.toString() || "0"}
+                organizationId={organizationId || "0"}
                 onInviteSuccess={() => {
                     // Refresh data if needed
                     window.location.reload();

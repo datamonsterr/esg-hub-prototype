@@ -10,6 +10,8 @@ import {
   sanitizeData,
   addUpdateTimestamp,
 } from "@/src/lib/supabase-utils";
+import type { Organization } from "@/src/types/common";
+import { DbOrganization, transformOrganizationFromDb, transformOrganizationToDb } from "@/src/types/server-transforms";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -18,11 +20,7 @@ type RouteParams = {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const organizationId = parseInt(id);
-
-    if (isNaN(organizationId)) {
-      return createErrorResponse("Invalid organization ID", 400);
-    }
+    const organizationId = id;
 
     // Check if user has access to this organization
     await checkOrganizationAccess(organizationId);
@@ -40,7 +38,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(error);
     }
 
-    return createSuccessResponse(organization);
+    // Transform organization to camelCase format
+    const transformedOrganization = transformOrganizationFromDb(organization as DbOrganization);
+
+    return createSuccessResponse(transformedOrganization);
   } catch (error) {
     console.error("Error fetching organization:", error);
     return createErrorResponse("Failed to fetch organization");
@@ -50,14 +51,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const organizationId = parseInt(id);
-
-    if (isNaN(organizationId)) {
-      return createErrorResponse("Invalid organization ID", 400);
-    }
 
     // Check if user has access to this organization
-    const userContext = await checkOrganizationAccess(organizationId);
+    const userContext = await checkOrganizationAccess(id);
 
     // Only allow admins to update organization details
     if (userContext.organizationRole !== 'admin') {
@@ -66,13 +62,16 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     const updatedData = await request.json();
 
+    // Transform to database format (snake_case)
+    const dbOrganization = transformOrganizationToDb(updatedData as Organization);
+
     // Sanitize and add update timestamp
-    const organizationData = addUpdateTimestamp(sanitizeData(updatedData));
+    const organizationData = addUpdateTimestamp(sanitizeData(dbOrganization));
 
     const { data: organization, error } = await supabaseAdmin
       .from('organizations')
       .update(organizationData)
-      .eq('id', organizationId)
+      .eq('id', id)
       .select()
       .single();
 
@@ -80,7 +79,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(error);
     }
 
-    return createSuccessResponse(organization);
+    // Transform organization to camelCase format
+    const transformedOrganization = transformOrganizationFromDb(organization as DbOrganization);
+
+    return createSuccessResponse(transformedOrganization);
   } catch (error) {
     console.error("Error updating organization:", error);
     return createErrorResponse("Failed to update organization");
@@ -90,14 +92,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { id } = await params;
-    const organizationId = parseInt(id);
-
-    if (isNaN(organizationId)) {
-      return createErrorResponse("Invalid organization ID", 400);
-    }
 
     // Check if user has access to this organization
-    const userContext = await checkOrganizationAccess(organizationId);
+    const userContext = await checkOrganizationAccess(id);
 
     // Only allow admins to delete organization
     if (userContext.organizationRole !== 'admin') {
@@ -107,7 +104,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const { error } = await supabaseAdmin
       .from('organizations')
       .delete()
-      .eq('id', organizationId);
+      .eq('id', id);
 
     if (error) {
       return handleDatabaseError(error);

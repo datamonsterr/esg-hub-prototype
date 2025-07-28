@@ -390,7 +390,7 @@ export function ProductList({
                               Edit Product
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleDeleteProduct(product.id.toString())}
+                              onClick={() => handleDeleteProduct(product.id)}
                               className="text-red-600"
                             >
                               <Trash className="h-4 w-4 mr-2" />

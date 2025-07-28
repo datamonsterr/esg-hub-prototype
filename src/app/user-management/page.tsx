@@ -37,8 +37,8 @@ export default function UserManagementPage() {
   const [inviteRole, setInviteRole] = useState<"admin" | "employee">("employee")
   const [isLoading, setIsLoading] = useState(false)
 
-  const { data: members, mutate: mutateMembers } = useGetOrganizationMembers(organizationId?.toString() || "")
-  const { data: invites, mutate: mutateInvites } = useGetOrganizationInvites(organizationId?.toString() || "")
+  const { data: members, mutate: mutateMembers } = useGetOrganizationMembers(organizationId || "")
+  const { data: invites, mutate: mutateInvites } = useGetOrganizationInvites(organizationId || "")
 
   useEffect(() => {
     if (!isLoadingContext && userId) {
@@ -97,7 +97,7 @@ export default function UserManagementPage() {
     }
   }
 
-  const handleCancelInvite = async (inviteId: number) => {
+  const handleCancelInvite = async (inviteId: string) => {
     try {
       await cancelInvite(inviteId)
       mutateInvites()
@@ -106,7 +106,7 @@ export default function UserManagementPage() {
     }
   }
 
-  const handleResendInvite = async (inviteId:number) => {
+  const handleResendInvite = async (inviteId:string) => {
     try {
       await resendInvite(inviteId)
       mutateInvites()

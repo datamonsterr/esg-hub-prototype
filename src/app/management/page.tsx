@@ -37,7 +37,7 @@ export default function ManagementPage() {
   const handleFormSubmit = async (data: CreateProductRequest) => {
     try {
       if (selectedProduct) {
-        await updateProduct(selectedProduct.id.toString(), data);
+        await updateProduct(selectedProduct.id, data);
         toast({ title: "Product Updated", description: "The product has been successfully updated." });
       } else {
         await createProduct(data);
@@ -57,7 +57,7 @@ export default function ManagementPage() {
   const handleDeleteConfirm = async () => {
     if (selectedProduct) {
       try {
-        await deleteProduct(selectedProduct.id.toString());
+        await deleteProduct(selectedProduct.id);
         toast({ title: "Product Deleted", description: "The product has been successfully deleted." });
         mutate();
         setIsDeleteDialogOpen(false);

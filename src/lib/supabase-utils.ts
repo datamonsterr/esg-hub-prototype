@@ -154,7 +154,7 @@ export async function getCurrentUserWithoutCreating() {
 }
 
 // Middleware to check organization membership
-export async function checkOrganizationAccess(organizationId: number) {
+export async function checkOrganizationAccess(organizationId: string) { // Changed to string UUID to match schema
   try {
     const userContext = await getCurrentUserContext();
     

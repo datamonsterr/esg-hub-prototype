@@ -17,8 +17,7 @@ type RouteParams = {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationIdParam, memberId } = await params;
-    const organizationId = parseInt(organizationIdParam);
+    const { id: organizationId, memberId } = await params;
     const userContext = await checkOrganizationAccess(organizationId);
 
     const { data: member, error } = await supabaseAdmin
@@ -54,8 +53,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationIdParam, memberId } = await params;
-    const organizationId = parseInt(organizationIdParam);
+    const { id: organizationId, memberId } = await params;
     const userContext = await checkOrganizationAccess(organizationId);
     const updatedData = await request.json();
 
@@ -95,8 +93,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationIdParam, memberId } = await params;
-    const organizationId = parseInt(organizationIdParam);
+    const { id: organizationId, memberId } = await params;
     const userContext = await checkOrganizationAccess(organizationId);
 
     // Only admins can remove members

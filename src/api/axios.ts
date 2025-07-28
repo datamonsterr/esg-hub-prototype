@@ -13,7 +13,7 @@ export const endpoints = {
     id: (id: string) => `/organizations/${id}`,
     members: (id: string) => `/organizations/${id}/members`,
     invites: (id: string) => `/organizations/${id}/invites`,
-    memberById: (orgId: number, memberId: string) =>
+    memberById: (orgId: string, memberId: string) =>
       `/organizations/${orgId}/members/${memberId}`,
     inviteById: (orgId: string, inviteId: string) =>
       `/organizations/${orgId}/invites/${inviteId}`,
@@ -67,8 +67,8 @@ export const endpoints = {
       actors: (id: string) => `/documents/validation/${id}/actors`,
       actions: (id: string) => `/documents/validation/${id}/actions`,
       dynamicTable: (id: string) => `/documents/validation/${id}/dynamic-table`,
-      filePreview: (id: number) => `/documents/validation/${id}/file-preview`,
-      productTree: (id: number) => `/documents/validation/${id}/product-tree`,
+      filePreview: (id: string) => `/documents/validation/${id}/file-preview`,
+      productTree: (id: string) => `/documents/validation/${id}/product-tree`,
     },
   },
   // User Management
@@ -80,7 +80,7 @@ export const endpoints = {
     updateRole: (id: string) => `/users/${id}/role`,
   },
   onboard: {
-    accept: (id: number) => `/onboard/accept/${id}`,
+    accept: (id: string) => `/onboard/accept/${id}`,
     pendingInvitations: "/onboard/pending-invitations",
     invite: "/onboard/invite",
     inviteByEmail: (email: string) =>
@@ -89,8 +89,8 @@ export const endpoints = {
   invites: {
     base: "/invites",
     send: "/invites/send",
-    resend: (id: number) => `/invites/${id}/resend`,
-    cancel: (id: number) => `/invites/${id}/cancel`,
+    resend: (id: string) => `/invites/${id}/resend`,
+    cancel: (id: string) => `/invites/${id}/cancel`,
   },
   notifications: "/notifications",
   supplierAssessmentPage: "/supplier-assessment-page",

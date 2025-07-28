@@ -31,7 +31,7 @@ export const addOrganizationMember = async (
 
 // Update member role
 export const updateMemberRole = async (
-  organizationId: number,
+  organizationId: string,
   memberId: string,
   role: "admin" | "employee"
 ): Promise<OrganizationMember> => {
@@ -44,7 +44,7 @@ export const updateMemberRole = async (
 
 // Remove member from organization
 export const removeMember = async (
-  organizationId: number,
+  organizationId: string,
   memberId: string
 ): Promise<void> => {
   await axiosInstance.delete(
@@ -75,14 +75,14 @@ export const sendInvite = async (
 
 // Resend invite
 export const resendInvite = async (
-  inviteId:number 
+  inviteId: string
 ): Promise<InviteRequest> => {
   const response = await axiosInstance.post(endpoints.invites.resend(inviteId));
   return response.data;
 };
 
 // Cancel invite
-export const cancelInvite = async (inviteId: number): Promise<void> => {
+export const cancelInvite = async (inviteId: string): Promise<void> => {
   await axiosInstance.delete(endpoints.invites.cancel(inviteId));
 };
 
@@ -143,7 +143,7 @@ export const useGetUserOrg = () => {
   const organizationId = useOrganizationId();
   const { data, error, isLoading, mutate } = useSWR(
     organizationId ? `/organizations/${organizationId}` : null,
-    () => getOrganizationById(organizationId!.toString())
+    () => getOrganizationById(organizationId!)
   );
 
   return {

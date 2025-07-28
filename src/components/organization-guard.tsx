@@ -43,7 +43,7 @@ export function OrganizationGuard({
                             },
                             body: JSON.stringify({
                                 id: user?.id,
-                                organization_id: 1, // Assuming Nuoa is organization ID 1
+                                organization_id: '1', // Assuming Nuoa is organization ID 1 (string UUID)
                                 organization_role: 'admin',
                                 is_active: true,
                             }),

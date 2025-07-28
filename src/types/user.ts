@@ -34,9 +34,9 @@ export interface OrganizationMember {
 }
 
 export interface InviteRequest {
-  id: number; // Changed to number to match schema (SERIAL PRIMARY KEY)
+  id: string; // Changed to string UUID to match schema
   email: string;
-  organizationId: number; // Changed to number to match schema
+  organizationId: string; // Changed to string UUID to match schema
   organizationRole: "admin" | "employee";
   invitedBy: string; // Clerk user ID
   status: "pending" | "sent" | "accepted" | "expired";
@@ -46,9 +46,9 @@ export interface InviteRequest {
 }
 
 export interface PendingInvitation {
-  id: number; // Changed to number to match schema
+  id: string; // Changed to string UUID to match schema
   email: string;
-  organizationId: number; // Changed to number to match schema
+  organizationId: string; // Changed to string UUID to match schema
   organizationName: string;
   organizationRole: "admin" | "employee";
   invitedBy: {

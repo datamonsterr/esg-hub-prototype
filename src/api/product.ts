@@ -36,38 +36,53 @@ export const deleteProduct = async (id: string): Promise<void> => {
   await axiosInstance.delete(endpoints.products.id(id));
 };
 
-export const getProductsWithComponent = async (params?: {
-  organizationId?: string;
-  category?: string;
-  search?: string;
-}): Promise<Product[]> => {
-  // Get all products from the unified products table
-  const { data: allProducts } = await axiosInstance.get(endpoints.products.base, { params });
+export const getProductParents = async (productId: string): Promise<Product[]> => {
+  // This would typically require cross-organization querying
+  // For now, we'll return an empty array as it needs special API design
+  // to handle products from different organizations
+  const res = await axiosInstance.get(`${endpoints.products.id(productId)}/parents`);
+  return res.data;
+};
 
-  // Build hierarchical structure based on children_ids
+export const getProductHierarchy = async (products: Product[]): Promise<any[]> => {
   const productMap = new Map<string, Product>();
-  allProducts.forEach((product: Product) => {
-    productMap.set(product.id, { ...product, children: [] });
+  const rootProducts: any[] = [];
+
+  // Create a map for easy lookup
+  products.forEach((product: Product) => {
+    productMap.set(product.id, product);
   });
 
-  // Build the tree structure
-  const rootProducts: Product[] = [];
-  
-  allProducts.forEach((product: Product) => {
-    const productWithChildren = productMap.get(product.id)!;
+  // Build hierarchy for each product
+  products.forEach((product: Product) => {
+    const productWithChildren: any = { 
+      ...product, 
+      children: [] as Product[], 
+      parents: [] as Product[] 
+    };
     
-    // If this product has children, populate them
+    // Add children
     if (product.childrenIds && product.childrenIds.length > 0) {
       product.childrenIds.forEach(childId => {
         const child = productMap.get(childId);
-        if (child && productWithChildren.children) {
-          productWithChildren.children.push(child as any);
+        if (child) {
+          productWithChildren.children.push(child);
+        }
+      });
+    }
+    
+    // Add parents
+    if (product.parentIds && product.parentIds.length > 0) {
+      product.parentIds.forEach(parentId => {
+        const parent = productMap.get(parentId);
+        if (parent) {
+          productWithChildren.parents.push(parent);
         }
       });
     }
     
     // If this product is not a child of any other product, it's a root product
-    const isChildOfAnotherProduct = allProducts.some((p: Product) => 
+    const isChildOfAnotherProduct = products.some((p: Product) => 
       p.childrenIds && p.childrenIds.includes(product.id)
     );
     
@@ -213,11 +228,12 @@ export function useGetProducts(params?: {
 }) {
   const { data, error, isLoading, mutate } = useSWR<Product[]>(
     ['/products', params],
-    () => {
+    async () => {
       if (params?.includeTraceability) {
         return getProductsWithTraceabilityStatus(params);
       }
-      return params?.flatView ? getProducts(params) : getProductsWithComponent(params);
+      const products = await getProducts(params);
+      return params?.flatView ? products : getProductHierarchy(products);
     },
   );
 

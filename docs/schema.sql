@@ -28,6 +28,7 @@ CREATE TABLE users (
 CREATE TABLE products (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     organization_id UUID NOT NULL,
+    parent_ids UUID[], -- Array of parent product IDs from other organizations that import this product
     children_ids UUID[], -- Array of child product IDs for hierarchical relationships
     name VARCHAR(255) NOT NULL,
     sku VARCHAR(100),

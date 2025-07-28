@@ -9,52 +9,8 @@ import {
   sanitizeData,
   addUpdateTimestamp,
 } from "@/src/lib/supabase-utils";
-
-// Transform database fields to TypeScript camelCase
-function transformProductFromDb(dbProduct: any) {
-  return {
-    id: dbProduct.id,
-    organizationId: dbProduct.organization_id,
-    childrenIds: dbProduct.children_ids,
-    name: dbProduct.name,
-    sku: dbProduct.sku,
-    description: dbProduct.description,
-    category: dbProduct.category,
-    type: dbProduct.type,
-    quantity: dbProduct.quantity,
-    unit: dbProduct.unit,
-    metadata: dbProduct.metadata,
-    dataCompleteness: dbProduct.data_completeness,
-    missingDataFields: dbProduct.missing_data_fields,
-    status: dbProduct.status,
-    createdAt: dbProduct.created_at,
-    updatedAt: dbProduct.updated_at,
-  };
-}
-
-// Transform TypeScript camelCase to database fields
-function transformProductToDb(product: any) {
-  const dbProduct: any = {};
-  
-  if (product.id !== undefined) dbProduct.id = product.id;
-  if (product.organizationId !== undefined) dbProduct.organization_id = product.organizationId;
-  if (product.childrenIds !== undefined) dbProduct.children_ids = product.childrenIds;
-  if (product.name !== undefined) dbProduct.name = product.name;
-  if (product.sku !== undefined) dbProduct.sku = product.sku;
-  if (product.description !== undefined) dbProduct.description = product.description;
-  if (product.category !== undefined) dbProduct.category = product.category;
-  if (product.type !== undefined) dbProduct.type = product.type;
-  if (product.quantity !== undefined) dbProduct.quantity = product.quantity;
-  if (product.unit !== undefined) dbProduct.unit = product.unit;
-  if (product.metadata !== undefined) dbProduct.metadata = product.metadata;
-  if (product.dataCompleteness !== undefined) dbProduct.data_completeness = product.dataCompleteness;
-  if (product.missingDataFields !== undefined) dbProduct.missing_data_fields = product.missingDataFields;
-  if (product.status !== undefined) dbProduct.status = product.status;
-  if (product.createdAt !== undefined) dbProduct.created_at = product.createdAt;
-  if (product.updatedAt !== undefined) dbProduct.updated_at = product.updatedAt;
-  
-  return dbProduct;
-}
+import { Product } from "@/src/types/product";
+import { DbProduct, transformProductFromDb, transformProductToDb } from "@/src/types/server-transforms";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -70,6 +26,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     const userContext = await getCurrentUserContext();
+    console.log(`Looking for product ${id} in organization ${userContext.organizationId}`);
 
     const { data: product, error } = await supabaseAdmin
       .from('products')
@@ -79,14 +36,27 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) {
+      console.log('Database error:', error);
       if (error.code === 'PGRST116') {
+        // Also try to find the product without organization filter for debugging
+        const { data: productAnyOrg } = await supabaseAdmin
+          .from('products')
+          .select('id, name, organization_id')
+          .eq('id', id)
+          .single();
+        
+        if (productAnyOrg) {
+          console.log(`Product ${id} exists but belongs to organization ${productAnyOrg.organization_id}, user is in ${userContext.organizationId}`);
+          return createErrorResponse("Product not found in your organization", 404);
+        }
+        
         return createErrorResponse("Product not found", 404);
       }
       return handleDatabaseError(error);
     }
 
-    // Transform product to camelCase format
-    const transformedProduct = transformProductFromDb(product);
+    // Transform product to camelCase format using the utility from database.ts
+    const transformedProduct = transformProductFromDb(product as DbProduct);
 
     return createSuccessResponse(transformedProduct);
   } catch (error) {
@@ -111,8 +81,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     delete updatedData.organizationId;
     delete updatedData.id;
 
-    // Transform to database format (snake_case)
-    const dbUpdatedData = transformProductToDb(updatedData);
+    // Transform to database format (snake_case) using the utility from database.ts
+    const dbUpdatedData = transformProductToDb(updatedData as Product);
 
     // Sanitize and add update timestamp
     const productData = addUpdateTimestamp(sanitizeData(dbUpdatedData));
@@ -132,8 +102,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(error);
     }
 
-    // Transform response back to camelCase
-    const transformedProduct = transformProductFromDb(product);
+    // Transform response back to camelCase using the utility from database.ts
+    const transformedProduct = transformProductFromDb(product as DbProduct);
 
     return createSuccessResponse(transformedProduct);
   } catch (error) {

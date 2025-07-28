@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { useGetProducts } from "@/src/api/product"
+import { useGetProducts, useGetProduct } from "@/src/api/product"
 import { GlobalLoading } from "@/src/components/global-loading"
 import { ErrorComponent } from "@/src/components/ui/error"
 import ProductTreeView from "@/src/components/management/product-tree-view"
@@ -10,39 +10,18 @@ import { Button } from "@/src/components/ui/button"
 import { ArrowLeft, Edit, Trash2 } from "lucide-react"
 import { Product, ProductNode } from "@/src/types"
 import Link from "next/link"
+import { useOrganizationId } from "@/src/hooks/useUserContext"
 
 export default function ProductTreePage() {
   const params = useParams()
   const router = useRouter()
   const productId = params.id as string
+  const organizationId = useOrganizationId()
 
-  const { products, isLoading, isError } = useGetProducts({
-    flatView: false // We need hierarchical structure for tree view
-  })
-
-  // Find the specific product and build its hierarchy
-  const { selectedProduct, productsWithHierarchy } = useMemo(() => {
-    if (!products || !productId) return { selectedProduct: null, productsWithHierarchy: [] }
-
-    // Build hierarchical structure from children_ids
-    const productMap = new Map(products.map(p => [p.id, { ...p, children: [] as ProductNode[] }]))
-    
-    products.forEach(product => {
-      if (product.childrenIds && product.childrenIds.length > 0) {
-        const productWithChildren = productMap.get(product.id)
-        if (productWithChildren) {
-          productWithChildren.children = product.childrenIds
-            .map(childId => productMap.get(childId))
-            .filter((child): child is ProductNode => Boolean(child)) as ProductNode[]
-        }
-      }
-    })
-
-    const productsWithHierarchy = Array.from(productMap.values()) as ProductNode[]
-    const selectedProduct = productsWithHierarchy.find(p => p.id === productId)
-
-    return { selectedProduct, productsWithHierarchy }
-  }, [products, productId])
+  console.log('Current organization ID:', organizationId);
+  
+  // Get the specific product first
+  const { product: selectedProduct, isLoading, isError } = useGetProduct(productId)
 
   const handleEdit = (product: Product) => {
     // Navigate to edit page or open modal
@@ -113,9 +92,12 @@ export default function ProductTreePage() {
       {/* Product Tree View */}
       <div className="h-[calc(100vh-12rem)]">
         <ProductTreeView 
-          products={[selectedProduct as Product]} 
+          products={[selectedProduct]} 
+          singleProductMode={true}
+          selectedProductId={selectedProduct?.id}
           onEdit={handleEdit} 
-          onDelete={handleDelete} 
+          onDelete={handleDelete}
+          currentOrganizationId={organizationId || ''}
         />
       </div>
     </div>

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import { useState, Suspense, useEffect } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { ArrowLeft, Search, WandIcon, Plus, X, Eye, Send } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
@@ -14,10 +15,14 @@ import { Badge } from "@/src/components/ui/badge"
 
 import { useCreateTraceabilityRequest } from "@/src/api/traceability"
 import { useSearchAssessments } from "@/src/api/assessment"
-import { useGetProducts, useGetMaterialCodes, useGetSuppliers } from "@/src/api/product"
+import { useGetProducts, useGetMaterialCodes, useGetSuppliers, useGetProduct } from "@/src/api/product"
 import { CreateTraceabilityRequest, CascadeSettings } from "@/src/types/traceability"
 
 function CreateTraceabilityRequestPage() {
+  const searchParams = useSearchParams();
+  const preselectedProductId = searchParams.get('productId');
+  const preselectedSupplierOrgId = searchParams.get('supplierOrgId');
+  
   const { assessments, isLoading: isLoadingAssessments } = useSearchAssessments()
   const { createTraceabilityRequest } = useCreateTraceabilityRequest()
 
@@ -26,7 +31,8 @@ function CreateTraceabilityRequestPage() {
   const { suppliers, isLoading: isLoadingSuppliers } = useGetSuppliers(organizationId)
   const { materialCodes, isLoading: isLoadingMaterials } = useGetMaterialCodes()
   const { products, isLoading: isLoadingProducts } = useGetProducts({ organizationId })
-
+  const { product: preselectedProduct, isLoading: isLoadingPreselectedProduct } = useGetProduct(preselectedProductId || '')
+  
   // Form state
   const [selectedSuppliers, setSelectedSuppliers] = useState<string[]>([])
   const [assessmentId, setAssessmentId] = useState("")
@@ -39,6 +45,30 @@ function CreateTraceabilityRequestPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [isCreating, setIsCreating] = useState(false)
+  
+  // Handle preselected product and supplier from URL params
+  useEffect(() => {
+    if (preselectedProductId && !isLoadingPreselectedProduct && preselectedProduct) {
+      setSelectedProductCodes(prev => 
+        prev.includes(preselectedProductId) ? prev : [...prev, preselectedProductId]
+      );
+      
+      // Set default message for traceability request
+      setMessage(
+        `We are requesting traceability information for the product "${preselectedProduct.name}" to improve our supply chain transparency and sustainability reporting.`
+      );
+    }
+    
+    if (preselectedSupplierOrgId && suppliers) {
+      // Find the supplier with matching organization ID
+      const supplier = suppliers.find(s => s.id === preselectedSupplierOrgId);
+      if (supplier) {
+        setSelectedSuppliers(prev => 
+          prev.includes(supplier.id) ? prev : [...prev, supplier.id]
+        );
+      }
+    }
+  }, [preselectedProductId, preselectedProduct, preselectedSupplierOrgId, suppliers, isLoadingPreselectedProduct]);
 
   // Cascade settings
   const [cascadeSettings, setCascadeSettings] = useState<CascadeSettings>({
@@ -184,6 +214,25 @@ function CreateTraceabilityRequestPage() {
             </div>
           </div>
 
+          {/* Product Selection */}
+          {preselectedProductId && preselectedProduct && (
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Selected Product</h3>
+              <div className="border border-gray-200 rounded-md p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{preselectedProduct.name}</p>
+                    <p className="text-sm text-gray-600">Type: {preselectedProduct.type.replace('_', ' ')}</p>
+                    {preselectedProduct.sku && <p className="text-sm text-gray-600">SKU: {preselectedProduct.sku}</p>}
+                  </div>
+                  <Badge variant={preselectedProduct.organizationId === organizationId ? "outline" : "secondary"}>
+                    {preselectedProduct.organizationId === organizationId ? "Internal" : "External"} Product
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Assessment Selection */}
           <div>
             <h3 className="text-lg font-medium text-gray-900 mb-4">Assessment Selection</h3>

@@ -18,8 +18,7 @@ type RouteParams = {
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationIdParam } = await params;
-    const organizationId = parseInt(organizationIdParam);
+    const { id: organizationId } = await params;
     const userContext = await checkOrganizationAccess(organizationId);
     const searchParams = request.nextUrl.searchParams;
 
@@ -53,8 +52,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
-    const { id: organizationIdParam } = await params;
-    const organizationId = parseInt(organizationIdParam);
+    const { id: organizationId } = await params;
     const userContext = await checkOrganizationAccess(organizationId);
     const memberData = await request.json();
 

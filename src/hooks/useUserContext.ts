@@ -5,7 +5,7 @@ import { getUserByClerkId } from '../lib/user-utils';
 export interface UserContextData {
   userId: string;
   email?: string;
-  organizationId?: number;
+  organizationId?: string; // Changed to string UUID to match schema
   organizationRole?: "admin" | "employee";
   isActive?: boolean;
   isLoading: boolean;
@@ -86,11 +86,17 @@ export function useIsAdmin(): boolean {
 /**
  * Hook to get current user's organization ID
  */
-export function useOrganizationId(): number | undefined {
+export function useOrganizationId(): string | undefined {
   const { organizationId, isLoading } = useUserContext();
   
   if (isLoading) {
     return undefined;
+  }
+  
+  // Fallback to default ID in development environment
+  if (organizationId === undefined && process.env.NODE_ENV === 'development') {
+    console.warn('⚠️ Using fallback organization ID in development');
+    return '1'; // Return string ID to match UUID format
   }
   
   return organizationId;

@@ -40,7 +40,7 @@ import {
 } from "@/src/components/ui/alert-dialog";
 
 interface UserManagementTableProps {
-    organizationId: number;
+    organizationId: string;
     currentUserRole: "admin" | "employee";
     currentUserId: string;
 }
@@ -58,13 +58,13 @@ export function UserManagementTable({
         data: members = [],
         isLoading: membersLoading,
         mutate: refetchMembers
-    } = useGetOrganizationMembers(organizationId.toString());
+    } = useGetOrganizationMembers(organizationId);
 
     const {
         data: invites = [],
         isLoading: invitesLoading,
         mutate: refetchInvites
-    } = useGetOrganizationInvites(organizationId.toString());
+    } = useGetOrganizationInvites(organizationId);
 
     const handleRoleChange = async (memberId: string, newRole: "admin" | "employee") => {
         try {
@@ -105,7 +105,7 @@ export function UserManagementTable({
         }
     };
 
-    const handleResendInvite = async (inviteId: number) => {
+    const handleResendInvite = async (inviteId: string) => {
         try {
             await resendInvite(inviteId);
             showSuccessToast("Invitation resent");

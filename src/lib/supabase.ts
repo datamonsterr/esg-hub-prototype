@@ -32,6 +32,11 @@ export function getSupabase() {
 export function getSupabaseAdmin() {
   if (!_supabaseAdmin) {
     const config = getConfig();
+    
+    if (!config.serviceRoleKey && process.env.NODE_ENV === 'production') {
+      throw new Error('Supabase service role key is required in production');
+    }
+    
     _supabaseAdmin = createClient(config.url, config.serviceRoleKey, {
       auth: {
         autoRefreshToken: false,

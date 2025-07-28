@@ -3,6 +3,7 @@ export interface Product {
   [x: string]: any;
   id: string; // UUID PRIMARY KEY from schema
   organizationId: string; // organization_id from schema (UUID)
+  parentIds?: string[] | null; // Array of parent product UUIDs from other organizations that import this product
   childrenIds?: string[] | null; // Array of child product UUIDs for hierarchical relationships
   name: string;
   sku?: string | null; // Made optional to match schema
@@ -18,6 +19,7 @@ export interface Product {
   createdAt: string; // TIMESTAMPTZ
   updatedAt: string; // TIMESTAMPTZ
   children?: ProductNode[]; // For hierarchical display (computed field)
+  parents?: ProductNode[]; // For upward hierarchical display (computed field)
   
   // Traceability-related fields (computed at runtime based on trace requests)
   traceabilityStatus?: 'none' | 'pending' | 'approved' | 'rejected'; // Status of traceability requests for this product
@@ -38,6 +40,7 @@ export interface ProductMetadata {
 // Node interface for hierarchical product structure
 export interface ProductNode extends Product {
   children: ProductNode[];
+  parents?: ProductNode[]; // For upward hierarchical display
 }
 
 // Legacy aliases for backward compatibility
@@ -54,6 +57,7 @@ export interface CreateProductRequest {
   type?: "raw_material" | "sub_assembly" | "component" | "final_product"; // Added type field
   quantity?: number; // Made optional with default
   unit?: string; // Made optional with default
+  parentIds?: string[] | null; // Array of parent product UUIDs from other organizations that import this product
   childrenIds?: string[] | null; // Array of child product UUIDs for hierarchical relationships
   metadata?: Record<string, any>; // For additional data
 }

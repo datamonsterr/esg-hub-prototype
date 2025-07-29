@@ -50,7 +50,6 @@ export const createDocument = async (
   { arg }: { arg: { id: string; fileName: string; fileExtension: string } }
 ) => {
   const { id, fileName, fileExtension } = arg;
-  const numberId = parseInt(id, 10);
   
   // Create processed document entry with comprehensive mock data
   const newProcessedDoc = {
@@ -107,7 +106,7 @@ export const createDocument = async (
       {
         title: "File Preview",
         type: "file-preview",
-        contentUrl: endpoints.documents.validation.filePreview(numberId)
+        contentUrl: endpoints.documents.validation.filePreview(id)
       },
       {
         title: "Key Highlights",
@@ -127,7 +126,7 @@ export const createDocument = async (
     axiosInstance.post(endpoints.documents.validation.base, newProcessedDoc),
     
     // Create file preview data with comprehensive mock content
-    axiosInstance.post(endpoints.documents.validation.filePreview(numberId), {
+    axiosInstance.post(endpoints.documents.validation.filePreview(id), {
       id,
       fileName,
       fileSize: "Processing...",
@@ -415,6 +414,7 @@ export function useGetActivityStatus(activityId: number | null) {
             quantity: item.qty,
             organizationId: productToUpdate.organizationId,
             childrenIds: [], // Use children array instead of parent relationship
+            parentIds: [productId], // Set parent to the current product
             type: 'raw_material' as const,
             description: `Sourced from ${item.supplier}`,
             unit: item.unit,
@@ -431,6 +431,7 @@ export function useGetActivityStatus(activityId: number | null) {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             children: [],
+            parents: [],
           }));
 
           // In a real app, these would be created via API calls to the products endpoint
@@ -483,7 +484,7 @@ export function useGetDocument(id: string) {
   };
 }
 
-export function useGetFilePreview(documentId: number | undefined) {
+export function useGetFilePreview(documentId: string | undefined) {
   const { data, error, isLoading } = useSWR<FilePreviewData>(
     documentId ? endpoints.documents.validation.filePreview(documentId) : null, 
     fetcher

@@ -86,7 +86,8 @@ const mockProductTree: Product = {
           status: "active",
           createdAt: "2024-02-15T00:00:00Z",
           updatedAt: "2024-03-18T00:00:00Z",
-          children: []
+          children: [],
+          parents: []
         },
         {
           id: "comp-mock-003",
@@ -100,7 +101,7 @@ const mockProductTree: Product = {
           unit: "piece",
           metadata: {
             materialType: "rubber",
-            originCountry: "Thailand", 
+            originCountry: "Thailand",
             certifications: ["FSC"],
             sustainabilityScore: 8.9,
             carbonFootprint: 3.4,
@@ -111,9 +112,11 @@ const mockProductTree: Product = {
           status: "active",
           createdAt: "2024-02-15T00:00:00Z",
           updatedAt: "2024-03-10T00:00:00Z",
-          children: []
+          children: [],
+          parents: []
         }
-      ]
+      ],
+      parents: []
     }
   ]
 };

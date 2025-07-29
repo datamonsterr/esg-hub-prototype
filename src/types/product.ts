@@ -40,7 +40,7 @@ export interface ProductMetadata {
 // Node interface for hierarchical product structure
 export interface ProductNode extends Product {
   children: ProductNode[];
-  parents?: ProductNode[]; // For upward hierarchical display
+  parents: ProductNode[]; // For upward hierarchical display
 }
 
 // Legacy aliases for backward compatibility

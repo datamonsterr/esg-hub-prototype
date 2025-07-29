@@ -74,77 +74,54 @@ const ProductTreeView = ({ products, onEdit, onDelete, selectedProductId, initia
     const children: ProductNode[] = [];
     const parents: ProductNode[] = [];
     
-    if (viewType === 'downstream' && product.childrenIds && product.childrenIds.length > 0) {
-      // Fetch children for downstream view (what this product is made of)
-      for (const childId of product.childrenIds) {
+    if (viewType === 'downstream' && product.parentIds && product.parentIds.length > 0) {
+      // Fetch parents for downstream view (what this product is made of)
+      for (const parentId of product.parentIds) {
         try {
-          let childProduct = allProducts.get(childId);
+          let parentProduct = allProducts.get(parentId);
           
-          if (!childProduct) {
+          if (!parentProduct) {
             try {
-              childProduct = await getProductById(childId);
-              setAllProducts(prev => new Map(prev.set(childId, childProduct!)));
+              parentProduct = await getProductById(parentId);
+              setAllProducts(prev => new Map(prev.set(parentId, parentProduct!)));
             } catch (fetchError) {
-              console.warn(`Child product ${childId} not found or not accessible:`, fetchError);
-              continue; // Skip this child and continue with others
+              console.warn(`Parent product ${parentId} not found or not accessible:`, fetchError);
+              continue; // Skip this parent and continue with others
             }
           }
           
-          if (childProduct) {
-            const childWithChildren = await fetchRelatedProductsRecursively(childProduct, new Set(visited));
-            children.push(childWithChildren);
+          if (parentProduct) {
+            const parentWithChildren = await fetchRelatedProductsRecursively(parentProduct, new Set(visited));
+            children.push(parentWithChildren);
           }
         } catch (error) {
-          console.warn(`Failed to fetch child product ${childId}:`, error);
-          // Continue with other children instead of failing completely
+          console.warn(`Failed to fetch parent product ${parentId}:`, error);
+          // Continue with other parents instead of failing completely
         }
       }
     } else if (viewType === 'upstream') {
-      // For upstream view, in single product mode we use the parentIds directly
-      if (singleProductMode && product.parentIds && product.parentIds.length > 0) {
-        for (const parentId of product.parentIds) {
+      // For upstream view, fetch immediate children (what uses this product) - don't recurse further
+      if (product.childrenIds && product.childrenIds.length > 0) {
+        for (const childId of product.childrenIds) {
           try {
-            let parentProduct = allProducts.get(parentId);
+            let childProduct = allProducts.get(childId);
             
-            if (!parentProduct) {
+            if (!childProduct) {
               try {
-                parentProduct = await getProductById(parentId);
-                setAllProducts(prev => new Map(prev.set(parentId, parentProduct!)));
+                childProduct = await getProductById(childId);
+                setAllProducts(prev => new Map(prev.set(childId, childProduct!)));
               } catch (fetchError) {
-                console.warn(`Parent product ${parentId} not found or not accessible:`, fetchError);
-                continue; // Skip this parent and continue with others
+                console.warn(`Child product ${childId} not found or not accessible:`, fetchError);
+                continue; // Skip this child and continue with others
               }
             }
             
-            if (parentProduct && !visited.has(parentProduct.id)) {
-              const parentWithParents = await fetchRelatedProductsRecursively(parentProduct, new Set(visited));
-              parents.push(parentWithParents);
+            if (childProduct && !visited.has(childProduct.id)) {
+              // For upstream, don't recurse - just add the child as-is with empty parents array
+              parents.push({ ...childProduct, children: [], parents: [] });
             }
           } catch (error) {
-            console.warn(`Failed to fetch parent product ${parentId}:`, error);
-          }
-        }
-      } else {
-        // For non-single product mode, look through all products for ones that have this product in their childrenIds
-        console.log(`Looking for products that use ${product.name} (${product.id}) as a component`);
-        for (const otherProduct of products) {
-          if (otherProduct.childrenIds && otherProduct.childrenIds.includes(product.id)) {
-            console.log(`Found that ${otherProduct.name} uses ${product.name}`);
-            try {
-              let parentProduct = allProducts.get(otherProduct.id);
-              if (!parentProduct) {
-                parentProduct = otherProduct;
-                setAllProducts(prev => new Map(prev.set(otherProduct.id, parentProduct!)));
-              }
-              
-              if (parentProduct && !visited.has(parentProduct.id)) {
-                const parentWithParents = await fetchRelatedProductsRecursively(parentProduct, new Set(visited));
-                parents.push(parentWithParents);
-              }
-            } catch (error) {
-              console.warn(`Failed to process parent product ${otherProduct.id}:`, error);
-              // Continue with other parents instead of failing completely
-            }
+            console.warn(`Failed to fetch child product ${childId}:`, error);
           }
         }
       }
@@ -193,7 +170,7 @@ const ProductTreeView = ({ products, onEdit, onDelete, selectedProductId, initia
     };
 
     buildHierarchy();
-  }, [products, viewType]);
+  }, [products, viewType])
 
   // Find root products based on view type
   const rootProducts = useMemo(() => {
@@ -219,18 +196,13 @@ const ProductTreeView = ({ products, onEdit, onDelete, selectedProductId, initia
       console.log('Downstream root products (final products or standalone):', result.map(p => p.name));
       return result;
     } else {
-      // For upstream view, find products that are components/materials (appear in childrenIds of other products)
-      // OR products that have no parents (to show standalone components)
-      const allChildIds = new Set(
-        products.flatMap(p => p.childrenIds || [])
-      );
-      // Include products that are referenced as children OR have no parent relationships OR standalone products
+      // For upstream view, find products that have children (components/materials that are used by other products)
+      // OR standalone products with no relationships
       const result = hierarchicalProducts.filter(p => 
-        allChildIds.has(p.id) || // Used as a component
-        (!p.parentIds || p.parentIds.length === 0) || // No parents
+        (p.childrenIds && p.childrenIds.length > 0) || // Has children (used by other products)
         ((!p.parentIds || p.parentIds.length === 0) && (!p.childrenIds || p.childrenIds.length === 0)) // Standalone product
       );
-      console.log('Upstream root products (components/materials or standalone):', result.map(p => p.name));
+      console.log('Upstream root products (components used by others or standalone):', result.map(p => p.name));
       return result;
     }
   }, [hierarchicalProducts, products, viewType]);
@@ -392,12 +364,12 @@ const ProductTreeView = ({ products, onEdit, onDelete, selectedProductId, initia
                   key={`tree-${currentRootProduct?.id || 'root'}-${viewType}`}
                   data={treeData}
                   orientation="vertical"
-                  translate={{ x: 400, y: viewType === 'downstream' ? 100 : 500 }}
+                  translate={{ x: 400, y: viewType === 'downstream' ? 100 : 200 }}
                   renderCustomNodeElement={renderCustomNodeElement}
                   nodeSize={{ x: 200, y: 100 }}
                   separation={{ siblings: 1.5, nonSiblings: 2 }}
                   collapsible={true}
-                  initialDepth={2}
+                  initialDepth={viewType === 'downstream' ? 2 : 1}
                 />
               </div>
             ) : (

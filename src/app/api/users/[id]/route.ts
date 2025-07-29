@@ -7,7 +7,6 @@ import {
   handleDatabaseError,
   sanitizeData,
 } from "@/src/lib/supabase-utils";
-import { updateUser, deleteUser, getUserById } from "@/src/lib/user-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -23,10 +22,32 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return createErrorResponse("Access denied", 403);
     }
 
-    const user = await getUserById(id);
+    const { data: user, error } = await supabaseAdmin
+      .from('users')
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        created_at,
+        updated_at,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .eq('id', id)
+      .single();
 
-    if (!user) {
+    if (error && error.code === 'PGRST116') {
       return createErrorResponse("User not found", 404);
+    }
+
+    if (error) {
+      return handleDatabaseError(error);
     }
 
     return createSuccessResponse(user);
@@ -47,10 +68,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return createErrorResponse("Access denied", 403);
     }
 
-    // Get the user to get their clerk_id
-    const user = await getUserById(id);
-    if (!user) {
+    // Get the user first to verify it exists
+    const { data: existingUser, error: getUserError } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('id', id)
+      .single();
+
+    if (getUserError && getUserError.code === 'PGRST116') {
       return createErrorResponse("User not found", 404);
+    }
+
+    if (getUserError) {
+      return handleDatabaseError(getUserError);
     }
 
     // Extract only the allowed fields for update
@@ -67,7 +97,37 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return createErrorResponse("Access denied: Admin role required to update user role", 403);
     }
 
-    const updatedUser = await updateUser(user.clerk_id, sanitizeData(filteredData));
+    // Transform camelCase to snake_case for database update
+    const updateData: any = {};
+    if (filteredData.organization_role !== undefined) {
+      updateData.organization_role = filteredData.organization_role;
+    }
+    updateData.updated_at = new Date().toISOString();
+
+    const { data: updatedUser, error } = await supabaseAdmin
+      .from('users')
+      .update(sanitizeData(updateData))
+      .eq('id', id)
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        created_at,
+        updated_at,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
 
     return createSuccessResponse(updatedUser);
   } catch (error) {
@@ -86,14 +146,35 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return createErrorResponse("Access denied: Admin role required", 403);
     }
 
-    // Get the user to get their clerk_id
-    const user = await getUserById(id);
-    if (!user) {
+    // Check if user exists first
+    const { data: existingUser, error: getUserError } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('id', id)
+      .single();
+
+    if (getUserError && getUserError.code === 'PGRST116') {
       return createErrorResponse("User not found", 404);
     }
 
-    // Soft delete the user
-    await deleteUser(user.clerk_id);
+    if (getUserError) {
+      return handleDatabaseError(getUserError);
+    }
+
+    // Soft delete the user by setting is_active to false
+    const { data, error } = await supabaseAdmin
+      .from('users')
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
 
     return createSuccessResponse({ message: "User deleted successfully" });
   } catch (error) {

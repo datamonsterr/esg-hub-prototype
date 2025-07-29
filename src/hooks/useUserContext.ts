@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { getUserByClerkId } from '../lib/user-utils';
+import axiosInstance, { endpoints } from '../api/axios';
 
 export interface UserContextData {
   userId: string;
@@ -40,10 +40,8 @@ export function useUserContext(): UserContextData {
     // Fetch user data from our API
     const fetchUserData = async () => {
       try {
-        const data = await getUserByClerkId(user.id);
-        if (!data) {
-            throw new Error('Failed to fetch user data');
-        }
+        const response = await axiosInstance.get(endpoints.users.clerk.id(user.id));
+        const data = response.data;
         
         setUserData({
           userId: user.id,

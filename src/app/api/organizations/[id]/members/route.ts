@@ -9,8 +9,8 @@ import {
   validateRequiredFields,
   handleDatabaseError,
   sanitizeData,
+  addCreateTimestamps,
 } from "@/src/lib/supabase-utils";
-import { createUser, updateUser } from "@/src/lib/user-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -83,12 +83,39 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Create new user record
-    const newUser = await createUser({
-      clerkId: memberData.clerkId,
-      organizationId: organizationId,
-      organizationRole: memberData.organizationRole || 'employee',
-      isActive: memberData.isActive !== false, // Default to true
-    });
+    const userToCreate = {
+      id: memberData.clerkId,
+      organization_id: organizationId,
+      organization_role: memberData.organizationRole || 'employee',
+      is_active: memberData.isActive !== false, // Default to true
+    };
+
+    const sanitizedUser = sanitizeData(userToCreate);
+    const userWithTimestamps = addCreateTimestamps(sanitizedUser);
+
+    const { data: newUser, error } = await supabaseAdmin
+      .from('users')
+      .insert(userWithTimestamps)
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        created_at,
+        updated_at,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
 
     return createSuccessResponse(newUser, 201);
   } catch (error) {

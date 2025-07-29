@@ -66,32 +66,36 @@ export async function POST(request: NextRequest) {
     const userData = await request.json();
 
     // Validate required fields
-    validateRequiredFields(userData, ['id', 'organization_id']);
+    validateRequiredFields(userData, ['clerkId', 'organizationId']);
 
-    // Set default values
-    if (!userData.organization_role) {
-      userData.organization_role = 'employee';
-    }
-    if (userData.is_active === undefined) {
-      userData.is_active = true;
-    }
+    // Transform camelCase to snake_case for database
+    const userToCreate = {
+      id: userData.clerkId,
+      organization_id: userData.organizationId,
+      organization_role: userData.organizationRole || 'employee',
+      is_active: userData.isActive !== false, // Default to true
+    };
 
     // Sanitize data
-    const userToCreate = sanitizeData(userData);
+    const sanitizedUser = sanitizeData(userToCreate);
+    const userWithTimestamps = addCreateTimestamps(sanitizedUser);
 
     const { data: user, error } = await supabaseAdmin
       .from('users')
-      .insert(userToCreate)
+      .insert(userWithTimestamps)
       .select(`
         id,
         organization_id,
         organization_role,
         is_active,
+        created_at,
+        updated_at,
         organizations:organization_id (
           id,
           name,
           address,
-          email
+          email,
+          created_at
         )
       `)
       .single();

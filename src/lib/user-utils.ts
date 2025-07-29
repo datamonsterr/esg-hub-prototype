@@ -83,20 +83,6 @@ export async function updateUser(clerkId: string, userData: UpdateUserData) {
  * Get user by Clerk ID from Supabase users table
  */
 export async function getUserByClerkId(clerkId: string) {
-  // In development, provide mock user data if needed
-  if (process.env.NODE_ENV === 'development' && !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.warn('⚠️ Using mock user data in development (missing SUPABASE_SERVICE_ROLE_KEY)');
-    return {
-      id: 'mock-user-id',
-      organization_id: '1', // Changed to string UUID to match schema
-      organization_role: 'admin' as const,
-      is_active: true,
-      organizations: {
-        id: '1', // Changed to string UUID to match schema
-      }
-    };
-  }
-
   try {
     const { data, error } = await supabaseAdmin
       .from('users')

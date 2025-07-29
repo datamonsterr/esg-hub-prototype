@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { createErrorResponse, createSuccessResponse } from "@/src/lib/supabase-utils";
-import { createUser } from "@/src/lib/user-utils";
+import { createErrorResponse, createSuccessResponse, sanitizeData, addCreateTimestamps } from "@/src/lib/supabase-utils";
+import { supabaseAdmin } from "@/src/lib/supabase";
 import { headers } from "next/headers";
 import { Webhook } from "svix";
 
@@ -57,12 +57,23 @@ export async function POST(request: NextRequest) {
       if (organizationId) {
         try {
           // Create user record in our database
-          await createUser({
-            clerkId: id,
-            organizationId: parseInt(organizationId),
-            organizationRole: organizationRole as "admin" | "employee",
-            isActive: true,
-          });
+          const userToCreate = {
+            id: id,
+            organization_id: organizationId,
+            organization_role: organizationRole as "admin" | "employee",
+            is_active: true,
+          };
+
+          const sanitizedUser = sanitizeData(userToCreate);
+          const userWithTimestamps = addCreateTimestamps(sanitizedUser);
+
+          const { error } = await supabaseAdmin
+            .from('users')
+            .insert(userWithTimestamps);
+
+          if (error) {
+            throw error;
+          }
 
           console.log(`Created user record for ${id} in organization ${organizationId}`);
         } catch (error) {

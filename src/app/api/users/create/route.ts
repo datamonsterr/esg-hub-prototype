@@ -6,8 +6,8 @@ import {
   getCurrentUserContext,
   handleDatabaseError,
   sanitizeData,
+  addCreateTimestamps,
 } from "@/src/lib/supabase-utils";
-import { createUser } from "@/src/lib/user-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,11 +52,39 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the user
-    const newUser = await createUser({
-      clerkId,
-      organizationId: targetOrgId,
-      organizationRole,
-    });
+    const userToCreate = {
+      id: clerkId,
+      organization_id: targetOrgId,
+      organization_role: organizationRole || 'employee',
+      is_active: true,
+    };
+
+    const sanitizedUser = sanitizeData(userToCreate);
+    const userWithTimestamps = addCreateTimestamps(sanitizedUser);
+
+    const { data: newUser, error } = await supabaseAdmin
+      .from('users')
+      .insert(userWithTimestamps)
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        created_at,
+        updated_at,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .single();
+
+    if (error) {
+      return handleDatabaseError(error);
+    }
 
     return createSuccessResponse(newUser, 201);
   } catch (error) {

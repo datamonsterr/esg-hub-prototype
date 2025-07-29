@@ -24,7 +24,7 @@ import { ErrorComponent } from '@/src/components/ui/error';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash.debounce';
 import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
-import { getUserById } from '@/src/lib/user-utils';
+import axiosInstance, { endpoints } from '@/src/api/axios';
 
 export default function SupplierAssessmentPage() {
   const { assessments, totalPages, isLoading, isError } = useSearchAssessments();
@@ -206,7 +206,8 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
   useEffect(() => {
     async function fetchCreatorEmail() {
       try {
-        const user = await getUserById(createdBy);
+        const response = await axiosInstance.get(endpoints.users.id(createdBy));
+        const user = response.data;
         setCreatorEmail(user?.organizations?.email || 'Unknown');
       } catch (error) {
         console.error('Error fetching creator email:', error);

@@ -9,7 +9,6 @@ import {
   sanitizeData,
   addUpdateTimestamp,
 } from "@/src/lib/supabase-utils";
-import { updateUser, deactivateUser } from "@/src/lib/user-utils";
 
 type RouteParams = {
   params: Promise<{ id: string; memberId: string }>;
@@ -78,11 +77,41 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(fetchError);
     }
 
-    // Update user using user-utils
-    const updatedMember = await updateUser(memberId, {
-      organizationRole: updatedData.organizationRole,
-      isActive: updatedData.isActive,
-    });
+    // Update user directly
+    const updateData: any = {};
+    
+    if (updatedData.organizationRole !== undefined) {
+      updateData.organization_role = updatedData.organizationRole;
+    }
+    if (updatedData.isActive !== undefined) {
+      updateData.is_active = updatedData.isActive;
+    }
+    updateData.updated_at = new Date().toISOString();
+
+    const { data: updatedMember, error: updateError } = await supabaseAdmin
+      .from('users')
+      .update(sanitizeData(updateData))
+      .eq('id', memberId)
+      .select(`
+        id,
+        organization_id,
+        organization_role,
+        is_active,
+        created_at,
+        updated_at,
+        organizations:organization_id (
+          id,
+          name,
+          address,
+          email,
+          created_at
+        )
+      `)
+      .single();
+
+    if (updateError) {
+      return handleDatabaseError(updateError);
+    }
 
     return createSuccessResponse(updatedMember);
   } catch (error) {
@@ -118,7 +147,17 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Deactivate user instead of deleting (soft delete)
-    await deactivateUser(memberId);
+    const { error: deactivateError } = await supabaseAdmin
+      .from('users')
+      .update({ 
+        is_active: false,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', memberId);
+
+    if (deactivateError) {
+      return handleDatabaseError(deactivateError);
+    }
 
     return createSuccessResponse({ 
       message: "Member removed from organization successfully",

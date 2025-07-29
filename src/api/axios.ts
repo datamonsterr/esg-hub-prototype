@@ -79,6 +79,13 @@ export const endpoints = {
     id: (id: string) => `/users/${id}`,
     profile: "/users/profile",
     updateRole: (id: string) => `/users/${id}/role`,
+    clerk: {
+      id: (clerkId: string) => `/users/clerk/${clerkId}`,
+      exists: (clerkId: string) => `/users/clerk/${clerkId}/exists`,
+      activate: (clerkId: string) => `/users/clerk/${clerkId}/activate`,
+      deactivate: (clerkId: string) => `/users/clerk/${clerkId}/deactivate`,
+    },
+    organization: (organizationId: string) => `/users/organization/${organizationId}`,
   },
   onboard: {
     accept: (id: string) => `/onboard/accept/${id}`,

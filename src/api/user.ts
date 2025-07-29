@@ -153,3 +153,89 @@ export const useGetUserOrg = () => {
     mutate,
   };
 };
+
+// New API handlers for migrated user-utils functions
+
+// Create user
+export const createUser = async (userData: {
+  clerkId: string;
+  organizationId: string;
+  organizationRole?: "admin" | "employee";
+  isActive?: boolean;
+}): Promise<any> => {
+  const response = await axiosInstance.post(endpoints.users.base, userData);
+  return response.data;
+};
+
+// Get user by Clerk ID
+export const getUserByClerkId = async (clerkId: string): Promise<any> => {
+  const response = await axiosInstance.get(endpoints.users.clerk.id(clerkId));
+  return response.data;
+};
+
+// Update user by Clerk ID
+export const updateUserByClerkId = async (
+  clerkId: string,
+  userData: {
+    organizationId?: string;
+    organizationRole?: "admin" | "employee";
+    isActive?: boolean;
+  }
+): Promise<any> => {
+  const response = await axiosInstance.put(endpoints.users.clerk.id(clerkId), userData);
+  return response.data;
+};
+
+// Check if user exists
+export const userExists = async (clerkId: string): Promise<{ exists: boolean }> => {
+  const response = await axiosInstance.get(endpoints.users.clerk.exists(clerkId));
+  return response.data;
+};
+
+// Deactivate user
+export const deactivateUser = async (clerkId: string): Promise<any> => {
+  const response = await axiosInstance.post(endpoints.users.clerk.deactivate(clerkId));
+  return response.data;
+};
+
+// Activate user
+export const activateUser = async (clerkId: string): Promise<any> => {
+  const response = await axiosInstance.post(endpoints.users.clerk.activate(clerkId));
+  return response.data;
+};
+
+// Get users by organization
+export const getUsersByOrganization = async (
+  organizationId: string,
+  includeInactive?: boolean
+): Promise<any[]> => {
+  const params = includeInactive ? { include_inactive: 'true' } : {};
+  const response = await axiosInstance.get(
+    endpoints.users.organization(organizationId),
+    { params }
+  );
+  return response.data;
+};
+
+// SWR Hooks for new functions
+
+export const useGetUserByClerkId = (clerkId: string | null) => {
+  return useSWR(
+    clerkId ? `user-clerk-${clerkId}` : null,
+    () => getUserByClerkId(clerkId!)
+  );
+};
+
+export const useUserExists = (clerkId: string | null) => {
+  return useSWR(
+    clerkId ? `user-exists-${clerkId}` : null,
+    () => userExists(clerkId!)
+  );
+};
+
+export const useGetUsersByOrganization = (organizationId: string | null, includeInactive?: boolean) => {
+  return useSWR(
+    organizationId ? `users-org-${organizationId}-${includeInactive}` : null,
+    () => getUsersByOrganization(organizationId!, includeInactive)
+  );
+};

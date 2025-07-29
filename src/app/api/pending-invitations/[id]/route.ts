@@ -5,8 +5,8 @@ import {
   createErrorResponse,
   createSuccessResponse,
   handleDatabaseError,
+  sanitizeData,
 } from "@/src/lib/supabase-utils";
-import { updateUser, getUserByClerkId } from "@/src/lib/user-utils";
 
 type RouteParams = {
   params: Promise<{ id: string }>;
@@ -75,10 +75,20 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Update user's organization info in Supabase
     try {
-      await updateUser(userId, {
-        organizationId: invitation.organization_id,
-        organizationRole: invitation.organization_role,
-      });
+      const updateData = {
+        organization_id: invitation.organization_id,
+        organization_role: invitation.organization_role,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error: userUpdateError } = await supabaseAdmin
+        .from('users')
+        .update(sanitizeData(updateData))
+        .eq('id', userId);
+
+      if (userUpdateError) {
+        throw userUpdateError;
+      }
     } catch (updateUserError) {
       console.error("Error updating user organization:", updateUserError);
       return createErrorResponse("Failed to assign user to organization", 500);

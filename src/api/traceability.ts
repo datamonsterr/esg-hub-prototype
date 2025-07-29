@@ -113,7 +113,7 @@ export function useGetOutgoingRequests(params?: {
   dateTo?: string;
 }) {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
-    ['/traceability-requests/outgoing', params],
+    [endpoints.traceability.requests.outgoing, params],
     () => getOutgoingRequests(params),
   );
 
@@ -165,7 +165,7 @@ export function useRespondToRequest() {
 
 export function useTraceabilityAnalytics() {
   const { data, error, isLoading, mutate } = useSWR<TraceabilityAnalytics>(
-    '/traceability-requests/analytics',
+    endpoints.traceability.analytics,
     getTraceabilityAnalytics
   );
 

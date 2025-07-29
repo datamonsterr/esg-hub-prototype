@@ -10,5 +10,5 @@ applyTo: **/*.ts
 
 # For database schema
 1. Use snake_case for database table and column names. Check `docs/schema.sql` for the schema.
-2. Map database types to TypeScript types in the `src/types/database.ts` and export a mapping function to convert database records to TypeScript objects and use it in api routes.
+2. Map database types to TypeScript types and export a mapping function in `server-transform.ts` to convert database records to TypeScript objects and use it in api routes.
 3. Id fields should be named `id` in both database and TypeScript and should be type uuid v5 string.

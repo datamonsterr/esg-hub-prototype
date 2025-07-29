@@ -7,6 +7,7 @@ import {
   processQueryParams,
   handleDatabaseError,
 } from "@/src/lib/supabase-utils";
+import { transformFromDb } from "@/src/types/server-transforms";
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,24 +19,29 @@ export async function GET(request: NextRequest) {
       .from('trace_requests')
       .select(`
         *,
-        requesting_organization:requesting_organization_id (
+        requesting_organization:organizations!requesting_organization_id (
           id,
           name,
           email,
-          address
+          address,
+          created_at
         ),
-        target_organization:target_organization_id (
+        target_organization:organizations!target_organization_id (
           id,
           name,
           email,
-          address
+          address,
+          created_at
         ),
-        assessment:assessment_id (
+        assessment:assessments!assessment_id (
           id,
           title,
           description,
           status,
-          priority
+          priority,
+          due_date,
+          created_at,
+          updated_at
         )
       `)
       .eq('target_organization_id', userContext.organizationId);
@@ -45,13 +51,20 @@ export async function GET(request: NextRequest) {
     query = processQueryParams(query, searchParams, allowedFilters);
 
     const { data: requests, error } = await query;
-    console.log(requests)
     
     if (error) {
       return handleDatabaseError(error);
     }
 
-    return createSuccessResponse(requests);
+    // Transform the data using proper transformation functions
+    const transformedRequests = requests?.map((request: any) => ({
+      ...(transformFromDb(request) as any),
+      requestingOrganization: request.requesting_organization ? transformFromDb(request.requesting_organization) : null,
+      targetOrganization: request.target_organization ? transformFromDb(request.target_organization) : null,
+      assessment: request.assessment ? transformFromDb(request.assessment) : null
+    })) || [];
+
+    return createSuccessResponse(transformedRequests);
   } catch (error) {
     console.error("Error fetching incoming traceability requests:", error);
     return createErrorResponse("Failed to fetch incoming traceability requests");

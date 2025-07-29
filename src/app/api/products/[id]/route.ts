@@ -55,7 +55,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(error);
     }
 
-    // Transform product to camelCase format using the utility from database.ts
     const transformedProduct = transformProductFromDb(product as DbProduct);
 
     return createSuccessResponse(transformedProduct);
@@ -81,7 +80,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     delete updatedData.organizationId;
     delete updatedData.id;
 
-    // Transform to database format (snake_case) using the utility from database.ts
     const dbUpdatedData = transformProductToDb(updatedData as Product);
 
     // Sanitize and add update timestamp
@@ -102,7 +100,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return handleDatabaseError(error);
     }
 
-    // Transform response back to camelCase using the utility from database.ts
     const transformedProduct = transformProductFromDb(product as DbProduct);
 
     return createSuccessResponse(transformedProduct);

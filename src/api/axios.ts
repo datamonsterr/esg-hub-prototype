@@ -36,6 +36,7 @@ export const endpoints = {
       incoming: "/traceability/requests/incoming",
       outgoing: "/traceability/requests/outgoing",
     },
+    analytics: "/traceability/requests/analytics",
   },
   // Assessments
   assessment: {

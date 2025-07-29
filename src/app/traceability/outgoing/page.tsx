@@ -162,7 +162,7 @@ export default function TraceabilityRequestsPage() {
                   </td>
                   <td className="py-4 px-4">
                     <div className="flex space-x-2">
-                      <Link href={`/traceability/request/${request.id}`}>
+                      <Link href={`/traceability/outgoing/${request.id}`}>
                         <Button variant="ghost" size="sm" title="View">
                           <Eye className="h-4 w-4" />
                         </Button>

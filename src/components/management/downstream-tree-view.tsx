@@ -220,6 +220,7 @@ const DownstreamTreeView = ({
 
     // Check if this is the root node (no parent)
     const isRootNode = !hierarchyPointNode.parent;
+    const isLeafNode = hierarchyPointNode.children?.length === 0 || hierarchyPointNode.children === undefined;
     const radius = 20;
     const triangleSize = 5;
     
@@ -229,14 +230,14 @@ const DownstreamTreeView = ({
     return (
       <g>
         {/* Draw arrow head above the node (pointing down) for vertical orientation, but not for root node */}
-        {!isRootNode && (
+        {!isLeafNode && (
           <g>
             {/* Arrow head only - positioned above the node */}
             <polygon
-              points={`${-triangleSize},${-1.5*triangleSize}
+              points={`${-triangleSize},${1.5*triangleSize}
                       0,0
-                      ${triangleSize},${-1.5*triangleSize}`}
-              transform={`translate(0, ${-radius})`}
+                      ${triangleSize},${1.5*triangleSize}`}
+              transform={`translate(0, ${radius})`}
               fill="#6b7280"
             />
           </g>

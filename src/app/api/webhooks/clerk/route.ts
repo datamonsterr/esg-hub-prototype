@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     const { id, email_addresses, unsafe_metadata } = event.data;
     const eventType = event.type;
 
-    console.log("Webhook event:", eventType, "for user:", id);
+    
 
     if (eventType === "user.created") {
       // Check if user has organization info in unsafe_metadata
@@ -75,13 +75,13 @@ export async function POST(request: NextRequest) {
             throw error;
           }
 
-          console.log(`Created user record for ${id} in organization ${organizationId}`);
+          
         } catch (error) {
           console.error(`Failed to create user record for ${id}:`, error);
           // Don't fail the webhook, just log the error
         }
       } else {
-        console.log(`User ${id} created without organization context`);
+        
       }
     }
 

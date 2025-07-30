@@ -35,11 +35,11 @@ const templateMappings: Record<string, string> = {};
 // Assessment mappings (you'd add these based on your data)
 const assessmentMappings: Record<string, string> = {};
 
-console.log('Organization UUID mappings:');
-console.log(JSON.stringify(orgMappings, null, 2));
 
-console.log('\nProduct UUID mappings:');
-console.log(JSON.stringify(productMappings, null, 2));
+
+
+
+
 
 // Function to convert parent_id to children_ids array structure
 function convertProductHierarchy(products: any[]) {
@@ -70,7 +70,7 @@ const sampleProducts = [
 ];
 
 const childrenMap = convertProductHierarchy(sampleProducts);
-console.log('\nChildren mapping for products:');
-console.log(JSON.stringify(childrenMap, null, 2));
+
+
 
 export { orgMappings, productMappings, templateMappings, assessmentMappings, convertProductHierarchy };

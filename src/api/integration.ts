@@ -557,11 +557,11 @@ export function useGetDynamicTable(documentId: string | undefined) {
       try {
         const response = await fetcher(url);
         
-        console.log('Document Tables API Response:', response); // Debug log
+        
         
         // Check if table data exists and is properly structured
         if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
-          console.log('Found valid table data:', response.data); // Debug log
+          
           
           const tableData: DynamicTable = {
             title: response.title || 'Document Data Table',
@@ -569,7 +569,7 @@ export function useGetDynamicTable(documentId: string | undefined) {
             data: response.data
           };
           
-          console.log('Generated table data:', tableData); // Debug log
+          
           return tableData;
         }
         

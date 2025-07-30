@@ -27,11 +27,11 @@ export function OrganizationGuard({
             if (isLoaded && !isLoading && !organizationId) {
                 const userEmail = user?.emailAddresses?.[0]?.emailAddress;
 
-                console.log("Organization Guard - User email:", userEmail);
+                
 
                 // Auto-assign dat.pham@nuoa.io as admin of Nuoa organization
                 if (userEmail === "dat.pham@nuoa.io") {
-                    console.log("Auto-assigning admin access for dat.pham@nuoa.io");
+                    
                     setIsAutoAssigning(true);
                     
                     try {
@@ -50,7 +50,7 @@ export function OrganizationGuard({
                         });
 
                         if (response.ok) {
-                            console.log("Auto-assignment successful, reloading page");
+                            
                             // Refresh the page to reflect the changes
                             window.location.reload();
                         } else {

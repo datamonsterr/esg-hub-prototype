@@ -40,7 +40,7 @@ export async function getCurrentUserContext() {
 
     // If user doesn't exist in database, create a default record
     if (error && error.code === 'PGRST116') { // No rows returned
-      console.log(`User ${user.id} not found in database, creating default record...`);
+      
       
       // Get or create default organization
       const defaultOrgId = await getDefaultOrganizationId();

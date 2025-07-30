@@ -55,7 +55,7 @@ export default function TraceabilityAssessmentPage({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Submitting assessment:', formData);
+    
     // In a real app, this would submit to the API
     alert(
       'Assessment submitted successfully! Your suppliers will receive the assessment shortly.'
@@ -70,7 +70,7 @@ export default function TraceabilityAssessmentPage({
   };
 
   const handleSaveDraft = () => {
-    console.log('Saving draft:', formData);
+    
     alert('Assessment saved as draft');
   };
 

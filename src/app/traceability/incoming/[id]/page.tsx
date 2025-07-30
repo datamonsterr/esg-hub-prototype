@@ -93,7 +93,7 @@ export default function SupplierTraceabilityDetailPage({}) {
 
   const handleStartCascading = () => {
     // In a real app, this would start the cascading process
-    console.log('Starting cascading to suppliers:', selectedSuppliers);
+    
   };
 
   const handleStartAssessment = () => {

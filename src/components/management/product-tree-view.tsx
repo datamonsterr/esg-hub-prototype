@@ -38,8 +38,8 @@ const ProductTreeView = ({
       <CardContent>
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'downstream' | 'upstream')}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="downstream">Downstream (What this is made of)</TabsTrigger>
-            <TabsTrigger value="upstream">Upstream (What uses this)</TabsTrigger>
+            <TabsTrigger value="downstream">Suppliers</TabsTrigger>
+            <TabsTrigger value="upstream">Brands</TabsTrigger>
           </TabsList>
           
           <TabsContent value="downstream" className="mt-4">

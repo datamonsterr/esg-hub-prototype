@@ -26,7 +26,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     const userContext = await getCurrentUserContext();
-    console.log(`Looking for product ${id} in organization ${userContext.organizationId}`);
+    
 
     const { data: product, error } = await supabaseAdmin
       .from('products')
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       .single();
 
     if (error) {
-      console.log('Database error:', error);
+      
       if (error.code === 'PGRST116') {
         // Also try to find the product without organization filter for debugging
         const { data: productAnyOrg } = await supabaseAdmin
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
           .single();
         
         if (productAnyOrg) {
-          console.log(`Product ${id} exists but belongs to organization ${productAnyOrg.organization_id}, user is in ${userContext.organizationId}`);
+          
           return createErrorResponse("Product not found in your organization", 404);
         }
         

@@ -5,7 +5,7 @@ import { Product, ProductNode } from '@/src/types';
 import { getProductById } from '@/src/api/product';
 import { Package, Box } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import Tree from 'react-d3-tree';
+import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import ProductDetailsPanel from './product-details-panel';
 import { DOWNSTREAM_TREE_CONFIG } from './tree-config';
 
@@ -101,7 +101,7 @@ const DownstreamTreeView = ({
     }
 
     const result = { ...product, children, parents: [] };
-    console.log(`Product ${product.name} - Children: ${children.length}`);
+    
     return result;
   }, [allProducts, hierarchicalProducts]);
 
@@ -145,7 +145,7 @@ const DownstreamTreeView = ({
 
   // Find root products for downstream view (final products or standalone)
   const rootProducts = useMemo(() => {
-    console.log('Finding root products for downstream view');
+    
     
     // For downstream view, find products that aren't children of any other product (final products)
     // OR standalone products with no relationships
@@ -156,7 +156,7 @@ const DownstreamTreeView = ({
       !allChildIds.has(p.id) || // Not a child of any product
       ((!p.parentIds || p.parentIds.length === 0) && (!p.childrenIds || p.childrenIds.length === 0)) // Standalone product
     );
-    console.log('Downstream root products (final products or standalone):', result.map(p => p.name));
+    
     return result;
   }, [hierarchicalProducts, products]);
 
@@ -187,7 +187,7 @@ const DownstreamTreeView = ({
     if (!currentRootProduct) return [];
 
     const convertToTreeNode = (product: ProductNode): TreeNode => {
-      console.log(`Converting ${product.name} to tree node. Children: ${product.children.length}`);
+      
       
       return {
         name: product.name,
@@ -201,12 +201,12 @@ const DownstreamTreeView = ({
     };
 
     const result = [convertToTreeNode(currentRootProduct)];
-    console.log('Downstream tree data generated:', result);
+    
     return result;
   }, [currentRootProduct]);
 
   // Custom node component for the tree
-  const renderCustomNodeElement = ({ nodeDatum }: any) => {
+  const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
     const productId = nodeDatum.attributes?.productId;
     const product = hierarchicalProducts.find(p => p.id === productId) || 
                    Array.from(allProducts.values()).find(p => p.id === productId);
@@ -218,10 +218,32 @@ const DownstreamTreeView = ({
       product.organizationId !== currentOrganizationId : 
       false;
 
+    // Check if this is the root node (no parent)
+    const isRootNode = !hierarchyPointNode.parent;
+    const radius = 20;
+    const triangleSize = 5;
+    
+    console.log(`Rendering node for product ${product.name} (ID: ${product.id}) - Selected: ${isSelected}, External: ${isExternalProduct}, Root: ${isRootNode}`);
+    console.log(`Hierarchy Point Node:`, hierarchyPointNode);
+
     return (
       <g>
+        {/* Draw arrow head above the node (pointing down) for vertical orientation, but not for root node */}
+        {!isRootNode && (
+          <g>
+            {/* Arrow head only - positioned above the node */}
+            <polygon
+              points={`${-triangleSize},${-1.5*triangleSize}
+                      0,0
+                      ${triangleSize},${-1.5*triangleSize}`}
+              transform={`translate(0, ${-radius})`}
+              fill="#6b7280"
+            />
+          </g>
+        )}
+        
         <circle
-          r={20}
+          r={radius}
           fill={isExternalProduct ? "#fef3c7" : "#e5e7eb"}
           stroke={isSelected ? "#22c55e" : isExternalProduct ? "#f59e0b" : product.type === 'final_product' ? "#059669" : "#6b7280"}
           strokeWidth={isSelected ? 4 : isExternalProduct ? 3 : 2}

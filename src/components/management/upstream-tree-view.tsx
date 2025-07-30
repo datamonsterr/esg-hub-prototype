@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Product, ProductNode } from '@/src/types';
 import { getProductById } from '@/src/api/product';
 import { Package, Box } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import Tree from 'react-d3-tree';
+import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import ProductDetailsPanel from './product-details-panel';
-import { UPSTREAM_TREE_CONFIG } from './tree-config';
+import { UPSTREAM_TREE_CONFIG, calculateDynamicTreeConfig } from './tree-config';
+import { CustomElement } from 'react-hook-form';
 
 interface UpstreamTreeViewProps {
   products: Product[];
@@ -40,12 +41,28 @@ const UpstreamTreeView = ({
   const [hierarchicalProducts, setHierarchicalProducts] = useState<ProductNode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 800, height: 600 });
+  const treeContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize with the provided products
   useEffect(() => {
     const productMap = new Map(products.map(p => [p.id, p]));
     setAllProducts(productMap);
   }, [products]);
+
+  // Track container dimensions for dynamic tree fitting
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (treeContainerRef.current) {
+        const { width, height } = treeContainerRef.current.getBoundingClientRect();
+        setContainerDimensions({ width, height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [isPanelCollapsed]);
 
   // Auto-select the specified product when component loads
   useEffect(() => {
@@ -58,74 +75,54 @@ const UpstreamTreeView = ({
     }
   }, [selectedProductId, products]);
 
-  // Recursively fetch parent products for upstream view
-  const fetchParentsRecursively = useCallback(async (product: Product, visited = new Set<string>()): Promise<ProductNode> => {
-    // Prevent infinite loops
-    if (visited.has(product.id)) {
-      return { ...product, children: [], parents: [] };
-    }
-    visited.add(product.id);
-    
-    // Check if we've already processed this product
-    const existingNode = hierarchicalProducts.find(p => p.id === product.id);
-    if (existingNode && existingNode.parents && existingNode.parents.length > 0) {
-      return existingNode;
-    }
-
+  // Fetch only direct parent products (1 tier) for upstream view
+  const fetchDirectParents = useCallback(async (product: Product): Promise<ProductNode> => {
     const parents: ProductNode[] = [];
     
-    // For upstream view, in single product mode we use the parentIds directly
-    if (singleProductMode && product.parentIds && product.parentIds.length > 0) {
+    // Fetch direct parents only (depth = 1) using parent_ids
+    if (product.parentIds && product.parentIds.length > 0) {
+      
+      
       for (const parentId of product.parentIds) {
         try {
           let parentProduct = allProducts.get(parentId);
           
           if (!parentProduct) {
             try {
+              
               parentProduct = await getProductById(parentId);
               setAllProducts(prev => new Map(prev.set(parentId, parentProduct!)));
+              
             } catch (fetchError) {
               console.warn(`Parent product ${parentId} not found or not accessible:`, fetchError);
               continue;
             }
+          } else {
+            
           }
           
-          if (parentProduct && !visited.has(parentProduct.id)) {
-            const parentWithParents = await fetchParentsRecursively(parentProduct, new Set(visited));
-            parents.push(parentWithParents);
+          if (parentProduct) {
+            // For upstream view, we only need direct parents - no recursive fetching
+            const parentNode: ProductNode = {
+              ...parentProduct,
+              children: [], // No further children needed for display
+              parents: [] // No recursive parent fetching
+            };
+            parents.push(parentNode);
+            
           }
         } catch (error) {
           console.warn(`Failed to fetch parent product ${parentId}:`, error);
         }
       }
     } else {
-      // For non-single product mode, look through all products for ones that have this product in their childrenIds
-      console.log(`Looking for products that use ${product.name} (${product.id}) as a component`);
-      for (const otherProduct of products) {
-        if (otherProduct.childrenIds && otherProduct.childrenIds.includes(product.id)) {
-          console.log(`Found that ${otherProduct.name} uses ${product.name}`);
-          try {
-            let parentProduct = allProducts.get(otherProduct.id);
-            if (!parentProduct) {
-              parentProduct = otherProduct;
-              setAllProducts(prev => new Map(prev.set(otherProduct.id, parentProduct!)));
-            }
-            
-            if (parentProduct && !visited.has(parentProduct.id)) {
-              const parentWithParents = await fetchParentsRecursively(parentProduct, new Set(visited));
-              parents.push(parentWithParents);
-            }
-          } catch (error) {
-            console.warn(`Failed to process parent product ${otherProduct.id}:`, error);
-          }
-        }
-      }
+      
     }
 
     const result = { ...product, children: [], parents };
-    console.log(`Product ${product.name} - Parents: ${parents.length}`);
+    
     return result;
-  }, [allProducts, hierarchicalProducts, singleProductMode, products]);
+  }, [allProducts]);
 
   // Build hierarchical structure with API calls
   useEffect(() => {
@@ -145,7 +142,7 @@ const UpstreamTreeView = ({
         
         for (const product of products) {
           try {
-            const productWithRelations = await fetchParentsRecursively(product);
+            const productWithRelations = await fetchDirectParents(product);
             hierarchicalProductsList.push(productWithRelations);
           } catch (error) {
             console.warn(`Failed to build hierarchy for product ${product.name} (${product.id}):`, error);
@@ -163,28 +160,27 @@ const UpstreamTreeView = ({
     };
 
     buildHierarchy();
-  }, [products, fetchParentsRecursively, hierarchicalProducts]);
+  }, [products, fetchDirectParents, hierarchicalProducts]);
 
-  // Find root products for upstream view (components/materials or standalone)
+  // Find root products for upstream view (components that supply to other products)
   const rootProducts = useMemo(() => {
-    console.log('Finding root products for upstream view');
     
-    // For upstream view, find products that are components/materials (appear in childrenIds of other products)
-    // OR products that have no parents (to show standalone components)
-    const allChildIds = new Set(
-      products.flatMap(p => p.childrenIds || [])
-    );
-    // Include products that are referenced as children OR have no parent relationships OR standalone products
+    
+    // For upstream supplier perspective, find products that have parentIds
+    // These are products that are supplied to other products (have parents/customers)
     const result = hierarchicalProducts.filter(p => 
-      allChildIds.has(p.id) || // Used as a component
-      (!p.parentIds || p.parentIds.length === 0) || // No parents
-      ((!p.parentIds || p.parentIds.length === 0) && (!p.childrenIds || p.childrenIds.length === 0)) // Standalone product
+      p.parentIds && p.parentIds.length > 0 // Products that are supplied to other products
     );
-    console.log('Upstream root products (components/materials or standalone):', result.map(p => p.name));
+    
+    // If no products with parentIds found, use all products as potential roots
+    if (result.length === 0) {
+      
+      return hierarchicalProducts;
+    }
+    
+    
     return result;
-  }, [hierarchicalProducts, products]);
-
-  // Get the currently selected root product for display
+  }, [hierarchicalProducts]);  // Get the currently selected root product for display
   const currentRootProduct = useMemo(() => {
     // In single product mode, just use the first product
     if (singleProductMode && products.length > 0) {
@@ -206,13 +202,22 @@ const UpstreamTreeView = ({
     return rootProducts[0] || null;
   }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products, hierarchicalProducts]);
 
-  // Convert current root product to react-d3-tree format
+  // Convert current root product to react-d3-tree format (supplier perspective)
   const treeData = useMemo(() => {
     if (!currentRootProduct) return [];
 
+    // For upstream view from supplier perspective:
+    // - Component (Shoe Laces) is at the bottom (root)
+    // - Final products that use this component (Nike Running Shoe) appear above as children
+    
     const convertToTreeNode = (product: ProductNode): TreeNode => {
-      const relatedProducts = product.parents || [];
-      console.log(`Converting ${product.name} to tree node. Parents: ${relatedProducts.length}`);
+      // Use the parents that were fetched by fetchDirectParents
+      const parentProducts = product.parents || [];
+      
+      
+      if (parentProducts.length > 0) {
+        
+      }
       
       return {
         name: product.name,
@@ -221,17 +226,56 @@ const UpstreamTreeView = ({
           sku: product.sku,
           type: product.type 
         },
-        children: relatedProducts.length > 0 ? relatedProducts.map(convertToTreeNode) : undefined
+        children: parentProducts.length > 0 ? parentProducts.map(convertToTreeNode) : undefined
       };
     };
 
     const result = [convertToTreeNode(currentRootProduct)];
-    console.log('Upstream tree data generated:', result);
+    
     return result;
   }, [currentRootProduct]);
 
+  // Calculate tree depth for dynamic configuration
+  const treeDepth = useMemo(() => {
+    if (!treeData.length) return 1;
+    
+    const calculateDepth = (node: TreeNode): number => {
+      if (!node.children || node.children.length === 0) return 1;
+      return 1 + Math.max(...node.children.map(calculateDepth));
+    };
+    
+    return calculateDepth(treeData[0]);
+  }, [treeData]);
+
+  // Calculate total node count for dynamic configuration
+  const nodeCount = useMemo(() => {
+    if (!treeData.length) return 1;
+    
+    const countNodes = (node: TreeNode): number => {
+      if (!node.children || node.children.length === 0) return 1;
+      return 1 + node.children.reduce((sum, child) => sum + countNodes(child), 0);
+    };
+    
+    return countNodes(treeData[0]);
+  }, [treeData]);
+
+  // Dynamic tree configuration
+  const dynamicTreeConfig = useMemo(() => {
+    const dynamicConfig = calculateDynamicTreeConfig(
+      containerDimensions.width,
+      containerDimensions.height,
+      treeDepth,
+      nodeCount
+    );
+    
+    return {
+      ...UPSTREAM_TREE_CONFIG,
+      ...dynamicConfig,
+    };
+  }, [containerDimensions, treeDepth, nodeCount]);
+
   // Custom node component for the tree
-  const renderCustomNodeElement = ({ nodeDatum }: any) => {
+  const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
     const productId = nodeDatum.attributes?.productId;
     const product = hierarchicalProducts.find(p => p.id === productId) || 
                    Array.from(allProducts.values()).find(p => p.id === productId);
@@ -243,10 +287,27 @@ const UpstreamTreeView = ({
       product.organizationId !== currentOrganizationId : 
       false;
 
+    // Check if this is the root node (no parent)
+    const isRootNode = !hierarchyPointNode.parent;
+    const radius = 20;
+    const triangleSize = 5;
+
     return (
       <g>
+        {/* Draw arrow head to the left (pointing right) for horizontal orientation, but not for root node */}
+        {!isRootNode && (
+          <g>
+            {/* Arrow head only - positioned to the left of the node */}
+            <polygon
+              points={`${-1.5*triangleSize},${triangleSize} ${-1.5*triangleSize},${-triangleSize} 0,0`}
+              transform={`translate(${-radius}, 0)`}
+              fill="#6b7280"
+            />
+          </g>
+        )}
+        
         <circle
-          r={20}
+          r={radius}
           fill={isExternalProduct ? "#fef3c7" : "#e5e7eb"}
           stroke={isSelected ? "#22c55e" : isExternalProduct ? "#f59e0b" : product.type === 'final_product' ? "#059669" : "#6b7280"}
           strokeWidth={isSelected ? 4 : isExternalProduct ? 3 : 2}
@@ -261,8 +322,8 @@ const UpstreamTreeView = ({
         <text
           fill={isSelected ? "black" : isExternalProduct ? "#92400e" : "black"}
           strokeWidth="0"
-          x={30}
-          y={5}
+          x={-35}
+          y={40}
           style={{ fontSize: '12px', fontWeight: 'bold' }}
         >
           {product.name}
@@ -270,8 +331,8 @@ const UpstreamTreeView = ({
         <text
           fill={isExternalProduct ? "#92400e" : "#6b7280"}
           strokeWidth="0"
-          x={30}
-          y={20}
+          x={-35}
+          y={55}
           style={{ fontSize: '10px' }}
         >
           {product.sku || "No SKU"} • {product.type?.replace('_', ' ')} {isExternalProduct ? "• External" : ""}
@@ -304,7 +365,7 @@ const UpstreamTreeView = ({
 
       <div className="flex h-[600px]">
         {/* Tree visualization */}
-        <div className={`${isPanelCollapsed ? 'flex-1' : 'flex-1'} border rounded-lg bg-white shadow-sm`}>
+        <div ref={treeContainerRef} className={`${isPanelCollapsed ? 'flex-1' : 'flex-1'} border rounded-lg bg-white shadow-sm`}>
           {isLoading ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               <div className="text-center">
@@ -318,7 +379,7 @@ const UpstreamTreeView = ({
                 key={`upstream-tree-${currentRootProduct?.id || 'root'}`}
                 data={treeData}
                 renderCustomNodeElement={renderCustomNodeElement}
-                {...UPSTREAM_TREE_CONFIG}
+                {...dynamicTreeConfig}
               />
             </div>
           ) : (

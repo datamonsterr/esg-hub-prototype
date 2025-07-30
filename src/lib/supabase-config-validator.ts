@@ -89,17 +89,17 @@ export function getSupabaseConfigWithValidation() {
     
     if (process.env.NODE_ENV === 'development') {
       console.error('❌ Supabase Configuration Error:', errorMessage);
-      console.log('\n🔧 To fix this:');
-      console.log('1. Copy .env.example to .env.local');
-      console.log('2. Update the Supabase environment variables with your new instance values');
-      console.log('3. Make sure your Supabase project is properly set up with the required schema');
+      
+      
+      
+      
     }
     
     throw new Error(errorMessage);
   }
   
   if (process.env.NODE_ENV === 'development') {
-    console.log('✅ Supabase configuration is valid');
+    
   }
   
   return config;

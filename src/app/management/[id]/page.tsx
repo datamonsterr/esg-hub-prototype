@@ -18,19 +18,19 @@ export default function ProductTreePage() {
   const productId = params.id as string
   const organizationId = useOrganizationId()
 
-  console.log('Current organization ID:', organizationId);
+  
   
   // Get the specific product first
   const { product: selectedProduct, isLoading, isError } = useGetProduct(productId)
 
   const handleEdit = (product: Product) => {
     // Navigate to edit page or open modal
-    console.log('Edit product:', product)
+    
   }
 
   const handleDelete = (product: Product) => {
     // Handle delete action
-    console.log('Delete product:', product)
+    
   }
 
   if (isLoading) {

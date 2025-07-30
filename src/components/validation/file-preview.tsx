@@ -29,7 +29,7 @@ if (typeof window !== 'undefined') {
 }
 
 interface FilePreviewProps {
-  documentId: number | undefined
+  documentId: string | undefined
 }
 
 export function FilePreview({ documentId }: FilePreviewProps) {

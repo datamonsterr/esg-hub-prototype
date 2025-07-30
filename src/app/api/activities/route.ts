@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       return createErrorResponse(`Invalid status. Must be one of: ${validStatuses.join(', ')}`, 400);
     }
 
-    console.log('About to insert activity:', JSON.stringify(activityToInsert, null, 2));
+    
 
     const { data: createdActivity, error } = await supabaseAdmin
       .from('integration_activities')

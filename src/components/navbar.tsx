@@ -50,7 +50,7 @@ export function Navbar() {
     ].join(" ")
 
   return (
-    <nav className="bg-white border-b border-border-light">
+    <nav className="bg-white border-b border-border-light fixed top-0 z-50 w-full">
       <div className="max-w-[1200px] mx-auto px-4 flex items-center justify-between py-4">
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-2">

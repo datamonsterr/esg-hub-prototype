@@ -7,6 +7,7 @@ import { Navbar } from '@/src/components/navbar';
 import GlobalBreadcrumb from '@/src/app/_GlobalBreadcrumb';
 import { Toaster } from '@/src/components/ui/sonner';
 import { ConditionalOrganizationGuard } from '@/src/components/conditional-organization-guard';
+import { cn } from '../lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,7 +33,7 @@ export default function RootLayout({
             referrerPolicy="no-referrer"
           />
         </head>
-        <body className={inter.className}>
+        <body className={cn(inter.className, 'py-24')}>
           <ModalProvider>
               <Navbar />
               <GlobalBreadcrumb />

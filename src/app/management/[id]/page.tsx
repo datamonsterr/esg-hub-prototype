@@ -43,7 +43,7 @@ export default function ProductTreePage() {
 
   if (!selectedProduct) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 h-full">
         <div className="flex items-center space-x-4">
           <Link href="/management">
             <Button variant="ghost" size="icon">
@@ -63,7 +63,7 @@ export default function ProductTreePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full min-h-[1600px]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -90,7 +90,7 @@ export default function ProductTreePage() {
       </div>
 
       {/* Product Tree View */}
-      <div className="h-[calc(100vh-12rem)]">
+      <div className="h-full min-h-[1600px]">
         <ProductTreeView 
           products={[selectedProduct]} 
           singleProductMode={true}

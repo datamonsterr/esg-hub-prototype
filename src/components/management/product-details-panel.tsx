@@ -6,6 +6,7 @@ import { Package, ShieldCheck, MapPin, TrendingUp, Info, Edit, Trash2, ArrowRigh
 import { Badge } from '../ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
+import { ViewType } from './product-tree-view';
 
 interface ProductDetailsPanelProps {
   selectedProduct: Product | null;
@@ -13,18 +14,18 @@ interface ProductDetailsPanelProps {
   onDelete: (product: Product) => void;
   onUpdate?: (product: Product) => void;
   currentOrganizationId?: string;
-  viewType?: 'downstream' | 'upstream';
+  viewType?: ViewType;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
 }
 
-const ProductDetailsPanel = ({ 
-  selectedProduct, 
-  onEdit, 
+const ProductDetailsPanel = ({
+  selectedProduct,
+  onEdit,
   onDelete,
   onUpdate,
   currentOrganizationId,
-  viewType = 'downstream',
+  viewType = ViewType.SUPPLIER,
   isCollapsed = false,
   onToggleCollapse
 }: ProductDetailsPanelProps) => {
@@ -33,7 +34,7 @@ const ProductDetailsPanel = ({
   // Show collapsed state with arrow button
   if (isCollapsed) {
     return (
-      <div className="w-12 bg-gray-50 border-l flex items-start justify-center pt-4">
+      <div className="w-12 bg-gray-50 border-l flex items-start justify-center pt-4 h-[800px]">
         <Button
           variant="ghost"
           size="icon"
@@ -48,7 +49,7 @@ const ProductDetailsPanel = ({
 
   if (!selectedProduct) {
     return (
-      <div className="w-1/3 bg-gray-50 border-l p-4">
+      <div className="w-1/3 bg-gray-50 border-l p-4 h-full">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-400">No product selected</h3>
           {onToggleCollapse && (
@@ -67,8 +68,8 @@ const ProductDetailsPanel = ({
     );
   }
 
-  const isExternalProduct = currentOrganizationId ? 
-    selectedProduct.organizationId !== currentOrganizationId : 
+  const isExternalProduct = currentOrganizationId ?
+    selectedProduct.organizationId !== currentOrganizationId :
     false;
 
   const handleUpdate = (updatedProduct: Product) => {
@@ -78,7 +79,7 @@ const ProductDetailsPanel = ({
   };
 
   return (
-    <div className="w-1/3 bg-gray-50 border-l p-4 overflow-y-auto">
+    <div className="w-1/3 bg-gray-50 border-l p-4 overflow-y-auto h-[800px]">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">{selectedProduct.name}</h3>
         <div className="flex items-center space-x-2">
@@ -116,7 +117,7 @@ const ProductDetailsPanel = ({
               {selectedProduct.status}
             </span>
           </div>
-        
+
           {selectedProduct.description && (
             <div>
               <h4 className="font-medium text-sm mb-1">Description</h4>
@@ -179,7 +180,7 @@ const ProductDetailsPanel = ({
           {selectedProduct.children && selectedProduct.children.length > 0 && (
             <div>
               <h4 className="font-medium text-sm mb-2">
-                {viewType === 'downstream' ? 'Components' : 'Used By'} ({selectedProduct.children.length})
+                {viewType === ViewType.SUPPLIER ? 'Components' : 'Used By'} ({selectedProduct.children.length})
               </h4>
               <div className="space-y-1">
                 {selectedProduct.children.map((child) => (
@@ -198,7 +199,7 @@ const ProductDetailsPanel = ({
           {selectedProduct.parents && selectedProduct.parents.length > 0 && (
             <div>
               <h4 className="font-medium text-sm mb-2">
-                {viewType === 'downstream' ? 'Used In' : 'Made From'} ({selectedProduct.parents.length})
+                {viewType === ViewType.SUPPLIER ? 'Used In' : 'Made From'} ({selectedProduct.parents.length})
               </h4>
               <div className="space-y-1">
                 {selectedProduct.parents.map((parent) => (
@@ -225,7 +226,7 @@ const ProductDetailsPanel = ({
                   This product belongs to another organization. Limited information is available.
                 </p>
                 <div className="mt-3">
-                  <Button 
+                  <Button
                     onClick={() => router.push(`/traceability/outgoing/create?productId=${selectedProduct.id}&supplierOrgId=${selectedProduct.organizationId}`)}
                     className="bg-amber-600 hover:bg-amber-700 text-white"
                   >
@@ -236,7 +237,7 @@ const ProductDetailsPanel = ({
               </div>
             </div>
           </div>
-          
+
           <div>
             <Badge variant="outline" className="mb-2">
               {selectedProduct.type?.replace('_', ' ') || 'product'}

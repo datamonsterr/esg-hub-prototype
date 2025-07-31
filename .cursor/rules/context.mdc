@@ -1,0 +1,40 @@
+---
+description: Project overview and key features of the traceability hub application
+globs: **
+alwaysApply: false
+---
+
+# Project Overview
+
+Traceability hub is a frontend project designed to provide a comprehensive platform for managing and visualizing traceability data. It leverages modern web technologies to deliver a responsive and user-friendly experience.
+
+# Key Features
+
+## Authentication and Authorization
+
+- **User Authentication**: Secure user authentication using Clerk
+- **Organization Management**: Create and manage organizations  
+- **Role-Based Access Control**: Assign roles and permissions to users
+
+## Product Management
+
+- **Product Operations**: CRUD operations for products
+- **Product Visualization**: Interactive product tree view using D3.js. There are suplier/brand trees for a product to trace down to suppliers and manage their direct customers
+
+## Integration
+
+- **Upload Files**: Support for uploading CSV files to manage product data. Input data can be a bill of materials (BOM) or more. Uploaded files are processed to extract product information and relationships in asynchronous background jobs
+- **Others**: Additional integrations coming soon
+
+## Traceability Incoming/Outgoing Requests and Analytics
+
+- **Supplier Tracking**: Users can view their tier 1 or tier 2 suppliers after extracting data from uploaded files. They need to send outgoing requests to trace the data. They can attach an assessment form to the request for required information from suppliers
+- **Cascading Requests**: Requests can be sent cascadingly to suppliers and their suppliers, and so on. The status of requests can be tracked and users can see the progress, including assessment responses from suppliers
+- **Incoming Requests**: Incoming requests can be viewed and responded to by users
+- **Analytics Dashboard**: Visualize traceability data and relationships
+
+## Assessment Form Builder
+
+- **CRUD Operations**: Create, read, update, and delete assessment forms
+- **Template Management**: CRUD operations for form templates  
+- **Request Integration**: Attach forms to traceability requests

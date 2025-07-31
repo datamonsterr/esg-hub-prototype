@@ -1,0 +1,32 @@
+---
+description: Technology stack and framework specifications for the frontend application
+globs: **
+alwaysApply: false
+---
+
+# Technology Stack
+
+This project is a frontend application built with the following technologies:
+
+## Core Framework
+- **Next.js 15**: React framework for production applications
+
+## Styling & UI
+- **TailwindCSS v3**: Utility-first CSS framework with PostCSS
+
+## Package Management  
+- **pnpm**: Fast, disk space efficient package manager (use pnpm over yarn and all others)
+
+## Development Tools
+- **TypeScript**: Static type checking for JavaScript
+- **ESLint**: Code linting and formatting
+
+## Authentication
+- **Clerk**: User authentication and management service
+
+## Data Visualization
+- **Recharts**: Composable charting library for React
+
+## Database
+- **Supabase**: Backend-as-a-Service platform
+- **Database Schema**: Located in `docs/schema.sql`

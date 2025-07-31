@@ -1,16 +1,17 @@
 "use client"
 
-import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { Product, ProductNode } from '@/src/types';
 import { getProductById } from '@/src/api/product';
-import { Package, Box } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Product, ProductNode } from '@/src/types';
+import { Box, Package } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Tree, { CustomNodeElementProps } from 'react-d3-tree';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import ProductDetailsPanel from './product-details-panel';
-import { UPSTREAM_TREE_CONFIG, calculateDynamicTreeConfig } from './tree-config';
-import { CustomElement } from 'react-hook-form';
+import { ViewType } from './product-tree-view';
+import CustomTreeNode from './custom-tree-node';
+import { BRAND_TREE_CONFIG } from './tree-config';
 
-interface UpstreamTreeViewProps {
+interface BrandTreeViewProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
@@ -26,7 +27,7 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
-const UpstreamTreeView = ({ 
+const BrandTreeView = ({ 
   products, 
   onEdit, 
   onDelete,
@@ -34,7 +35,7 @@ const UpstreamTreeView = ({
   selectedProductId, 
   singleProductMode = false, 
   currentOrganizationId 
-}: UpstreamTreeViewProps) => {
+}: BrandTreeViewProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedRootProductId, setSelectedRootProductId] = useState<string>('');
   const [allProducts, setAllProducts] = useState<Map<string, Product>>(new Map());
@@ -75,7 +76,7 @@ const UpstreamTreeView = ({
     }
   }, [selectedProductId, products]);
 
-  // Fetch only direct parent products (1 tier) for upstream view
+  // Fetch only direct parent products (1 tier) for brand view
   const fetchDirectParents = useCallback(async (product: Product): Promise<ProductNode> => {
     const parents: ProductNode[] = [];
     
@@ -102,7 +103,7 @@ const UpstreamTreeView = ({
           }
           
           if (parentProduct) {
-            // For upstream view, we only need direct parents - no recursive fetching
+            // For brand view, we only need direct parents - no recursive fetching
             const parentNode: ProductNode = {
               ...parentProduct,
               children: [], // No further children needed for display
@@ -162,11 +163,11 @@ const UpstreamTreeView = ({
     buildHierarchy();
   }, [products, fetchDirectParents, hierarchicalProducts]);
 
-  // Find root products for upstream view (components that supply to other products)
+  // Find root products for brand view (components that supply to other products)
   const rootProducts = useMemo(() => {
     
     
-    // For upstream supplier perspective, find products that have parentIds
+    // For brand supplier perspective, find products that have parentIds
     // These are products that are supplied to other products (have parents/customers)
     const result = hierarchicalProducts.filter(p => 
       p.parentIds && p.parentIds.length > 0 // Products that are supplied to other products
@@ -206,7 +207,7 @@ const UpstreamTreeView = ({
   const treeData = useMemo(() => {
     if (!currentRootProduct) return [];
 
-    // For upstream view from supplier perspective:
+    // For brand view from supplier perspective:
     // - Component (Shoe Laces) is at the bottom (root)
     // - Final products that use this component (Nike Running Shoe) appear above as children
     
@@ -235,110 +236,9 @@ const UpstreamTreeView = ({
     return result;
   }, [currentRootProduct]);
 
-  // Calculate tree depth for dynamic configuration
-  const treeDepth = useMemo(() => {
-    if (!treeData.length) return 1;
-    
-    const calculateDepth = (node: TreeNode): number => {
-      if (!node.children || node.children.length === 0) return 1;
-      return 1 + Math.max(...node.children.map(calculateDepth));
-    };
-    
-    return calculateDepth(treeData[0]);
-  }, [treeData]);
-
-  // Calculate total node count for dynamic configuration
-  const nodeCount = useMemo(() => {
-    if (!treeData.length) return 1;
-    
-    const countNodes = (node: TreeNode): number => {
-      if (!node.children || node.children.length === 0) return 1;
-      return 1 + node.children.reduce((sum, child) => sum + countNodes(child), 0);
-    };
-    
-    return countNodes(treeData[0]);
-  }, [treeData]);
-
-  // Dynamic tree configuration
-  const dynamicTreeConfig = useMemo(() => {
-    const dynamicConfig = calculateDynamicTreeConfig(
-      containerDimensions.width,
-      containerDimensions.height,
-      treeDepth,
-      nodeCount
-    );
-    
-    return {
-      ...UPSTREAM_TREE_CONFIG,
-      ...dynamicConfig,
-    };
-  }, [containerDimensions, treeDepth, nodeCount]);
-
   // Custom node component for the tree
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
-    const productId = nodeDatum.attributes?.productId;
-    const product = hierarchicalProducts.find(p => p.id === productId) || 
-                   Array.from(allProducts.values()).find(p => p.id === productId);
-    
-    if (!product) return <div />;
-
-    const isSelected = selectedProduct?.id === product.id;
-    const isExternalProduct = currentOrganizationId ? 
-      product.organizationId !== currentOrganizationId : 
-      false;
-
-    // Check if this is the root node (no parent)
-    const isRootNode = !hierarchyPointNode.parent;
-    const radius = 20;
-    const triangleSize = 5;
-
-    return (
-      <g>
-        {/* Draw arrow head to the left (pointing right) for horizontal orientation, but not for root node */}
-        {!isRootNode && (
-          <g>
-            {/* Arrow head only - positioned to the left of the node */}
-            <polygon
-              points={`${-1.5*triangleSize},${triangleSize} ${-1.5*triangleSize},${-triangleSize} 0,0`}
-              transform={`translate(${-radius}, 0)`}
-              fill="#6b7280"
-            />
-          </g>
-        )}
-        
-        <circle
-          r={radius}
-          fill={isExternalProduct ? "#fef3c7" : "#e5e7eb"}
-          stroke={isSelected ? "#22c55e" : isExternalProduct ? "#f59e0b" : product.type === 'final_product' ? "#059669" : "#6b7280"}
-          strokeWidth={isSelected ? 4 : isExternalProduct ? 3 : 2}
-          onClick={() => setSelectedProduct(product)}
-          style={{ cursor: 'pointer' }}
-        />
-        {product.type === 'final_product' ? (
-          <Package size={16} x={-8} y={-8} className={isExternalProduct ? "text-amber-700" : "text-gray-700"} />
-        ) : (
-          <Box size={14} x={-7} y={-7} className={isExternalProduct ? "text-amber-700" : "text-gray-600"} />
-        )}
-        <text
-          fill={isSelected ? "black" : isExternalProduct ? "#92400e" : "black"}
-          strokeWidth="0"
-          x={-35}
-          y={40}
-          style={{ fontSize: '12px', fontWeight: 'bold' }}
-        >
-          {product.name}
-        </text>
-        <text
-          fill={isExternalProduct ? "#92400e" : "#6b7280"}
-          strokeWidth="0"
-          x={-35}
-          y={55}
-          style={{ fontSize: '10px' }}
-        >
-          {product.sku || "No SKU"} • {product.type?.replace('_', ' ')} {isExternalProduct ? "• External" : ""}
-        </text>
-      </g>
-    );
+    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} />
   };
 
   return (
@@ -363,7 +263,7 @@ const UpstreamTreeView = ({
         </div>
       )}
 
-      <div className="flex h-[600px]">
+      <div className="flex h-full">
         {/* Tree visualization */}
         <div ref={treeContainerRef} className={`${isPanelCollapsed ? 'flex-1' : 'flex-1'} border rounded-lg bg-white shadow-sm`}>
           {isLoading ? (
@@ -376,10 +276,10 @@ const UpstreamTreeView = ({
           ) : currentRootProduct ? (
             <div className="h-full">
               <Tree
-                key={`upstream-tree-${currentRootProduct?.id || 'root'}`}
+                {...BRAND_TREE_CONFIG}
+                key={`brand-tree-${currentRootProduct?.id || 'root'}`}
                 data={treeData}
                 renderCustomNodeElement={renderCustomNodeElement}
-                {...dynamicTreeConfig}
               />
             </div>
           ) : (
@@ -399,7 +299,7 @@ const UpstreamTreeView = ({
           onDelete={onDelete}
           onUpdate={onUpdate}
           currentOrganizationId={currentOrganizationId}
-          viewType="upstream"
+          viewType={ViewType.BRAND}
           isCollapsed={isPanelCollapsed}
           onToggleCollapse={() => setIsPanelCollapsed(!isPanelCollapsed)}
         />
@@ -408,4 +308,4 @@ const UpstreamTreeView = ({
   );
 };
 
-export default UpstreamTreeView;
+export default BrandTreeView;

@@ -41,12 +41,12 @@ This document summarizes all the changes made to implement parent_ids functional
 - **Enhanced**: useGetProducts hook to support hierarchy with parents
 
 ### 8. Product Tree View Component (`src/components/management/product-tree-view.tsx`)
-- **Added**: `viewType` prop to switch between downstream/upstream views
+- **Added**: `viewType` prop to switch between supplier/brand views
 - **Updated**: `fetchRelatedProductsRecursively()` to fetch both children and parents
 - **Enhanced**: Root product logic for both view types
 - **Added**: View type selector in UI
 - **Added**: Parent products display in product details panel
-- **Improved**: Tree data conversion for upstream/downstream views
+- **Improved**: Tree data conversion for brand/supplier views
 
 ## Key Features Implemented
 
@@ -56,8 +56,8 @@ This document summarizes all the changes made to implement parent_ids functional
 - Supports multi-tier hierarchies (tier 1 parents, multiple tiers of children)
 
 ### 2. Tree Visualization Modes
-- **Downstream View**: Shows product children (existing functionality)
-- **Upstream View**: Shows product parents (new functionality)
+- **Supplier Tree View**: Shows product children (existing functionality)
+- **Brand Tree View**: Shows product parents (new functionality)
 - Toggle between views in the UI
 
 ### 3. Data Integrity
@@ -96,7 +96,7 @@ The updated CSV includes examples like:
   products={products} 
   onEdit={handleEdit} 
   onDelete={handleDelete}
-  viewType="upstream"  // or "downstream"
+  viewType="brand"  // or "supplier"
 />
 ```
 

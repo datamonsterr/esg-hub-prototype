@@ -7,9 +7,11 @@ import { Package, Box } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import ProductDetailsPanel from './product-details-panel';
-import { DOWNSTREAM_TREE_CONFIG } from './tree-config';
+import { SUPPLIER_TREE_CONFIG } from './tree-config';
+import { ViewType } from './product-tree-view';
+import CustomTreeNode from './custom-tree-node';
 
-interface DownstreamTreeViewProps {
+interface SupplierTreeViewProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
@@ -25,7 +27,7 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
-const DownstreamTreeView = ({ 
+const SupplierTreeView = ({ 
   products, 
   onEdit, 
   onDelete,
@@ -33,7 +35,7 @@ const DownstreamTreeView = ({
   selectedProductId, 
   singleProductMode = false, 
   currentOrganizationId 
-}: DownstreamTreeViewProps) => {
+}: SupplierTreeViewProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedRootProductId, setSelectedRootProductId] = useState<string>('');
   const [allProducts, setAllProducts] = useState<Map<string, Product>>(new Map());
@@ -58,7 +60,7 @@ const DownstreamTreeView = ({
     }
   }, [selectedProductId, products]);
 
-  // Recursively fetch children products for downstream view
+  // Recursively fetch children products for supplier view
   const fetchChildrenRecursively = useCallback(async (product: Product, visited = new Set<string>()): Promise<ProductNode> => {
     // Prevent infinite loops
     if (visited.has(product.id)) {
@@ -75,7 +77,7 @@ const DownstreamTreeView = ({
     const children: ProductNode[] = [];
     
     if (product.childrenIds && product.childrenIds.length > 0) {
-      // Fetch children for downstream view (what this product is made of)
+      // Fetch children for supplier view (what this product is made of)
       for (const childId of product.childrenIds) {
         try {
           let childProduct = allProducts.get(childId);
@@ -143,11 +145,11 @@ const DownstreamTreeView = ({
     buildHierarchy();
   }, [products, fetchChildrenRecursively, hierarchicalProducts]);
 
-  // Find root products for downstream view (final products or standalone)
+  // Find root products for supplier view (final products or standalone)
   const rootProducts = useMemo(() => {
     
     
-    // For downstream view, find products that aren't children of any other product (final products)
+    // For supplier view, find products that aren't children of any other product (final products)
     // OR standalone products with no relationships
     const allChildIds = new Set(
       products.flatMap(p => p.childrenIds || [])
@@ -207,75 +209,7 @@ const DownstreamTreeView = ({
 
   // Custom node component for the tree
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
-    const productId = nodeDatum.attributes?.productId;
-    const product = hierarchicalProducts.find(p => p.id === productId) || 
-                   Array.from(allProducts.values()).find(p => p.id === productId);
-    
-    if (!product) return <div />;
-
-    const isSelected = selectedProduct?.id === product.id;
-    const isExternalProduct = currentOrganizationId ? 
-      product.organizationId !== currentOrganizationId : 
-      false;
-
-    // Check if this is the root node (no parent)
-    const isRootNode = !hierarchyPointNode.parent;
-    const isLeafNode = hierarchyPointNode.children?.length === 0 || hierarchyPointNode.children === undefined;
-    const radius = 20;
-    const triangleSize = 5;
-    
-    console.log(`Rendering node for product ${product.name} (ID: ${product.id}) - Selected: ${isSelected}, External: ${isExternalProduct}, Root: ${isRootNode}`);
-    console.log(`Hierarchy Point Node:`, hierarchyPointNode);
-
-    return (
-      <g>
-        {/* Draw arrow head above the node (pointing down) for vertical orientation, but not for root node */}
-        {!isLeafNode && (
-          <g>
-            {/* Arrow head only - positioned above the node */}
-            <polygon
-              points={`${-triangleSize},${1.5*triangleSize}
-                      0,0
-                      ${triangleSize},${1.5*triangleSize}`}
-              transform={`translate(0, ${radius})`}
-              fill="#6b7280"
-            />
-          </g>
-        )}
-        
-        <circle
-          r={radius}
-          fill={isExternalProduct ? "#fef3c7" : "#e5e7eb"}
-          stroke={isSelected ? "#22c55e" : isExternalProduct ? "#f59e0b" : product.type === 'final_product' ? "#059669" : "#6b7280"}
-          strokeWidth={isSelected ? 4 : isExternalProduct ? 3 : 2}
-          onClick={() => setSelectedProduct(product)}
-          style={{ cursor: 'pointer' }}
-        />
-        {product.type === 'final_product' ? (
-          <Package size={16} x={-8} y={-8} className={isExternalProduct ? "text-amber-700" : "text-gray-700"} />
-        ) : (
-          <Box size={14} x={-7} y={-7} className={isExternalProduct ? "text-amber-700" : "text-gray-600"} />
-        )}
-        <text
-          fill={isSelected ? "black" : isExternalProduct ? "#92400e" : "black"}
-          strokeWidth="0"
-          x={30}
-          y={5}
-          style={{ fontSize: '12px', fontWeight: 'bold' }}
-        >
-          {product.name}
-        </text>
-        <text
-          fill={isExternalProduct ? "#92400e" : "#6b7280"}
-          strokeWidth="0"
-          x={30}
-          y={20}
-          style={{ fontSize: '10px' }}
-        >
-          {product.sku || "No SKU"} • {product.type?.replace('_', ' ')} {isExternalProduct ? "• External" : ""}
-        </text>
-      </g>
-    );
+    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} />
   };
 
   return (
@@ -300,7 +234,7 @@ const DownstreamTreeView = ({
         </div>
       )}
 
-      <div className="flex h-[600px]">
+      <div className="flex h-full">
         {/* Tree visualization */}
         <div className={`${isPanelCollapsed ? 'flex-1' : 'flex-1'} border rounded-lg bg-white shadow-sm`}>
           {isLoading ? (
@@ -313,10 +247,10 @@ const DownstreamTreeView = ({
           ) : currentRootProduct ? (
             <div className="h-full">
               <Tree
-                key={`downstream-tree-${currentRootProduct?.id || 'root'}`}
+                key={`supplier-tree-${currentRootProduct?.id || 'root'}`}
                 data={treeData}
                 renderCustomNodeElement={renderCustomNodeElement}
-                {...DOWNSTREAM_TREE_CONFIG}
+                {...SUPPLIER_TREE_CONFIG}
               />
             </div>
           ) : (
@@ -336,7 +270,7 @@ const DownstreamTreeView = ({
           onDelete={onDelete}
           onUpdate={onUpdate}
           currentOrganizationId={currentOrganizationId}
-          viewType="downstream"
+          viewType={ViewType.SUPPLIER}
           isCollapsed={isPanelCollapsed}
           onToggleCollapse={() => setIsPanelCollapsed(!isPanelCollapsed)}
         />
@@ -345,4 +279,4 @@ const DownstreamTreeView = ({
   );
 };
 
-export default DownstreamTreeView;
+export default SupplierTreeView;

@@ -1,5 +1,7 @@
 ---
-applyTo: **/*.ts
+description: TypeScript naming conventions and database schema mapping guidelines
+globs: **/*.ts
+alwaysApply: false
 ---
 # Naming conventions
 1. Use camelCase for variables and functions.

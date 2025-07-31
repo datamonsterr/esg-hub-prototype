@@ -1,5 +1,7 @@
 ---
-applyTo: **
+description: File structure, UI components, data mapping, and development workflow guidelines
+globs: **
+alwaysApply: false
 ---
 # File naming and structure conventions
 1. All mock data is in data/ folder. We will use json-server and api will be written in api.ts.

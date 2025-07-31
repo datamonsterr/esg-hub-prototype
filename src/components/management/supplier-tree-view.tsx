@@ -9,7 +9,7 @@ import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import ProductDetailsPanel from './product-details-panel';
 import { SUPPLIER_TREE_CONFIG } from './tree-config';
 import { ViewType } from './product-tree-view';
-import CustomTreeNode from './custom-tree-node';
+import CustomTreeNode, { ArrowOrientationType } from './custom-tree-node';
 
 interface SupplierTreeViewProps {
   products: Product[];
@@ -209,7 +209,7 @@ const SupplierTreeView = ({
 
   // Custom node component for the tree
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
-    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} />
+    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} arrow={ArrowOrientationType.LEFT_TO_RIGHT} />
   };
 
   return (

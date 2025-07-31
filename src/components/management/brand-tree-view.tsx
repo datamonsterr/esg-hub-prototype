@@ -8,7 +8,7 @@ import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import ProductDetailsPanel from './product-details-panel';
 import { ViewType } from './product-tree-view';
-import CustomTreeNode from './custom-tree-node';
+import CustomTreeNode, { ArrowOrientationType } from './custom-tree-node';
 import { BRAND_TREE_CONFIG } from './tree-config';
 
 interface BrandTreeViewProps {
@@ -27,14 +27,14 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
-const BrandTreeView = ({ 
-  products, 
-  onEdit, 
+const BrandTreeView = ({
+  products,
+  onEdit,
   onDelete,
   onUpdate,
-  selectedProductId, 
-  singleProductMode = false, 
-  currentOrganizationId 
+  selectedProductId,
+  singleProductMode = false,
+  currentOrganizationId,
 }: BrandTreeViewProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedRootProductId, setSelectedRootProductId] = useState<string>('');
@@ -79,29 +79,29 @@ const BrandTreeView = ({
   // Fetch only direct parent products (1 tier) for brand view
   const fetchDirectParents = useCallback(async (product: Product): Promise<ProductNode> => {
     const parents: ProductNode[] = [];
-    
+
     // Fetch direct parents only (depth = 1) using parent_ids
     if (product.parentIds && product.parentIds.length > 0) {
-      
-      
+
+
       for (const parentId of product.parentIds) {
         try {
           let parentProduct = allProducts.get(parentId);
-          
+
           if (!parentProduct) {
             try {
-              
+
               parentProduct = await getProductById(parentId);
               setAllProducts(prev => new Map(prev.set(parentId, parentProduct!)));
-              
+
             } catch (fetchError) {
               console.warn(`Parent product ${parentId} not found or not accessible:`, fetchError);
               continue;
             }
           } else {
-            
+
           }
-          
+
           if (parentProduct) {
             // For brand view, we only need direct parents - no recursive fetching
             const parentNode: ProductNode = {
@@ -110,18 +110,18 @@ const BrandTreeView = ({
               parents: [] // No recursive parent fetching
             };
             parents.push(parentNode);
-            
+
           }
         } catch (error) {
           console.warn(`Failed to fetch parent product ${parentId}:`, error);
         }
       }
     } else {
-      
+
     }
 
     const result = { ...product, children: [], parents };
-    
+
     return result;
   }, [allProducts]);
 
@@ -129,18 +129,18 @@ const BrandTreeView = ({
   useEffect(() => {
     const buildHierarchy = async () => {
       if (products.length === 0) return;
-      
+
       // Skip rebuild if products haven't changed and we already have hierarchical data
-      if (hierarchicalProducts.length > 0 && 
-          products.length === hierarchicalProducts.length &&
-          products.every(p => hierarchicalProducts.some(hp => hp.id === p.id))) {
+      if (hierarchicalProducts.length > 0 &&
+        products.length === hierarchicalProducts.length &&
+        products.every(p => hierarchicalProducts.some(hp => hp.id === p.id))) {
         return;
       }
-      
+
       setIsLoading(true);
       try {
         const hierarchicalProductsList: ProductNode[] = [];
-        
+
         for (const product of products) {
           try {
             const productWithRelations = await fetchDirectParents(product);
@@ -150,7 +150,7 @@ const BrandTreeView = ({
             hierarchicalProductsList.push({ ...product, children: [], parents: [] });
           }
         }
-        
+
         setHierarchicalProducts(hierarchicalProductsList);
       } catch (error) {
         console.error('Error building hierarchy:', error);
@@ -165,21 +165,21 @@ const BrandTreeView = ({
 
   // Find root products for brand view (components that supply to other products)
   const rootProducts = useMemo(() => {
-    
-    
+
+
     // For brand supplier perspective, find products that have parentIds
     // These are products that are supplied to other products (have parents/customers)
-    const result = hierarchicalProducts.filter(p => 
+    const result = hierarchicalProducts.filter(p =>
       p.parentIds && p.parentIds.length > 0 // Products that are supplied to other products
     );
-    
+
     // If no products with parentIds found, use all products as potential roots
     if (result.length === 0) {
-      
+
       return hierarchicalProducts;
     }
-    
-    
+
+
     return result;
   }, [hierarchicalProducts]);  // Get the currently selected root product for display
   const currentRootProduct = useMemo(() => {
@@ -187,19 +187,19 @@ const BrandTreeView = ({
     if (singleProductMode && products.length > 0) {
       return hierarchicalProducts.find(p => p.id === products[0].id) || null;
     }
-    
+
     // Otherwise, use selection logic
     if (selectedRootProductId) {
       const explicitSelection = rootProducts.find(p => p.id === selectedRootProductId);
       if (explicitSelection) return explicitSelection;
     }
-    
+
     // If we have a selectedProductId, try to use it if it's in rootProducts
     if (selectedProductId) {
       const targetProduct = rootProducts.find(p => p.id === selectedProductId);
       if (targetProduct) return targetProduct;
     }
-    
+
     return rootProducts[0] || null;
   }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products, hierarchicalProducts]);
 
@@ -210,35 +210,35 @@ const BrandTreeView = ({
     // For brand view from supplier perspective:
     // - Component (Shoe Laces) is at the bottom (root)
     // - Final products that use this component (Nike Running Shoe) appear above as children
-    
+
     const convertToTreeNode = (product: ProductNode): TreeNode => {
       // Use the parents that were fetched by fetchDirectParents
       const parentProducts = product.parents || [];
-      
-      
+
+
       if (parentProducts.length > 0) {
-        
+
       }
-      
+
       return {
         name: product.name,
-        attributes: { 
+        attributes: {
           productId: product.id,
           sku: product.sku,
-          type: product.type 
+          type: product.type
         },
         children: parentProducts.length > 0 ? parentProducts.map(convertToTreeNode) : undefined
       };
     };
 
     const result = [convertToTreeNode(currentRootProduct)];
-    
+
     return result;
   }, [currentRootProduct]);
 
   // Custom node component for the tree
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
-    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} />
+    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} arrow={ArrowOrientationType.RIGHT_TO_LEFT} />
   };
 
   return (

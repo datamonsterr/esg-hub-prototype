@@ -1,5 +1,5 @@
 ---
-description: Guidelines for writing new API fetch functions using axios and useSWR
+description: Guidelines for writing new API fetch functions using tRPC
 globs: src/api/*.ts
 alwaysApply: false
 ---
@@ -7,16 +7,8 @@ alwaysApply: false
 # API Development Guidelines
 
 ## Core Libraries
-- **axios**: HTTP client for making API requests
 - **useSWR**: Data fetching library for caching and revalidation
-
-## Architecture Requirements
-
-1. **Endpoint Definition**: All API endpoints must be defined in the `endpoints` object in `src/api/axios.ts`
-
-2. **Handler Pattern**: For each API, create a raw API handler function using axios as the fetcher, then wrap this fetcher with useSWR
-
-## Naming Conventions
+- **tRPC**: For fetching from frontend to nextjs backend
 
 ### API Handlers
 - **GET**: `getSomething`

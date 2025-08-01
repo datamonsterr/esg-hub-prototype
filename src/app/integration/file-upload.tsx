@@ -22,7 +22,6 @@ import { FileType } from '@/src/types';
 import { ErrorComponent } from '@/src/components/ui/error';
 import { useToast } from '@/src/hooks/use-toast';
 import { ComingSoonModal } from "@/src/components/coming-soon-modal"
-import { endpoints } from '@/src/api/axios';
 import {
   Dialog,
   DialogContent,
@@ -33,7 +32,7 @@ import {
 } from "@/src/components/ui/dialog"
 import { useRouter, useSearchParams } from "next/navigation"
 import { v4 as uuidv4 } from 'uuid';
-import { createActivity } from "@/src/api/management"
+import { useCreateActivity } from "@/src/api/management"
 import { Product } from '@/src/types';
 
 interface FileUploadProps {
@@ -46,6 +45,7 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const createActivityMutation = useCreateActivity();
   const fileUpload = {
     fileTypes: [
       {
@@ -166,34 +166,13 @@ export function FileUpload({ selectedProduct, onNavigateBack, onUploadComplete }
       return
     }
     try {
-      // const fileExtension = uploadedFile.name.split('.').pop() || '';
 
-      // await createDocument(endpoints.documents.processed, {
-      //   arg: { id: newActivityId, fileName: uploadedFile.name, fileExtension },
-      // });
-
-      const newActivity = await createActivity(endpoints.integration.activities, {
-        arg: {
-          title: `File Upload - ${uploadedFile.name}`,
-          subtitle: `Processing file for product ${selectedProduct?.name || 'Unknown Product'}`,
-          status: 'processing',
-        }
+      const newActivity = await createActivityMutation.mutateAsync({
+        title: `File Upload - ${uploadedFile.name}`,
+        subtitle: `Processing file for product ${selectedProduct?.name || 'Unknown Product'}`,
+        status: 'processing',
       });
 
-      // // Upload the file with the same UUID
-      // const formData = new FormData();
-      // formData.append('file', uploadedFile);
-      // formData.append('id', newActivityId);
-
-      // const response = await fetch('/api/upload', {
-      //   method: 'POST',
-      //   body: formData,
-      // });
-
-      // if (!response.ok) {
-      //   throw new Error('File upload failed');
-      // }
-      // 
       setUploadingActivityId(newActivity.id);
       showSuccessToast("Upload started, processing file...");
       onUploadComplete(newActivity.id);

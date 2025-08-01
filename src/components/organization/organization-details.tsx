@@ -1,27 +1,25 @@
- 'use client';
+'use client';
 
 import { useAuth } from "@clerk/nextjs";
-import useSWR from "swr";
-import axiosInstance from "../../api/axios";
 import { Organization } from "../../types";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
-
-async function getOrganization(url: string) {
-    const { data } = await axiosInstance.get<Organization>(url);
-    return data;
-}
+import { api } from "@/src/utils/api";
 
 export function OrganizationDetails() {
     const { orgId } = useAuth();
     
     // In a real scenario, orgId would come from the user's session/token after accepting invitation.
-    // For this prototype, we'll ck it if it doesn't exist.
+    // For this prototype, we'll check it if it doesn't exist.
     const effectiveOrgId = orgId || 'org-001';
 
-    const { data: organization, isLoading, error } = useSWR(
-        effectiveOrgId ? `/organizations/${effectiveOrgId}` : null,
-        getOrganization
+    const { data: organization, isLoading, error } = api.organization.getOrganizationById.useQuery(
+        { id: effectiveOrgId || '' },
+        {
+            enabled: !!effectiveOrgId,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+        }
     );
 
     if (isLoading) {

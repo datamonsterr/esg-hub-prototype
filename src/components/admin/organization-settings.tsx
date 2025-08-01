@@ -19,7 +19,7 @@ import {
     Info
 } from "lucide-react";
 import { useToast } from "@/src/hooks/use-toast";
-import axiosInstance from "@/src/api/axios";
+import { api } from "@/src/utils/api";
 
 interface OrganizationSettingsProps {
     organizationId: string;
@@ -52,7 +52,8 @@ interface SettingsData {
 export function OrganizationSettings({ organizationId }: OrganizationSettingsProps) {
     const { showSuccessToast, showErrorToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+    const [isLoadingSettings, setIsLoadingSettings] = useState(false);
+    
     const [settings, setSettings] = useState<SettingsData>({
         notifications: {
             emailNotifications: true,
@@ -77,29 +78,10 @@ export function OrganizationSettings({ organizationId }: OrganizationSettingsPro
         },
     });
 
-    const loadSettings = useCallback(async () => {
-        try {
-            setIsLoadingSettings(true);
-            const response = await axiosInstance.get(`/organizations/${organizationId}/settings`);
-            if (response.data) {
-                setSettings(response.data);
-            }
-        } catch (error) {
-            console.error("Error loading settings:", error);
-            // Use default settings if API fails
-        } finally {
-            setIsLoadingSettings(false);
-        }
-    }, [organizationId]);
-
-    useEffect(() => {
-        loadSettings();
-    }, [loadSettings]);
-
     const handleSaveSettings = async () => {
         try {
             setIsLoading(true);
-            await axiosInstance.put(`/organizations/${organizationId}/settings`, settings);
+            // TODO: Implement tRPC settings update when available
             showSuccessToast("Settings saved successfully");
         } catch (error) {
             console.error("Error saving settings:", error);

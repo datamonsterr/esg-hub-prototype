@@ -1,20 +1,8 @@
-import useSWR from "swr";
-import axiosInstance from "@/src/api/axios";
+import { api } from "@/src/utils/api";
 
 export function useGetOrganization(organizationId: string) {
-  const { data, error, isLoading, mutate } = useSWR(
-    organizationId ? `/organizations/${organizationId}` : null,
-    (url: string) => axiosInstance.get(url).then((res) => res.data),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+  return api.organization.getOrganizationById.useQuery(
+    { id: organizationId },
+    { enabled: !!organizationId }
   );
-
-  return {
-    data,
-    error,
-    isLoading,
-    mutate,
-  };
 }

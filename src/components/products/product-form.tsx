@@ -1,6 +1,5 @@
 "use client"
 
-import axiosInstance from "@/src/api/axios"
 import { Button } from "@/src/components/ui/button"
 import { Card } from "@/src/components/ui/card"
 import {
@@ -18,6 +17,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Textarea } from "../ui/textarea"
+import { api } from "@/src/utils/api"
 
 const formSchema = z.object({
   organizationId: z.string().min(1, "Organization is required."),
@@ -39,23 +39,14 @@ interface ProductFormProps {
 
 export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [organizations, setOrganizations] = useState<{ id: string; name: string }[]>([]);
-  const [isLoadingOrgs, setIsLoadingOrgs] = useState(true);
 
-  useEffect(() => {
-    async function fetchOrgs() {
-      setIsLoadingOrgs(true);
-      try {
-        const { data } = await axiosInstance.get('/organizations');
-        setOrganizations(data.map((org: any) => ({ id: org.id, name: org.name })));
-      } catch (e) {
-        setOrganizations([]);
-      } finally {
-        setIsLoadingOrgs(false);
-      }
+  const { data: organizations = [], isLoading: isLoadingOrgs } = api.organization.getOrganizations.useQuery(
+    undefined,
+    {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     }
-    fetchOrgs();
-  }, []);
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -104,7 +95,7 @@ export function ProductForm({ onSubmit, onCancel, initialData }: ProductFormProp
                       disabled={isLoadingOrgs}
                     >
                       <option value="">{isLoadingOrgs ? 'Loading organizations...' : 'Select organization...'}</option>
-                      {organizations.map(org => (
+                      {organizations?.map((org: any) => (
                         <option key={org.id} value={org.id}>{org.name}</option>
                       ))}
                     </select>

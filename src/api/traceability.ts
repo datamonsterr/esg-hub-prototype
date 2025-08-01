@@ -1,8 +1,7 @@
 'use client';
 
-import useSWR from 'swr';
-import axiosInstance, { endpoints } from './axios';
-import {
+import { api } from '@/src/utils/api';
+import type {
   TraceabilityRequest,
   TraceabilityRequestDetail,
   CreateTraceabilityRequest,
@@ -10,15 +9,15 @@ import {
   TraceabilityAnalytics
 } from '@/src/types';
 
-// #region RAW API
+// #region RAW API functions (now using tRPC)
 export const getIncomingRequests = async (params?: {
   status?: string;
   priority?: string;
   dateFrom?: string;
   dateTo?: string;
 }): Promise<TraceabilityRequest[]> => {
-  const res = await axiosInstance.get(endpoints.traceability.requests.incoming, { params });
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useGetIncomingRequests hook instead');
 };
 
 export const getOutgoingRequests = async (params?: {
@@ -27,81 +26,55 @@ export const getOutgoingRequests = async (params?: {
   dateFrom?: string;
   dateTo?: string;
 }): Promise<TraceabilityRequest[]> => {
-  const res = await axiosInstance.get(endpoints.traceability.requests.outgoing, { params });
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useGetOutgoingRequests hook instead');
 };
 
 export const getTraceabilityRequest = async (id: string): Promise<TraceabilityRequestDetail> => {
-  const res = await axiosInstance.get(endpoints.traceability.requests.id(id));
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useGetTraceabilityRequest hook instead');
 };
 
 export const createTraceabilityRequest = async (data: CreateTraceabilityRequest): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.post(endpoints.traceability.requests.base, data);
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useCreateTraceabilityRequest hook instead');
 };
 
 export const updateTraceabilityRequest = async (id: string, data: Partial<TraceabilityRequest>): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.put(endpoints.traceability.requests.id(id), data);
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useUpdateTraceabilityRequest hook instead');
 };
 
 export const respondToRequest = async (id: string, response: TraceabilityResponse): Promise<TraceabilityRequest> => {
-  const res = await axiosInstance.post(endpoints.traceability.requests.respond(id), response);
-  return res.data;
+  // This will be called by the tRPC hooks
+  throw new Error('Use useRespondToRequest hook instead');
 };
 
 export const getTraceabilityAnalytics = async (): Promise<TraceabilityAnalytics> => {
-  // Mock data for now
-  return Promise.resolve({
-    keyInsights: 'Tariff risks from Vietnam have increased by 15% in the last quarter, primarily affecting footwear production. Material traceability for leather remains low at 45%, posing a compliance risk.',
-    tariffRiskByCountry: [
-      { country: 'Vietnam', risk: 75, riskLevel: 'High', originPercentage: 35, material: 'Leather', status: 'At Risk' },
-      { country: 'China', risk: 60, riskLevel: 'Medium', originPercentage: 25, material: 'Synthetics', status: 'Monitoring' },
-      { country: 'Indonesia', risk: 45, riskLevel: 'Medium', originPercentage: 20, material: 'Rubber', status: 'Monitoring' },
-      { country: 'Brazil', risk: 30, riskLevel: 'Low', originPercentage: 15, material: 'Cotton', status: 'Compliant' },
-      { country: 'India', risk: 25, riskLevel: 'Low', originPercentage: 5, material: 'Cotton', status: 'Compliant' },
-    ],
-    materialTraceability: [
-      { material: 'Leather', percentage: 45 },
-      { material: 'Rubber', percentage: 80 },
-      { material: 'Cotton', percentage: 70 },
-      { material: 'Synthetics', percentage: 90 },
-    ],
-    complianceScore: 82,
-    supplyChainVisibility: 65,
-    originTraceabilityTrends: [
-      { period: 'Q1 2024', percentage: 75 },
-      { period: 'Q2 2024', percentage: 80 },
-      { period: 'Q3 2024', percentage: 85 },
-      { period: 'Q4 2024', percentage: 82 },
-    ],
-    overallStats: {
-      traceabilityPercentage: 82,
-      tracedCount: 245,
-      untracedCount: 55,
-    },
-  });
+  // This will be called by the tRPC hooks
+  throw new Error('Use useTraceabilityAnalytics hook instead');
 };
 
 // #endregion
 
-// #region SWR
+// #region tRPC Hooks
 export function useGetIncomingRequests(params?: {
   status?: string;
   priority?: string;
   dateFrom?: string;
   dateTo?: string;
 }) {
-  const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
-    [endpoints.traceability.requests.incoming, params],
-    () => getIncomingRequests(params),
-  );
+  const {
+    data: incomingRequests,
+    isLoading,
+    error: isError,
+    refetch: mutate,
+  } = api.traceability.getIncomingRequests.useQuery(params);
 
   return {
-    incomingRequests: data,
+    incomingRequests,
     isLoading,
-    isError: error,
+    isError,
     mutate,
   };
 }
@@ -112,69 +85,92 @@ export function useGetOutgoingRequests(params?: {
   dateFrom?: string;
   dateTo?: string;
 }) {
-  const { data, error, isLoading, mutate } = useSWR<TraceabilityRequest[]>(
-    [endpoints.traceability.requests.outgoing, params],
-    () => getOutgoingRequests(params),
-  );
+  const {
+    data: outgoingRequests,
+    isLoading,
+    error: isError,
+    refetch: mutate,
+  } = api.traceability.getOutgoingRequests.useQuery(params);
 
   return {
-    outgoingRequests: data,
+    outgoingRequests,
     isLoading,
-    isError: error,
+    isError,
     mutate,
   };
 }
 
 export function useGetTraceabilityRequest(id: string) {
-  const { data, error, isLoading, mutate } = useSWR<TraceabilityRequestDetail>(
-    id ? endpoints.traceability.requests.id(id) : null,
-    () => getTraceabilityRequest(id),
+  const {
+    data: request,
+    isLoading,
+    error: isError,
+    refetch: mutate,
+  } = api.traceability.getTraceabilityRequest.useQuery(
+    { id },
+    { enabled: !!id }
   );
 
   return {
-    request: data,
+    request,
     isLoading,
-    isError: error,
+    isError,
     mutate,
   };
 }
 
 export function useCreateTraceabilityRequest() {
-  const createRequest = async (data: CreateTraceabilityRequest) => {
-    return await createTraceabilityRequest(data);
-  };
+  const createRequest = api.traceability.createTraceabilityRequest.useMutation();
 
-  return { createTraceabilityRequest: createRequest };
+  return {
+    createTraceabilityRequest: createRequest.mutateAsync,
+    isLoading: createRequest.isPending,
+    isError: createRequest.error,
+  };
 }
 
 export function useUpdateTraceabilityRequest() {
-  const updateRequest = async (id: string, data: Partial<TraceabilityRequest>) => {
-    return await updateTraceabilityRequest(id, data);
+  const updateRequest = api.traceability.updateTraceabilityRequest.useMutation();
+
+  const updateTraceabilityRequest = async (id: string, data: Partial<TraceabilityRequest>) => {
+    return await updateRequest.mutateAsync({ id, data });
   };
 
-  return { updateTraceabilityRequest: updateRequest };
+  return {
+    updateTraceabilityRequest,
+    isLoading: updateRequest.isPending,
+    isError: updateRequest.error,
+  };
 }
 
 export function useRespondToRequest() {
-  const respond = async (id: string, response: TraceabilityResponse) => {
-    return await respondToRequest(id, response);
+  const respond = api.traceability.respondToRequest.useMutation();
+
+  const respondToRequest = async (id: string, response: TraceabilityResponse) => {
+    return await respond.mutateAsync({ id, response });
   };
 
-  return { respondToRequest: respond };
+  return {
+    respondToRequest,
+    isLoading: respond.isPending,
+    isError: respond.error,
+  };
 }
 
 export function useTraceabilityAnalytics() {
-  const { data, error, isLoading, mutate } = useSWR<TraceabilityAnalytics>(
-    endpoints.traceability.analytics,
-    getTraceabilityAnalytics
-  );
+  const {
+    data: analytics,
+    isLoading,
+    error: isError,
+    refetch: mutate,
+  } = api.traceability.getAnalytics.useQuery();
 
   return {
-    analytics: data,
+    analytics,
     isLoading,
-    isError: error,
+    isError,
     mutate,
   };
 }
 
-// #endregion 
+// #endregion

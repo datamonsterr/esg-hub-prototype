@@ -10,8 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { X, Plus, Save, Edit2, Building2, MapPin, Users, Award, Globe, Calendar } from "lucide-react";
 import { useToast } from "@/src/hooks/use-toast";
-import axiosInstance from "@/src/api/axios";
-import useSWR from "swr";
+import { api } from "@/src/utils/api";
 
 interface OrganizationProfileProps {
     organizationId: string;
@@ -88,15 +87,16 @@ const sizeOptions = [
 export function OrganizationProfile({ organizationId }: OrganizationProfileProps) {
     const { showSuccessToast, showErrorToast } = useToast();
 
-    // Inline useGetOrganization hook
-    const { data: organization, isLoading: isLoadingOrg, mutate } = useSWR(
-        organizationId ? `/organizations/${organizationId}` : null,
-        (url: string) => axiosInstance.get(url).then((res) => res.data),
+    const { data: organization, isLoading: isLoadingOrg, refetch } = api.organization.getOrganizationById.useQuery(
+        { id: organizationId },
         {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
+            enabled: !!organizationId,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
         }
     );
+
+    const updateOrganizationMutation = api.organization.updateOrganization.useMutation();
 
     const [isLoading, setIsLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false); const [formData, setFormData] = useState({
@@ -130,8 +130,11 @@ export function OrganizationProfile({ organizationId }: OrganizationProfileProps
     const handleSave = async () => {
         try {
             setIsLoading(true);
-            await axiosInstance.put(`/organizations/${organizationId}`, formData);
-            await mutate(); // Refresh the organization data
+            await updateOrganizationMutation.mutateAsync({
+                id: organizationId,
+                data: formData
+            });
+            await refetch(); // Refresh the organization data
             showSuccessToast("Organization profile updated successfully");
             setIsEditing(false);
         } catch (error) {

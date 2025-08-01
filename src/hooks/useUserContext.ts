@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
-import axiosInstance, { endpoints } from '../api/axios';
+import { api } from '../utils/api';
 
 export interface UserContextData {
   userId: string;
@@ -16,56 +14,18 @@ export interface UserContextData {
  * Hook to get user context from Supabase database instead of Clerk unsafeMetadata
  * This replaces the old pattern of using user.unsafeMetadata.organizationId
  */
-export function useUserContext(): UserContextData {
-  const { user, isLoaded } = useUser();
-  const [userData, setUserData] = useState<UserContextData>({
-    userId: '',
-    isLoading: true,
-  });
-
-  useEffect(() => {
-    if (!isLoaded) {
-      return;
-    }
-
-    if (!user) {
-      setUserData({
-        userId: '',
-        isLoading: false,
-        error: 'User not authenticated',
-      });
-      return;
-    }
-
-    // Fetch user data from our API
-    const fetchUserData = async () => {
-      try {
-        const response = await axiosInstance.get(endpoints.users.clerk.id(user.id));
-        const data = response.data;
-        
-        setUserData({
-          userId: user.id,
-          email: user.emailAddresses[0]?.emailAddress,
-          organizationId: data?.organization_id,
-          organizationRole: data.organization_role,
-          isActive: data.is_active,
-          isLoading: false,
-        });
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setUserData({
-          userId: user.id,
-          email: user.emailAddresses[0]?.emailAddress,
-          isLoading: false,
-          error: error instanceof Error ? error.message : 'Failed to fetch user data',
-        });
-      }
-    };
-
-    fetchUserData();
-  }, [user, isLoaded]);
-
-  return userData;
+export function useUserContext() {
+  const { data: user, isLoading, error } = api.user.getCurrentUser.useQuery();
+  
+  return {
+    userId: user?.userId,
+    email: user?.email,
+    organizationId: user?.organizationId,
+    organizationRole: user?.organizationRole,
+    isActive: user?.isActive,
+    isLoading,
+    error: error?.message,
+  };
 }
 
 /**

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react"
 import { Input } from "@/src/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import { Button } from "@/src/components/ui/button"
-import axiosInstance from "@/src/api/axios"
 import type { Product, ComponentNode } from "@/src/types/product"
 
 interface ExtractedProductTreeProps {
@@ -131,8 +130,8 @@ export function ExtractedProductTree({ tree = mockProductTree, onChange }: Extra
 
   useEffect(() => {
     async function fetchOrgs() {
-      const { data } = await axiosInstance.get('/organizations')
-      setOrgs(data.map((o: any) => ({ id: o.id, name: o.name })))
+      // TODO: Replace with tRPC call when organization API is available
+      setOrgs([{ id: '1', name: 'Default Organization' }])
     }
     fetchOrgs()
   }, [])

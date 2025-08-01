@@ -21,10 +21,17 @@ interface CustomTreeNodeProps {
 
 function CustomTreeNode({ nodeDatum, hierarchyPointNode, hierarchicalProducts, allProducts, selectedProduct, currentOrganizationId, setSelectedProduct, arrow }: CustomTreeNodeProps) {
   const productId = nodeDatum.attributes?.productId;
-  const product = hierarchicalProducts.find(p => p.id === productId) ||
-    Array.from(allProducts.values()).find(p => p.id === productId);
+  
+  if (!productId || typeof productId !== 'string') {
+    return <div />;
+  }
 
-  if (!product) return <div />;
+  const product = hierarchicalProducts.find(p => p.id === productId) ||
+    allProducts.get(productId);
+
+  if (!product) {
+    return <div />;
+  }
 
   const isSelected = selectedProduct?.id === product.id;
   const isExternalProduct = currentOrganizationId ?

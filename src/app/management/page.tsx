@@ -27,7 +27,6 @@ export default function ManagementPage() {
   const { products, isLoading, isError, mutate } = useGetProducts({
     search: search,
     category: category === 'all' ? undefined : category,
-    flatView: true // Get flat view for list display
   });
 
   const { createProduct } = useCreateProduct();
@@ -57,7 +56,7 @@ export default function ManagementPage() {
   const handleDeleteConfirm = async () => {
     if (selectedProduct) {
       try {
-        await deleteProduct(selectedProduct.id);
+        await deleteProduct({ id: selectedProduct.id });
         toast({ title: "Product Deleted", description: "The product has been successfully deleted." });
         mutate();
         setIsDeleteDialogOpen(false);
@@ -141,7 +140,7 @@ export default function ManagementPage() {
           <CardContent>
             <div className="space-y-4">
               {products && products.length > 0 ? (
-                products.map((product) => (
+                products.map((product: any) => (
                   <div key={product.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                     <div className="flex items-center space-x-4">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">

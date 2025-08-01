@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { ProductSelectDialog } from "@/src/components/products/product-select-dialog"
 import { DataIntegrations } from "./integration"
 import { FileUpload } from "./file-upload"
-import ValidationPage from "./validation"
 import { Product } from "@/src/types/product"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/src/components/ui/card"
 import { Button } from "@/src/components/ui/button"
@@ -47,18 +47,17 @@ function SelectedProductCard({ selectedProduct, onOpenDialog }: { selectedProduc
 export default function DataIntegrationPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [isProductSelectOpen, setIsProductSelectOpen] = useState(false)
-  const [step, setStep] = useState<'integration' | 'upload' | 'validation'>('integration')
-  const [documentId, setDocumentId] = useState<number | null>(null)
+  const [step, setStep] = useState<'integration' | 'upload'>('integration')
+  const router = useRouter()
 
   // Handler for starting upload
   const handleStartUpload = () => {
     setStep('upload')
   }
 
-  // Handler for upload completion
+  // Handler for upload completion - redirect to validation page
   const handleUploadComplete = (docId: number) => {
-    setDocumentId(docId)
-    setStep('validation')
+    router.push(`/integration/validation/${docId}`)
   }
 
   // Handler for product selection
@@ -87,12 +86,6 @@ export default function DataIntegrationPage() {
           selectedProduct={selectedProduct}
           onNavigateBack={() => setStep('integration')}
           onUploadComplete={handleUploadComplete}
-        />
-      )}
-      {step === 'validation' && documentId && (
-        <ValidationPage
-          documentId={documentId}
-          selectedProduct={selectedProduct}
         />
       )}
     </div>

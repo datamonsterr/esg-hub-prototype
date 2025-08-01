@@ -4,7 +4,7 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
+  const {id} = await params;
   
   // Mock document summary data
   const mockDocumentSummary = {

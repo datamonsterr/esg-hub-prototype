@@ -1,27 +1,17 @@
 'use client';
 
-import useSWR from 'swr';
-import axiosInstance, { endpoints } from './axios';
-import { Notification } from '../types/notification';
+import { api } from '../utils/api';
 
-// #region RAW API
-export const getNotifications = async (): Promise<Notification[]> => {
-  const res = await axiosInstance.get(endpoints.notifications);
-  return res.data;
-};
-// #endregion
-
-// #region SWR
+// #region tRPC API
 export function useGetNotifications() {
-  const { data, error, isLoading } = useSWR<Notification[]>(
-    endpoints.notifications,
-    getNotifications,
-  );
+  return api.notification.getNotifications.useQuery();
+}
 
-  return {
-    notifications: data,
-    isLoading,
-    isError: error,
-  };
+export function useMarkAsRead() {
+  return api.notification.markAsRead.useMutation();
+}
+
+export function useMarkAllAsRead() {
+  return api.notification.markAllAsRead.useMutation();
 }
 // #endregion 

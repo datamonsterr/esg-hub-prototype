@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge";
 import { Building2, CheckCircle, Clock, Mail } from "lucide-react";
 import { acceptInvitation } from "@/src/api/onboarding";
+import { endpoints } from "@/src/api/axios";
 import { PendingInvitation } from "@/src/types/user";
 import { useToast } from "@/src/hooks/use-toast";
 import { useUserContext } from "@/src/hooks/useUserContext";
@@ -27,7 +28,7 @@ export default function OnboardingPage() {
             setIsLoading(true);
 
             const email = user?.emailAddresses?.[0]?.emailAddress;
-            const response = await fetch(`/api/onboard/pending-invitations${email ? `?email=${email}` : ''}`);
+            const response = await fetch(`${endpoints.onboard.pendingInvitations}${email ? `?email=${email}` : ''}`);
             const data = await response.json();
 
             if (response.ok) {

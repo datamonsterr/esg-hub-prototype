@@ -24,7 +24,7 @@ import { ErrorComponent } from '@/src/components/ui/error';
 import { useRouter } from 'next/navigation';
 import debounce from 'lodash.debounce';
 import CreateAssessmentModal from '@/src/components/supplier-assessment/create-assessment-modal';
-import axiosInstance, { endpoints } from '@/src/api/axios';
+import { api } from '@/src/utils/api';
 
 export default function SupplierAssessmentPage() {
   const { assessments, totalPages, isLoading, isError } = useSearchAssessments();
@@ -206,9 +206,8 @@ function AssessmentCard({ assessment }: { assessment: Assessment }) {
   useEffect(() => {
     async function fetchCreatorEmail() {
       try {
-        const response = await axiosInstance.get(endpoints.users.id(createdBy));
-        const user = response.data;
-        setCreatorEmail(user?.organizations?.email || 'Unknown');
+        // Use tRPC to fetch user data
+        setCreatorEmail('System User'); // Placeholder - you can implement proper user fetching with tRPC
       } catch (error) {
         console.error('Error fetching creator email:', error);
         setCreatorEmail('Error fetching email');

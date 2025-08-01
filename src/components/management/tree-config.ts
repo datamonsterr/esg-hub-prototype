@@ -4,7 +4,7 @@ export const DEFAULT_TREE_CONFIG = {
   translate: { x: 60, y: 350 },
   nodeSize: { x: 300, y: 300 },
   separation: { siblings: 0.5, nonSiblings: 1 },
-  initialDepth: 1,
+  initialDepth: undefined, // Show all levels by default
   scaleExtent: { min: 1, max: 1 },
   enableLegacyTransitions: false,
   transitionDuration: 0,

@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ModalProvider } from '@/src/context/modal/modal-provider';
+import { TRPCProvider } from '@/src/components/providers/trpc-provider';
 import { Navbar } from '@/src/components/navbar';
 import GlobalBreadcrumb from '@/src/app/_GlobalBreadcrumb';
 import { Toaster } from '@/src/components/ui/sonner';
@@ -34,14 +35,16 @@ export default function RootLayout({
           />
         </head>
         <body className={cn(inter.className, 'py-24')}>
-          <ModalProvider>
-              <Navbar />
-              <GlobalBreadcrumb />
-              <main className="h-full max-w-[1200px] mx-auto px-4">
-                {children}
-              </main>
-            <Toaster />
-          </ModalProvider>
+          <TRPCProvider>
+            <ModalProvider>
+                <Navbar />
+                <GlobalBreadcrumb />
+                <main className="h-full max-w-[1200px] mx-auto px-4">
+                  {children}
+                </main>
+              <Toaster />
+            </ModalProvider>
+          </TRPCProvider>
         </body>
       </html>
     </ClerkProvider>

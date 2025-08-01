@@ -1,14 +1,14 @@
 "use client"
 
-import { getProductById } from '@/src/api/product';
+import { useGetBrandTree } from '@/src/api/product';
 import { Product, ProductNode } from '@/src/types';
-import { Box, Package } from 'lucide-react';
+import { Package } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Tree, { CustomNodeElementProps } from 'react-d3-tree';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import CustomTreeNode, { ArrowOrientationType } from './custom-tree-node';
 import ProductDetailsPanel from './product-details-panel';
 import { ViewType } from './product-tree-view';
-import CustomTreeNode, { ArrowOrientationType } from './custom-tree-node';
 import { BRAND_TREE_CONFIG } from './tree-config';
 
 interface BrandTreeViewProps {
@@ -38,18 +38,9 @@ const BrandTreeView = ({
 }: BrandTreeViewProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedRootProductId, setSelectedRootProductId] = useState<string>('');
-  const [allProducts, setAllProducts] = useState<Map<string, Product>>(new Map());
-  const [hierarchicalProducts, setHierarchicalProducts] = useState<ProductNode[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isPanelCollapsed, setIsPanelCollapsed] = useState(false);
   const [containerDimensions, setContainerDimensions] = useState({ width: 800, height: 600 });
   const treeContainerRef = useRef<HTMLDivElement>(null);
-
-  // Initialize with the provided products
-  useEffect(() => {
-    const productMap = new Map(products.map(p => [p.id, p]));
-    setAllProducts(productMap);
-  }, [products]);
 
   // Track container dimensions for dynamic tree fitting
   useEffect(() => {
@@ -76,116 +67,37 @@ const BrandTreeView = ({
     }
   }, [selectedProductId, products]);
 
-  // Fetch only direct parent products (1 tier) for brand view
-  const fetchDirectParents = useCallback(async (product: Product): Promise<ProductNode> => {
-    const parents: ProductNode[] = [];
-
-    // Fetch direct parents only (depth = 1) using parent_ids
-    if (product.parentIds && product.parentIds.length > 0) {
-
-
-      for (const parentId of product.parentIds) {
-        try {
-          let parentProduct = allProducts.get(parentId);
-
-          if (!parentProduct) {
-            try {
-
-              parentProduct = await getProductById(parentId);
-              setAllProducts(prev => new Map(prev.set(parentId, parentProduct!)));
-
-            } catch (fetchError) {
-              console.warn(`Parent product ${parentId} not found or not accessible:`, fetchError);
-              continue;
-            }
-          } else {
-
-          }
-
-          if (parentProduct) {
-            // For brand view, we only need direct parents - no recursive fetching
-            const parentNode: ProductNode = {
-              ...parentProduct,
-              children: [], // No further children needed for display
-              parents: [] // No recursive parent fetching
-            };
-            parents.push(parentNode);
-
-          }
-        } catch (error) {
-          console.warn(`Failed to fetch parent product ${parentId}:`, error);
-        }
-      }
-    } else {
-
-    }
-
-    const result = { ...product, children: [], parents };
-
-    return result;
-  }, [allProducts]);
-
-  // Build hierarchical structure with API calls
-  useEffect(() => {
-    const buildHierarchy = async () => {
-      if (products.length === 0) return;
-
-      // Skip rebuild if products haven't changed and we already have hierarchical data
-      if (hierarchicalProducts.length > 0 &&
-        products.length === hierarchicalProducts.length &&
-        products.every(p => hierarchicalProducts.some(hp => hp.id === p.id))) {
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const hierarchicalProductsList: ProductNode[] = [];
-
-        for (const product of products) {
-          try {
-            const productWithRelations = await fetchDirectParents(product);
-            hierarchicalProductsList.push(productWithRelations);
-          } catch (error) {
-            console.warn(`Failed to build hierarchy for product ${product.name} (${product.id}):`, error);
-            hierarchicalProductsList.push({ ...product, children: [], parents: [] });
-          }
-        }
-
-        setHierarchicalProducts(hierarchicalProductsList);
-      } catch (error) {
-        console.error('Error building hierarchy:', error);
-        setHierarchicalProducts(products.map(p => ({ ...p, children: [], parents: [] })));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    buildHierarchy();
-  }, [products, fetchDirectParents, hierarchicalProducts]);
-
-  // Find root products for brand view (components that supply to other products)
+  // Find root products for brand view (components that are used by other products)
   const rootProducts = useMemo(() => {
+    // For brand view, we want to find components that are used by other products
+    // These are products that appear in other products' parent_ids arrays
+    const usedProducts = new Set<string>();
+    
+    // Find all products that are referenced as parents
+    products.forEach(product => {
+      if (product.parentIds && product.parentIds.length > 0) {
+        product.parentIds.forEach(parentId => {
+          usedProducts.add(parentId);
+        });
+      }
+    });
 
+    // Filter products to only those that are used as components/materials
+    const result = products.filter(p => usedProducts.has(p.id));
 
-    // For brand supplier perspective, find products that have parentIds
-    // These are products that are supplied to other products (have parents/customers)
-    const result = hierarchicalProducts.filter(p =>
-      p.parentIds && p.parentIds.length > 0 // Products that are supplied to other products
-    );
-
-    // If no products with parentIds found, use all products as potential roots
+    // If no products are used as components, use all products as potential roots
     if (result.length === 0) {
-
-      return hierarchicalProducts;
+      return products;
     }
 
-
     return result;
-  }, [hierarchicalProducts]);  // Get the currently selected root product for display
+  }, [products]);
+
+  // Get the currently selected root product for display
   const currentRootProduct = useMemo(() => {
     // In single product mode, just use the first product
     if (singleProductMode && products.length > 0) {
-      return hierarchicalProducts.find(p => p.id === products[0].id) || null;
+      return products[0];
     }
 
     // Otherwise, use selection logic
@@ -201,42 +113,71 @@ const BrandTreeView = ({
     }
 
     return rootProducts[0] || null;
-  }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products, hierarchicalProducts]);
+  }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products]);
 
-  // Convert current root product to react-d3-tree format (supplier perspective)
+  // Fetch brand tree data using the new API
+  const { brandTree, isLoading: isTreeLoading, isError } = useGetBrandTree(
+    currentRootProduct?.id || ''
+  );
+
+  // Convert API response to react-d3-tree format
   const treeData = useMemo(() => {
-    if (!currentRootProduct) return [];
+    if (!brandTree) return [];
+    return [brandTree];
+  }, [brandTree]);
 
-    // For brand view from supplier perspective:
-    // - Component (Shoe Laces) is at the bottom (root)
-    // - Final products that use this component (Nike Running Shoe) appear above as children
-
-    const convertToTreeNode = (product: ProductNode): TreeNode => {
-      // Use the parents that were fetched by fetchDirectParents
-      const parentProducts = product.parents || [];
-
-
-      if (parentProducts.length > 0) {
-
+  // Create a map of all products for node rendering (from the tree structure)
+  const allProducts = useMemo(() => {
+    const productMap = new Map(products.map(p => [p.id, p]));
+    
+    // Also add any products from the tree that might not be in the initial products list
+    const addProductsFromTree = (node: any) => {
+      if (node.attributes?.productId) {
+        // Convert tree node back to Product format for compatibility
+        const product: Product = {
+          id: node.attributes.productId,
+          name: node.name,
+          sku: node.attributes.sku || '',
+          type: node.attributes.type || 'component',
+          category: node.attributes.category || '',
+          description: node.attributes.description || '',
+          quantity: node.attributes.quantity || 0,
+          unit: node.attributes.unit || '',
+          status: node.attributes.status || 'active',
+          organizationId: currentOrganizationId || '',
+          dataCompleteness: 50,
+          missingDataFields: [],
+          parentIds: [],
+          childrenIds: [],
+          metadata: {},
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        productMap.set(product.id, product);
       }
-
-      return {
-        name: product.name,
-        attributes: {
-          productId: product.id,
-          sku: product.sku,
-          type: product.type
-        },
-        children: parentProducts.length > 0 ? parentProducts.map(convertToTreeNode) : undefined
-      };
+      
+      if (node.children) {
+        node.children.forEach(addProductsFromTree);
+      }
     };
 
-    const result = [convertToTreeNode(currentRootProduct)];
+    if (brandTree) {
+      addProductsFromTree(brandTree);
+    }
 
-    return result;
-  }, [currentRootProduct]);
+    return productMap;
+  }, [products, brandTree, currentOrganizationId]);
 
-  // Custom node component for the tree
+  // Create hierarchical products for backward compatibility
+  const hierarchicalProducts = useMemo(() => {
+    return Array.from(allProducts.values()).map(product => ({
+      ...product,
+      children: [],
+      parents: []
+    }));
+  }, [allProducts]);
+
+  // Custom node component for the tree (flows upward from component to final products)
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
     return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} arrow={ArrowOrientationType.RIGHT_TO_LEFT} />
   };
@@ -253,7 +194,7 @@ const BrandTreeView = ({
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {rootProducts.map((product: ProductNode) => (
+              {rootProducts.map((product: Product) => (
                 <SelectItem key={product.id} value={product.id}>
                   {product.name} ({product.sku})
                 </SelectItem>
@@ -266,11 +207,18 @@ const BrandTreeView = ({
       <div className="flex h-full">
         {/* Tree visualization */}
         <div ref={treeContainerRef} className={`${isPanelCollapsed ? 'flex-1' : 'flex-1'} border rounded-lg bg-white shadow-sm`}>
-          {isLoading ? (
+          {isTreeLoading ? (
             <div className="flex items-center justify-center h-full text-gray-500">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
                 <p>Loading product hierarchy...</p>
+              </div>
+            </div>
+          ) : isError ? (
+            <div className="flex items-center justify-center h-full text-red-500">
+              <div className="text-center">
+                <Package className="h-12 w-12 mx-auto mb-4 text-red-400" />
+                <p>Error loading brand tree</p>
               </div>
             </div>
           ) : currentRootProduct ? (

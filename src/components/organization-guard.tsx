@@ -35,8 +35,8 @@ export function OrganizationGuard({
                     setIsAutoAssigning(true);
                     
                     try {
-                        // Create user record in database with organization assignment
-                        const response = await fetch('/api/users', {
+                        // Use window.location.origin for API base URL
+                        const response = await fetch(`${window.location.origin}/api/users`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

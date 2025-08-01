@@ -6,7 +6,6 @@ import { useGetFilePreview } from "@/src/api/integration"
 import { Button } from "@/src/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/src/components/ui/dialog"
 import dynamic from 'next/dynamic'
-import { endpoints } from "@/src/api/axios"
 
 // Dynamically import react-pdf components with SSR disabled
 const Document = dynamic(() => import('react-pdf').then(mod => ({ default: mod.Document })), {
@@ -76,7 +75,7 @@ export function FilePreview({ documentId }: FilePreviewProps) {
   // Construct the actual file URL from documentId
   const getFileUrl = () => {
     if (!documentId) return null;
-    return endpoints.documents.validation.filePreview(documentId);
+    return `/api/documents/validation/${documentId}/file-preview`;
   };
 
   const fileUrl = getFileUrl();

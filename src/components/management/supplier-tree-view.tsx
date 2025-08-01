@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { Product, ProductNode } from '@/src/types';
-import { getProductById } from '@/src/api/product';
+import { useGetSupplierTree } from '@/src/api/product';
 import { Package, Box } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import Tree, { CustomNodeElementProps } from 'react-d3-tree';
@@ -60,113 +60,26 @@ const SupplierTreeView = ({
     }
   }, [selectedProductId, products]);
 
-  // Recursively fetch children products for supplier view
-  const fetchChildrenRecursively = useCallback(async (product: Product, visited = new Set<string>()): Promise<ProductNode> => {
-    // Prevent infinite loops
-    if (visited.has(product.id)) {
-      return { ...product, children: [], parents: [] };
-    }
-    visited.add(product.id);
-    
-    // Check if we've already processed this product
-    const existingNode = hierarchicalProducts.find(p => p.id === product.id);
-    if (existingNode && existingNode.children.length > 0) {
-      return existingNode;
-    }
-
-    const children: ProductNode[] = [];
-    
-    if (product.childrenIds && product.childrenIds.length > 0) {
-      // Fetch children for supplier view (what this product is made of)
-      for (const childId of product.childrenIds) {
-        try {
-          let childProduct = allProducts.get(childId);
-          
-          if (!childProduct) {
-            try {
-              childProduct = await getProductById(childId);
-              setAllProducts(prev => new Map(prev.set(childId, childProduct!)));
-            } catch (fetchError) {
-              console.warn(`Child product ${childId} not found or not accessible:`, fetchError);
-              continue;
-            }
-          }
-          
-          if (childProduct) {
-            const childWithChildren = await fetchChildrenRecursively(childProduct, new Set(visited));
-            children.push(childWithChildren);
-          }
-        } catch (error) {
-          console.warn(`Failed to fetch child product ${childId}:`, error);
-        }
-      }
-    }
-
-    const result = { ...product, children, parents: [] };
-    
-    return result;
-  }, [allProducts, hierarchicalProducts]);
-
-  // Build hierarchical structure with API calls
-  useEffect(() => {
-    const buildHierarchy = async () => {
-      if (products.length === 0) return;
-      
-      // Skip rebuild if products haven't changed and we already have hierarchical data
-      if (hierarchicalProducts.length > 0 && 
-          products.length === hierarchicalProducts.length &&
-          products.every(p => hierarchicalProducts.some(hp => hp.id === p.id))) {
-        return;
-      }
-      
-      setIsLoading(true);
-      try {
-        const hierarchicalProductsList: ProductNode[] = [];
-        
-        for (const product of products) {
-          try {
-            const productWithRelations = await fetchChildrenRecursively(product);
-            hierarchicalProductsList.push(productWithRelations);
-          } catch (error) {
-            console.warn(`Failed to build hierarchy for product ${product.name} (${product.id}):`, error);
-            hierarchicalProductsList.push({ ...product, children: [], parents: [] });
-          }
-        }
-        
-        setHierarchicalProducts(hierarchicalProductsList);
-      } catch (error) {
-        console.error('Error building hierarchy:', error);
-        setHierarchicalProducts(products.map(p => ({ ...p, children: [], parents: [] })));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    buildHierarchy();
-  }, [products, fetchChildrenRecursively, hierarchicalProducts]);
-
   // Find root products for supplier view (final products or standalone)
   const rootProducts = useMemo(() => {
-    
-    
     // For supplier view, find products that aren't children of any other product (final products)
     // OR standalone products with no relationships
     const allChildIds = new Set(
       products.flatMap(p => p.childrenIds || [])
     );
-    const result = hierarchicalProducts.filter(p => 
+    const result = products.filter(p => 
       !allChildIds.has(p.id) || // Not a child of any product
       ((!p.parentIds || p.parentIds.length === 0) && (!p.childrenIds || p.childrenIds.length === 0)) // Standalone product
     );
     
     return result;
-  }, [hierarchicalProducts, products]);
+  }, [products]);
 
   // Get the currently selected root product for display
   const currentRootProduct = useMemo(() => {
     // In single product mode, just use the first product
     if (singleProductMode && products.length > 0) {
-      return hierarchicalProducts.find(p => p.id === products[0].id) || null;
+      return products[0] || null;
     }
     
     // Otherwise, use selection logic
@@ -182,34 +95,78 @@ const SupplierTreeView = ({
     }
     
     return rootProducts[0] || null;
-  }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products, hierarchicalProducts]);
+  }, [rootProducts, selectedRootProductId, selectedProductId, singleProductMode, products]);
 
-  // Convert current root product to react-d3-tree format
+  // Use the supplier tree hook to fetch recursive hierarchy
+  const { 
+    supplierTree, 
+    isLoading: isTreeLoading, 
+    isError: isTreeError 
+  } = useGetSupplierTree(currentRootProduct?.id || '');
+
+  // Set loading state based on tree loading
+  useEffect(() => {
+    setIsLoading(isTreeLoading);
+  }, [isTreeLoading]);
+
+  // Convert supplier tree to react-d3-tree format (already compatible)
   const treeData = useMemo(() => {
-    if (!currentRootProduct) return [];
+    if (!supplierTree) return [];
+    // The supplierTree is already in react-d3-tree format from the server
+    return [supplierTree];
+  }, [supplierTree]);
 
-    const convertToTreeNode = (product: ProductNode): TreeNode => {
+  // Build allProducts map from the supplier tree for the CustomTreeNode component
+  useEffect(() => {
+    if (!supplierTree) return;
+
+    const extractAllProducts = (treeNode: any, productMap: Map<string, Product>) => {
+      if (treeNode.attributes) {
+        // Convert tree node back to Product format for CustomTreeNode compatibility
+        const product: Product = {
+          id: treeNode.attributes.productId,
+          name: treeNode.name,
+          sku: treeNode.attributes.sku,
+          type: treeNode.attributes.type,
+          category: treeNode.attributes.category,
+          description: treeNode.attributes.description,
+          quantity: treeNode.attributes.quantity,
+          unit: treeNode.attributes.unit,
+          status: treeNode.attributes.status,
+          organizationId: currentOrganizationId || '',
+          dataCompleteness: 100,
+          missingDataFields: [],
+          childrenIds: treeNode.children?.map((child: any) => child.attributes.productId) || [],
+          parentIds: [],
+          metadata: {},
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        productMap.set(product.id, product);
+      }
       
-      
-      return {
-        name: product.name,
-        attributes: { 
-          productId: product.id,
-          sku: product.sku,
-          type: product.type 
-        },
-        children: product.children.length > 0 ? product.children.map(convertToTreeNode) : undefined
-      };
+      if (treeNode.children) {
+        treeNode.children.forEach((child: any) => extractAllProducts(child, productMap));
+      }
     };
 
-    const result = [convertToTreeNode(currentRootProduct)];
-    
-    return result;
-  }, [currentRootProduct]);
+    const productMap = new Map<string, Product>();
+    extractAllProducts(supplierTree, productMap);
+    setAllProducts(productMap);
+  }, [supplierTree, currentOrganizationId]);
 
   // Custom node component for the tree
   const renderCustomNodeElement = ({ nodeDatum, hierarchyPointNode }: CustomNodeElementProps) => {
-    return <CustomTreeNode nodeDatum={nodeDatum} hierarchyPointNode={hierarchyPointNode} hierarchicalProducts={hierarchicalProducts} allProducts={allProducts} selectedProduct={selectedProduct} currentOrganizationId={currentOrganizationId} setSelectedProduct={setSelectedProduct} arrow={ArrowOrientationType.LEFT_TO_RIGHT} />
+    return <CustomTreeNode 
+      nodeDatum={nodeDatum} 
+      hierarchyPointNode={hierarchyPointNode} 
+      hierarchicalProducts={[]} // Empty array since we're using allProducts for product lookup
+      allProducts={allProducts} 
+      selectedProduct={selectedProduct} 
+      currentOrganizationId={currentOrganizationId} 
+      setSelectedProduct={setSelectedProduct} 
+      arrow={ArrowOrientationType.LEFT_TO_RIGHT} 
+    />
   };
 
   return (
@@ -224,7 +181,7 @@ const SupplierTreeView = ({
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {rootProducts.map((product: ProductNode) => (
+              {rootProducts.map((product: Product) => (
                 <SelectItem key={product.id} value={product.id}>
                   {product.name} ({product.sku})
                 </SelectItem>
@@ -244,14 +201,21 @@ const SupplierTreeView = ({
                 <p>Loading product hierarchy...</p>
               </div>
             </div>
-          ) : currentRootProduct ? (
+          ) : supplierTree ? (
             <div className="h-full">
               <Tree
-                key={`supplier-tree-${currentRootProduct?.id || 'root'}`}
+                key={`supplier-tree-${supplierTree?.attributes?.productId || 'root'}`}
                 data={treeData}
                 renderCustomNodeElement={renderCustomNodeElement}
                 {...SUPPLIER_TREE_CONFIG}
               />
+            </div>
+          ) : isTreeError ? (
+            <div className="flex items-center justify-center h-full text-red-500">
+              <div className="text-center">
+                <Package className="h-12 w-12 mx-auto mb-4 text-red-400" />
+                <p>Failed to load product tree</p>
+              </div>
             </div>
           ) : (
             <div className="flex items-center justify-center h-full text-gray-500">

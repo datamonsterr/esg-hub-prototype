@@ -1,7 +1,7 @@
 'use client';
 
-import { endpoints } from '@/src/api/axios';
 import { useGetTraceabilityRequest } from '@/src/api/traceability';
+import { Product } from '@/src/types';
 import {
   AlertTriangle,
   ArrowRight,
@@ -99,7 +99,7 @@ export default function SupplierTraceabilityDetailPage({}) {
   const handleStartAssessment = () => {
     setAssessmentStarted(true);
     // Redirect to traceability-specific assessment page
-    router.push(endpoints.assessment.id('1'));
+    router.push(`/traceability/incoming/assessment/1`);
   };
 
   if (isLoading) {
@@ -420,7 +420,7 @@ export default function SupplierTraceabilityDetailPage({}) {
                 Products in Scope
               </h4>
               <p className="text-lg font-medium text-gray-900">
-                {request.products.map((p) => p.name).join(', ')}
+                {request.products.map((p : Product) => p.name).join(', ')}
               </p>
             </div>
           </div>

@@ -1,4 +1,3 @@
-import { endpoints } from "@/src/api/axios";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -12,7 +11,7 @@ export async function GET(
     fileName: "ESG_Traceability_Report_2024.pdf",
     fileSize: "2.4 MB",
     fileType: "pdf",
-    url: endpoints.documents.validation.filePreview(parseInt(id)),
+    url: `/api/documents/validation/${id}/file-preview-content`,
   };
 
   return NextResponse.json(mockFilePreview);

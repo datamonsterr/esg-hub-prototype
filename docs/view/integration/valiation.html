@@ -1,0 +1,416 @@
+<html><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script> window.FontAwesomeConfig = { autoReplaceSvg: 'nest'};</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    
+    <style>::-webkit-scrollbar { display: none;}</style>
+    <script>tailwind.config = {
+  "theme": {
+    "extend": {
+      "colors": {
+        "primary": "#328E6E",
+        "secondary": "#E1EEBC",
+        "accent": "#FFB823",
+        "error": "#DF3F40",
+        "light-gray": "#E3E6EA",
+        "dark-gray": "#6B7280",
+        "heading-gray": "#374151"
+      },
+      "borderRadius": {
+        "md": "6px"
+      },
+      "fontFamily": {
+        "arial": [
+          "Arial",
+          "sans-serif"
+        ],
+        "sans": [
+          "Inter",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+};</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&amp;display=swap"><style>
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      
+      /* Preserve Font Awesome icons */
+      .fa, .fas, .far, .fal, .fab {
+        font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+      }
+    </style><style>
+  .highlighted-section {
+    outline: 2px solid #3F20FB;
+    background-color: rgba(63, 32, 251, 0.1);
+  }
+
+  .edit-button {
+    position: absolute;
+    z-index: 1000;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  html, body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  </style></head><body class="bg-gray-50 text-base text-gray-800 font-sans">
+    <div id="data-integration-validation-page" class="flex flex-col min-h-screen">
+        <!-- Navigation Bar -->
+        <header id="header" class="bg-white border-b border-light-gray sticky top-0 z-20">
+            <nav class="container mx-auto px-5 py-3 flex justify-between items-center">
+                <div class="flex items-center space-x-8">
+                    <span class="flex items-center space-x-2 cursor-pointer">
+                        <div class="w-9 h-9 bg-primary rounded-md flex items-center justify-center">
+                           <i class="text-white" data-fa-i2svg=""><svg class="svg-inline--fa fa-robot" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="robot" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" data-fa-i2svg=""><path fill="currentColor" d="M320 0c17.7 0 32 14.3 32 32V96H472c39.8 0 72 32.2 72 72V440c0 39.8-32.2 72-72 72H168c-39.8 0-72-32.2-72-72V168c0-39.8 32.2-72 72-72H288V32c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H208zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H304zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16h32c8.8 0 16-7.2 16-16s-7.2-16-16-16H400zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224H64V416H48c-26.5 0-48-21.5-48-48V272c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48v96c0 26.5-21.5 48-48 48H576V224h16z"></path></svg></i>
+                        </div>
+                        <span class="text-xl font-bold text-heading-gray">Traceability Hub<br></span>
+                    </span>
+                    <div class="hidden md:flex items-center space-x-6 text-dark-gray">
+                        <span class="hover:text-primary transition-colors cursor-pointer">Dashboard</span>
+                        <span class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer">Data Integration</span>
+                        <span class="hover:text-primary transition-colors cursor-pointer">Products</span>
+                        <span class="hover:text-primary transition-colors cursor-pointer">Suppliers</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="relative text-dark-gray hover:text-primary transition-colors">
+                        <i class="text-xl" data-fa-i2svg=""><svg class="svg-inline--fa fa-bell" aria-hidden="true" focusable="false" data-prefix="far" data-icon="bell" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M224 0c-17.7 0-32 14.3-32 32V49.9C119.5 61.4 64 124.2 64 200v33.4c0 45.4-15.5 89.5-43.8 124.9L5.3 377c-5.8 7.2-6.9 17.1-2.9 25.4S14.8 416 24 416H424c9.2 0 17.6-5.3 21.6-13.6s2.9-18.2-2.9-25.4l-14.9-18.6C399.5 322.9 384 278.8 384 233.4V200c0-75.8-55.5-138.6-128-150.1V32c0-17.7-14.3-32-32-32zm0 96h8c57.4 0 104 46.6 104 104v33.4c0 47.9 13.9 94.6 39.7 134.6H72.3C98.1 328 112 281.3 112 233.4V200c0-57.4 46.6-104 104-104h8zm64 352H224 160c0 17 6.7 33.3 18.7 45.3s28.3 18.7 45.3 18.7s33.3-6.7 45.3-18.7s18.7-28.3 18.7-45.3z"></path></svg></i>
+                        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-error ring-2 ring-white"></span>
+                    </button>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg" alt="User Avatar" class="w-9 h-9 rounded-full border-2 border-light-gray">
+                        <span class="text-sm font-medium text-heading-gray">Ana Sofia</span>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main id="main-content" class="flex-grow container mx-auto px-5 py-8">
+            <!-- Validation Header -->
+            <section id="validation-header" class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-heading-gray">Validate Extracted Data</h1>
+                    <p class="text-dark-gray mt-1">AI has parsed the document. Please review and correct the data before saving.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button id="re-prompt-ai-btn" class="px-5 py-2.5 bg-accent text-white font-medium rounded-md hover:bg-accent/90 transition-colors">
+                        <i class="fas fa-robot mr-2"></i>Re-prompt AI
+                    </button>
+                    <button id="cancel-btn" class="px-5 py-2.5 bg-white border border-light-gray text-dark-gray font-medium rounded-md hover:bg-gray-100 transition-colors">Cancel</button>
+                    <button id="draft-btn" class="px-5 py-2.5 bg-gray-200 text-dark-gray font-medium rounded-md hover:bg-gray-300 transition-colors">Save as Draft</button>
+                    <button id="save-btn" class="px-5 py-2.5 bg-primary text-white font-medium rounded-md hover:bg-primary/90 transition-colors shadow-sm">
+                        <i class="fas fa-check mr-2"></i>Save Data
+                    </button>
+                </div>
+            </section>
+
+            <!-- Collapsible Document Preview Section -->
+            <div id="document-preview-section" class="mb-6">
+                <button id="toggle-preview-btn" class="flex items-center space-x-2 text-primary hover:text-primary/80 transition-colors">
+                    <i id="preview-chevron" class="fas fa-chevron-right transition-transform"></i>
+                    <span class="font-medium">Document Preview</span>
+                </button>
+                <div id="preview-content" class="hidden mt-3 p-4 bg-white border border-light-gray rounded-md">
+                    <img class="w-full max-w-md h-auto border border-light-gray rounded-md" src="https://storage.googleapis.com/uxpilot-auth.appspot.com/e3af9a1512-6e72c02cdc3135e2a94f.png" alt="BOM Document">
+                </div>
+            </div>
+
+            <div id="validation-workspace" class="space-y-8">
+                <!-- Product Header Information -->
+                <div id="product-header-card" class="bg-white p-6 border border-light-gray rounded-md shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="text-xl font-bold text-heading-gray">Product Header Information</h3>
+                        <div class="relative">
+                            <button id="ai-edit-product-btn" class="px-3 py-1.5 bg-accent text-white text-sm font-medium rounded-md hover:bg-accent/90 transition-colors">
+                                <i class="fas fa-robot mr-1"></i>AI Edit
+                            </button>
+                            <!-- AI Edit Popup -->
+                            <div id="ai-edit-popup-product" class="absolute top-full right-0 mt-2 w-80 bg-white border border-light-gray rounded-md shadow-lg z-10 hidden">
+                                <div class="p-4">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-robot text-white text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-heading-gray mb-2">AI Suggestions</h4>
+                                            <div class="space-y-2 text-sm text-dark-gray">
+                                                <div class="p-2 bg-secondary/30 rounded">
+                                                    <strong>Material Number:</strong> Consider using "SAMBA-LTD-VN-2024" for better regional identification
+                                                </div>
+                                                <div class="p-2 bg-secondary/30 rounded">
+                                                    <strong>Description:</strong> Add "Eco-Friendly" prefix to highlight sustainability
+                                                </div>
+                                            </div>
+                                            <div class="flex space-x-2 mt-3">
+                                                <button class="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary/90">Apply All</button>
+                                                <button class="px-3 py-1 bg-gray-200 text-dark-gray text-xs rounded hover:bg-gray-300">Dismiss</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-sm text-dark-gray mb-5">Extracted from the BOM header. Edit fields as needed.</p>
+                    
+                    <div id="product-fields" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div>
+                            <label for="material-number" class="block text-sm font-medium text-dark-gray mb-1">Material Number</label>
+                            <input type="text" id="material-number" value="SAMBA-LTD-2024" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                        </div>
+                        <div>
+                            <label for="plant" class="block text-sm font-medium text-dark-gray mb-1">Plant</label>
+                            <input type="text" id="plant" value="VN01 (Vietnam Tier 1)" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="description" class="block text-sm font-medium text-dark-gray mb-1">Description</label>
+                            <textarea id="description" rows="2" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">Adidas Samba Limited Edition (Sustainable Materials)</textarea>
+                        </div>
+                        <div>
+                            <label for="quantity" class="block text-sm font-medium text-dark-gray mb-1">Quantity</label>
+                            <input type="number" id="quantity" value="10000" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                        </div>
+                        <div>
+                            <label for="uom" class="block text-sm font-medium text-dark-gray mb-1">Base Unit of Measure</label>
+                            <input type="text" id="uom" value="PR (Pair)" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                        </div>
+                        <div>
+                            <label for="bom-status" class="block text-sm font-medium text-dark-gray mb-1">BOM Status</label>
+                            <select id="bom-status" class="w-full p-2 bg-white border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                                <option>Active</option>
+                                <option>Inactive</option>
+                                <option>In Development</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="valid-from" class="block text-sm font-medium text-dark-gray mb-1">Valid From</label>
+                            <input type="date" id="valid-from" value="2025-01-01" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                        </div>
+                    </div>
+
+                    <!-- Custom Properties Section -->
+                    <div id="product-custom-properties" class="mt-6 pt-6 border-t border-light-gray">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-bold text-heading-gray">Custom Properties</h4>
+                            <button id="add-product-property-btn" class="px-3 py-1.5 bg-secondary text-dark-gray text-sm font-medium rounded-md hover:bg-secondary/80 transition-colors">
+                                <i class="mr-1" data-fa-i2svg=""><svg class="svg-inline--fa fa-plus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"></path></svg></i>Add Property
+                            </button>
+                        </div>
+                        <div id="product-properties-list" class="space-y-3">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <input type="text" placeholder="Property Name" class="p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                                <div class="flex gap-2">
+                                    <input type="text" placeholder="Property Value" class="flex-1 p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                                    <button class="text-error hover:text-error/80 px-2"><i data-fa-i2svg=""><svg class="svg-inline--fa fa-trash-can" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-can" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"></path></svg></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOM Components -->
+                <div id="bom-components-section" class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-bold text-heading-gray">BOM Components</h3>
+                        <button id="add-new-component-btn" class="px-4 py-2 bg-primary text-white font-medium rounded-md hover:bg-primary/90 transition-colors">
+                            <i class="mr-2" data-fa-i2svg=""><svg class="svg-inline--fa fa-plus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"></path></svg></i>Add New Component
+                        </button>
+                    </div>
+
+                    <!-- Component 1 -->
+                    <div id="component-1" class="bg-white p-6 border border-light-gray rounded-md shadow-sm">
+    <div class="flex justify-between items-center mb-4">
+        <h4 class="text-lg font-bold text-heading-gray">Component #0010</h4>
+        <div class="flex space-x-2">
+            <div class="relative">
+                <button id="ai-edit-component-1-btn" class="px-3 py-1.5 bg-accent text-white text-sm font-medium rounded-md hover:bg-accent/90 transition-colors">
+                    <i class="fas fa-robot mr-1"></i>AI Edit
+                </button>
+                <!-- AI Edit Popup for Component 1 -->
+                <div id="ai-edit-popup-component-1" class="absolute top-full right-0 mt-2 w-80 bg-white border border-light-gray rounded-md shadow-lg z-10">
+                    <div class="p-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-robot text-white text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-heading-gray mb-2">AI Suggestions</h4>
+                                <div class="space-y-2 text-sm text-dark-gray">
+                                    <div class="p-2 bg-secondary/30 rounded">
+                                        <strong>Component Number:</strong> Consider "LE-VN-A-CERT-2024" to indicate certified leather
+                                    </div>
+                                    <div class="p-2 bg-secondary/30 rounded">
+                                        <strong>Description:</strong> Add "Sustainably Sourced" to emphasize environmental compliance
+                                    </div>
+                                    <div class="p-2 bg-secondary/30 rounded">
+                                        <strong>Estimated Cost:</strong> Based on market data, suggest $12.50 per KG
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2 mt-3">
+                                    <button class="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary/90">Apply All</button>
+                                    <button class="px-3 py-1 bg-gray-200 text-dark-gray text-xs rounded hover:bg-gray-300">Dismiss</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="text-error hover:text-error/80"><i class="fas fa-trash-can"></i></button>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Component Number</label>
+            <input type="text" value="LE-VN-A-2024" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Setup ID</label>
+            <input type="text" value="SETUP-001" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div class="col-span-2">
+            <label class="block text-sm font-medium text-dark-gray mb-1">Description</label>
+            <textarea rows="2" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">Leather - Vietnam Grade A</textarea>
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Quantity</label>
+            <input type="text" value="0.350" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Unit of Measure</label>
+            <input type="text" value="KG" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Category</label>
+            <input type="text" value="Raw Material" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Supplier Information</label>
+            <input type="text" value="Supplier ID: 6" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-dark-gray mb-1">Estimated Cost</label>
+            <input type="text" placeholder="$0.00" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+        </div>
+    </div>
+
+    <!-- Custom Properties for Component -->
+    <div class="mt-6 pt-6 border-t border-light-gray">
+        <div class="flex justify-between items-center mb-4">
+            <h5 class="font-bold text-heading-gray">Custom Properties</h5>
+            <button class="px-3 py-1.5 bg-secondary text-dark-gray text-sm font-medium rounded-md hover:bg-secondary/80 transition-colors">
+                <i class="fas fa-plus mr-1"></i>Add Property
+            </button>
+        </div>
+        <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input type="text" placeholder="Property Name" class="p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                <div class="flex gap-2">
+                    <input type="text" placeholder="Property Value" class="flex-1 p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                    <button class="text-error hover:text-error/80 px-2"><i class="fas fa-trash-can"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Component 2 -->
+                    <div id="component-2" class="bg-white p-6 border border-light-gray rounded-md shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-bold text-heading-gray">Component #0020</h4>
+                            <div class="flex items-center space-x-2">
+                                <div class="relative">
+                                    <button id="ai-edit-component-2-btn" class="px-3 py-1.5 bg-accent text-white text-sm font-medium rounded-md hover:bg-accent/90 transition-colors">
+                                        <i class="fas fa-robot mr-1"></i>AI Edit
+                                    </button>
+                                    <!-- AI Edit Popup for Component 2 -->
+                                    <div id="ai-edit-popup-component-2" class="absolute top-full right-0 mt-2 w-80 bg-white border border-light-gray rounded-md shadow-lg z-10 hidden">
+                                        <div class="p-4">
+                                            <div class="flex items-start space-x-3">
+                                                <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                                                    <i class="fas fa-robot text-white text-sm"></i>
+                                                </div>
+                                                <div class="flex-1">
+                                                    <h4 class="font-medium text-heading-gray mb-2">AI Suggestions</h4>
+                                                    <div class="space-y-2 text-sm text-dark-gray">
+                                                        <div class="p-2 bg-secondary/30 rounded">
+                                                            <strong>Description:</strong> Change to "Organic Cotton Fabric - Indian Origin" for better traceability
+                                                        </div>
+                                                        <div class="p-2 bg-secondary/30 rounded">
+                                                            <strong>Component Number:</strong> Update to "CT-IN-ORG-CERT-2024" to indicate certification
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex space-x-2 mt-3">
+                                                        <button class="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary/90">Apply All</button>
+                                                        <button class="px-3 py-1 bg-gray-200 text-dark-gray text-xs rounded hover:bg-gray-300">Dismiss</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="text-error hover:text-error/80"><i data-fa-i2svg=""><svg class="svg-inline--fa fa-trash-can" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-can" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"></path></svg></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Component Number</label>
+                                <input type="text" value="CT-IN-ORG-2024" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Setup ID</label>
+                                <input type="text" value="SETUP-002" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Description</label>
+                                <textarea rows="2" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">Organic Cotton Fabric - India</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Quantity</label>
+                                <input type="text" value="0.250" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Unit of Measure</label>
+                                <input type="text" value="M2" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Category</label>
+                                <input type="text" value="Raw Material" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Supplier Information</label>
+                                <input type="text" value="Supplier ID: 7" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-dark-gray mb-1">Estimated Cost</label>
+                                <input type="text" placeholder="$0.00" class="w-full p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                            </div>
+                        </div>
+
+                        <!-- Custom Properties for Component -->
+                        <div class="mt-6 pt-6 border-t border-light-gray">
+                            <div class="flex justify-between items-center mb-4">
+                                <h5 class="font-bold text-heading-gray">Custom Properties</h5>
+                                <button class="px-3 py-1.5 bg-secondary text-dark-gray text-sm font-medium rounded-md hover:bg-secondary/80 transition-colors">
+                                    <i class="mr-1" data-fa-i2svg=""><svg class="svg-inline--fa fa-plus" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"></path></svg></i>Add Property
+                                </button>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <input type="text" placeholder="Property Name" class="p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                                    <div class="flex gap-2">
+                                        <input type="text" placeholder="Property Value" class="flex-1 p-2 border border-light-gray rounded-md focus:ring-2 focus:ring-primary/50 focus:border-primary transition">
+                                        <button class="text-error hover:text-error/80 px-2"><i data-fa-i2svg=""></i></button></div></div></div></div></div></div></div></main></div></body></html>

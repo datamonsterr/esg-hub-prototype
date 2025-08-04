@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import crypto from 'crypto';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { PendingInvitation } from '../../types/user';
 import { supabaseAdmin } from '../../lib/supabase';
@@ -12,8 +13,8 @@ const sendInvitationSchema = z.object({
 const acceptInvitationResponseSchema = z.object({
   organizationId: z.string(),
   organizationRole: z.enum(['admin', 'employee']),
-  organizationName: z.string().optional(),
-  message: z.string().optional(),
+  organizationName: z.string(),
+  message: z.string(),
 });
 
 const sendInvitationResponseSchema = z.object({
@@ -25,20 +26,43 @@ const sendInvitationResponseSchema = z.object({
   message: z.string(),
 });
 
+// Helper function to transform database invitation to PendingInvitation type
+function transformInvitation(invitation: any): PendingInvitation {
+  return {
+    id: invitation.id,
+    email: invitation.email,
+    organizationId: invitation.organization_id,
+    organizationName: invitation.organizations?.name || 'Unknown Organization',
+    organizationRole: invitation.role,
+    invitedBy: {
+      name: invitation.users ? `${invitation.users.first_name || ''} ${invitation.users.last_name || ''}`.trim() : 'Unknown',
+      email: invitation.users?.email || 'unknown@email.com'
+    },
+    status: invitation.status,
+    token: invitation.token,
+    expiresAt: invitation.expires_at,
+    createdAt: invitation.created_at
+  };
+}
+
 export const onboardingRouter = createTRPCRouter({
   getPendingInvitations: protectedProcedure
     .query(async ({ ctx }): Promise<PendingInvitation[]> => {
       const { data, error } = await supabaseAdmin
         .from('organization_invites')
-        .select('*')
-        .eq('invited_user_id', ctx.userContext.userId)
+        .select(`
+          *,
+          organizations!organization_invites_organization_id_fkey(name),
+          users!organization_invites_invited_by_fkey(first_name, last_name, email)
+        `)
+        .eq('email', ctx.userContext.email)
         .eq('status', 'pending');
 
       if (error) {
         throw new Error(`Failed to fetch invitations: ${error.message}`);
       }
 
-      return data || [];
+      return (data || []).map(transformInvitation);
     }),
 
   acceptInvitation: protectedProcedure
@@ -48,7 +72,7 @@ export const onboardingRouter = createTRPCRouter({
         .from('organization_invites')
         .select('*')
         .eq('id', input.invitationId)
-        .eq('invited_user_id', ctx.userContext.userId)
+        .eq('email', ctx.userContext.email)
         .eq('status', 'pending')
         .single();
 
@@ -79,9 +103,17 @@ export const onboardingRouter = createTRPCRouter({
         throw new Error(`Failed to update user: ${userUpdateError.message}`);
       }
 
+      // Get organization name
+      const { data: organization } = await supabaseAdmin
+        .from('organizations')
+        .select('name')
+        .eq('id', invitation.organization_id)
+        .single();
+
       return {
         organizationId: invitation.organization_id.toString(),
         organizationRole: invitation.role as 'admin' | 'employee',
+        organizationName: organization?.name || 'Unknown Organization',
         message: 'Invitation accepted successfully'
       };
     }),
@@ -92,15 +124,19 @@ export const onboardingRouter = createTRPCRouter({
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + (input.expiresInDays || 7));
 
+      // Generate a unique token for the invitation
+      const token = crypto.randomUUID();
+
       const { data, error } = await supabaseAdmin
         .from('organization_invites')
         .insert({
           organization_id: ctx.userContext.organizationId,
-          invited_email: input.email,
+          email: input.email,
           role: input.organizationRole || 'employee',
           expires_at: expiresAt.toISOString(),
           status: 'pending',
-          invited_by_user_id: ctx.userContext.userId
+          invited_by: ctx.userContext.userId,
+          token: token
         })
         .select('*')
         .single();
@@ -124,15 +160,19 @@ export const onboardingRouter = createTRPCRouter({
     .query(async ({ input }): Promise<PendingInvitation[]> => {
       const { data, error } = await supabaseAdmin
         .from('organization_invites')
-        .select('*')
-        .eq('invited_email', input.email)
+        .select(`
+          *,
+          organizations!organization_invites_organization_id_fkey(name),
+          users!organization_invites_invited_by_fkey(first_name, last_name, email)
+        `)
+        .eq('email', input.email)
         .eq('status', 'pending');
 
       if (error) {
         throw new Error(`Failed to fetch invitations: ${error.message}`);
       }
 
-      return data || [];
+      return (data || []).map(transformInvitation);
     }),
 
   revokeInvitation: protectedProcedure
@@ -141,7 +181,7 @@ export const onboardingRouter = createTRPCRouter({
       const { error } = await supabaseAdmin
         .from('organization_invites')
         .update({ status: 'revoked' })
-        .eq('invited_email', input.email)
+        .eq('email', input.email)
         .eq('organization_id', ctx.userContext.organizationId);
 
       if (error) {
@@ -155,13 +195,17 @@ export const onboardingRouter = createTRPCRouter({
     .query(async ({ ctx }): Promise<PendingInvitation[]> => {
       const { data, error } = await supabaseAdmin
         .from('organization_invites')
-        .select('*')
+        .select(`
+          *,
+          organizations!organization_invites_organization_id_fkey(name),
+          users!organization_invites_invited_by_fkey(first_name, last_name, email)
+        `)
         .eq('organization_id', ctx.userContext.organizationId);
 
       if (error) {
         throw new Error(`Failed to fetch organization invitations: ${error.message}`);
       }
 
-      return data || [];
+      return (data || []).map(transformInvitation);
     }),
 });

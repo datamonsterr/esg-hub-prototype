@@ -1,14 +1,13 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
 import { Building2, CheckCircle, Clock, Mail } from "lucide-react";
-import { acceptInvitation } from "@/src/api/onboarding";
-import { endpoints } from "@/src/api/axios";
+import { useGetInvitationsByEmail, useAcceptInvitation } from "@/src/api/onboarding";
 import { PendingInvitation } from "@/src/types/user";
 import { useToast } from "@/src/hooks/use-toast";
 import { useUserContext } from "@/src/hooks/useUserContext";
@@ -19,29 +18,16 @@ export default function OnboardingPage() {
     const router = useRouter();
     const { showSuccessToast, showErrorToast } = useToast();
 
-    const [invitations, setInvitations] = useState<PendingInvitation[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [acceptingId, setAcceptingId] = useState<number | null>(null);
+    const [acceptingId, setAcceptingId] = useState<string | null>(null);
 
-    const loadInvitations = useCallback(async () => {
-        try {
-            setIsLoading(true);
-
-            const email = user?.emailAddresses?.[0]?.emailAddress;
-            const response = await fetch(`${endpoints.onboard.pendingInvitations}${email ? `?email=${email}` : ''}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                setInvitations(data);
-            } else {
-                console.error("Failed to load invitations:", data.error);
-            }
-        } catch (error) {
-            console.error("Error loading invitations:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [user]);
+    // Get user email for fetching invitations
+    const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+    
+    // Fetch invitations using tRPC
+    const { data: invitations = [], isLoading, error } = useGetInvitationsByEmail(userEmail || "");
+    
+    // Accept invitation mutation
+    const acceptInvitationMutation = useAcceptInvitation();
 
     useEffect(() => {
         if (isLoaded && !userContextLoading && user) {
@@ -59,20 +45,16 @@ export default function OnboardingPage() {
                 router.push('/');
                 return;
             }
-
-            if (user.emailAddresses?.[0]?.emailAddress) {
-                loadInvitations();
-            }
         }
-    }, [isLoaded, user, router, organizationId, userContextLoading, loadInvitations]);
+    }, [isLoaded, user, router, organizationId, userContextLoading]);
 
-    const handleAcceptInvitation = async (invitationId: number) => {
+    const handleAcceptInvitation = async (invitationId: string) => {
         try {
             setAcceptingId(invitationId);
 
-            const result = await acceptInvitation(invitationId);
+            const result = await acceptInvitationMutation.mutateAsync({ invitationId });
 
-            showSuccessToast(`Successfully joined ${result.organizationName || "organization"}!`);
+            showSuccessToast(`Successfully joined organization!`);
 
             // Redirect to main app
             router.push("/");

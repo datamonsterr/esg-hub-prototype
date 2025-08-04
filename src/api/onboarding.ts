@@ -15,8 +15,8 @@ export function useSendInvitation() {
   return api.onboarding.sendInvitation.useMutation();
 }
 
-export function useGetInvitationsByEmail() {
-  return api.onboarding.getInvitationsByEmail.useQuery;
+export function useGetInvitationsByEmail(email: string) {
+  return api.onboarding.getInvitationsByEmail.useQuery({ email });
 }
 
 export function useRevokeInvitation() {

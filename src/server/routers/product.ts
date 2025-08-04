@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createTRPCRouter, protectedProcedure } from '../trpc';
 import { supabaseAdmin } from '@/src/lib/supabase';
-import { transformFromDb } from '@/src/types/server-transforms';
+import { transformFromDb, transformToDb } from '@/src/types/server-transforms';
 import { addCreateTimestamps, sanitizeData } from '@/src/lib/supabase-utils';
 
 export const productRouter = createTRPCRouter({
@@ -90,11 +90,13 @@ export const productRouter = createTRPCRouter({
         childrenIds: [],
       };
 
-      const sanitizedData = addCreateTimestamps(sanitizeData(productData));
+      const sanitizedData = sanitizeData(productData);
+      const dbData = transformToDb(sanitizedData) as Record<string, any>;
+      const finalData = addCreateTimestamps(dbData);
 
       const { data: product, error } = await supabaseAdmin
         .from('products')
-        .insert(sanitizedData)
+        .insert(finalData)
         .select()
         .single();
 
@@ -117,10 +119,14 @@ export const productRouter = createTRPCRouter({
       const userContext = ctx.userContext!;
       const { id, data } = input;
 
+      // Transform camelCase to snake_case for database
+      const sanitizedData = sanitizeData(data);
+      const dbData = transformToDb(sanitizedData) as Record<string, any>;
+
       const { data: updatedProduct, error } = await supabaseAdmin
         .from('products')
         .update({
-          ...data,
+          ...dbData,
           updated_at: new Date().toISOString()
         })
         .eq('id', id)

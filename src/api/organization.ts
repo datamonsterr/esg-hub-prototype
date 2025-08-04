@@ -1,7 +1,7 @@
 'use client';
 
-import { api } from '@/src/utils/api';
 import { Organization } from '@/src/types/user';
+import { api } from '@/src/utils/api';
 
 // #region tRPC Hooks
 export function useGetOrganizations() {

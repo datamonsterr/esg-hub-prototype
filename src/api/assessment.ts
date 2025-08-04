@@ -1,7 +1,7 @@
 'use client';
 
 import { api } from '@/src/utils/api';
-import { Assessment, AssessmentTemplate } from '../types/assessment';
+import { Assessment } from '../types/assessment';
 
 // #region tRPC Hooks
 export function useGetAssessments() {

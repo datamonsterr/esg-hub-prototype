@@ -25,12 +25,19 @@ export default function ProductTreePage() {
 
   const handleEdit = (product: Product) => {
     // Navigate to edit page or open modal
-    
+    console.log('Edit product:', product);
   }
 
   const handleDelete = (product: Product) => {
     // Handle delete action
-    
+    console.log('Delete product:', product);
+  }
+
+  const handleSaveProduct = (productData: Partial<Product>) => {
+    // Handle saving new/edited product
+    console.log('Save product:', productData);
+    // Here you would typically call an API to save the product
+    // For now, we'll just log it
   }
 
   if (isLoading) {
@@ -97,6 +104,7 @@ export default function ProductTreePage() {
           selectedProductId={selectedProduct?.id}
           onEdit={handleEdit} 
           onDelete={handleDelete}
+          onSaveProduct={handleSaveProduct}
           currentOrganizationId={organizationId || ''}
         />
       </div>
